@@ -119,39 +119,30 @@ class ComprovantesManager:
         print("Status de pagamento atualizado com sucesso.")
     
     def listar_atividades_pendentes(self):
-        """Lista todas as atividades que ainda estão pendentes de pagamento"""
-        atividades_pendentes = []
-        
-        # Para cada linha na tabela (exceto cabeçalho)
-        for i in range(2, self.sheet.max_row + 1):
-            valor_custo = self.sheet[f'A{i}'].value
-            if valor_custo is None or not isinstance(valor_custo, (int, float)):
-                continue
+            """Lista todas as atividades que ainda estão pendentes de pagamento, incluindo colunas E e F nulas"""
+            atividades_pendentes = []
+            
+            # Para cada linha na tabela (exceto cabeçalho)
+            for i in range(2, self.sheet.max_row + 1):
+                valor_custo = self.sheet[f'B{i}'].value
+                if valor_custo is None or not isinstance(valor_custo, (int, float)):
+                    continue
+                    
+                alex_rute = self.sheet[f'E{i}'].value
+                diego_ana = self.sheet[f'F{i}'].value
                 
-            alex_rute = self.sheet[f'E{i}'].value or 0
-            diego_ana = self.sheet[f'F{i}'].value or 0
+                # Verificar se as colunas E e F estão nulas
+                if alex_rute is None and diego_ana is None:
+                    atividade = self.sheet[f'C{i}'].value
+                    setor = self.sheet[f'B{i}'].value
+                    
+                    atividades_pendentes.append({
+                        'Atividade': atividade,
+                        'Setor': setor,
+                        'Valor Total': valor_custo
+                    })
             
-            # Converter para zero se não for numérico
-            if not isinstance(alex_rute, (int, float)):
-                alex_rute = 0
-            if not isinstance(diego_ana, (int, float)):
-                diego_ana = 0
-                
-            valor_pago = alex_rute + diego_ana
-            
-            atividade = self.sheet[f'C{i}'].value
-            setor = self.sheet[f'B{i}'].value
-            
-            if valor_pago < valor_custo:
-                pendente = valor_custo - valor_pago
-                atividades_pendentes.append({
-                    'Atividade': atividade,
-                    'Setor': setor,
-                    'Valor Pendente': pendente,
-                    'Valor Total': valor_custo
-                })
-        
-        return atividades_pendentes
+            return atividades_pendentes
     
     def listar_atividades(self):
         """Lista todas as atividades disponíveis na tabela"""
@@ -159,9 +150,9 @@ class ComprovantesManager:
         
         # Para cada linha na tabela (exceto cabeçalho)
         for i in range(2, self.sheet.max_row + 1):
-            atividade = self.sheet[f'C{i}'].value
-            setor = self.sheet[f'B{i}'].value
-            valor_custo = self.sheet[f'A{i}'].value
+            atividade = self.sheet[f'D{i}'].value
+            setor = self.sheet[f'C{i}'].value
+            valor_custo = self.sheet[f'B{i}'].value
             
             if atividade and valor_custo:
                 # Garantir que o valor seja um número
@@ -279,7 +270,16 @@ def main():
             atividades = manager.listar_atividades()
             print("\nAtividades disponíveis:")
             for i, atv in enumerate(atividades):
-                print(f"{i+1}. {atv['Atividade']} ({atv['Setor']}) - R$ {atv['Valor']:.2f}")
+                            valor = atv['Valor']
+                            valor_str = ""
+                            
+                            # Formatar o valor corretamente
+                            if isinstance(valor, (int, float)):
+                                valor_str = f"R$ {valor:.2f}"
+                            else:
+                                valor_str = f"R$ {valor}"
+                            
+                            print(f"{i+1}. {atv['Atividade']} ({atv['Setor']}) - {valor_str}")
             
             # Obter inputs do usuário
             idx_atividade = int(input("\nSelecione o número da atividade: ")) - 1
@@ -332,8 +332,8 @@ def main():
             else:
                 print("\n=== ATIVIDADES PENDENTES DE PAGAMENTO ===")
                 for i, p in enumerate(pendentes):
-                    print(f"{i+1}. {p['Atividade']} ({p['Setor']}): R$ {p['Valor Pendente']:.2f} de R$ {p['Valor Total']:.2f}")
-        
+                    print(f"{i+1}. {p['Atividade']} ({p['Setor']}): R$ {p['Valor Total']:.2f}")
+                
         elif opcao == "3":
             # Atualizar status de pagamentos
             manager.atualizar_status()
