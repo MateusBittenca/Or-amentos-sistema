@@ -21,7 +21,7 @@ class ComprovantesManager:
         # Carregar dados para pandas para facilitar a manipulação
         self.df = pd.read_excel(excel_path)
     
-    def preencher_pagamento(self, valor_str, atividade, pagador, setor=None):
+    def preencher_pagamento(self, valor_str, atividade, pagador, setor=None, data=None):
         """
         Preenche a tabela com os dados do comprovante
         
@@ -30,6 +30,7 @@ class ComprovantesManager:
             atividade (str): Descrição da atividade
             pagador (str): Quem pagou (Alex-Rute ou Diego-Ana)
             setor (str, optional): Setor relacionado ao pagamento
+            data (str, optional): Data do pagamento no formato DD/MM/AAAA
         """
         # Converter o valor de string para float
         valor_str = valor_str.replace('R$', '').replace(' ', '').replace('.', '').replace(',', '.')
@@ -39,13 +40,20 @@ class ComprovantesManager:
             print(f"Erro ao converter valor: {valor_str}")
             return False
         
-        # Procurar linha com a atividade especificada
-        linhas_encontradas = self.df[self.df['ATIVIDADE'].str.strip().str.lower() == atividade.strip().lower()].index.tolist()
+        # Procurar linha com a atividade especificada na coluna D
+        linhas_encontradas = []
+        for i in range(2, self.sheet.max_row + 1):
+            atividade_celula = self.sheet[f'D{i}'].value
+            if atividade_celula and atividade_celula.strip().lower() == atividade.strip().lower():
+                linhas_encontradas.append(i)
         
         # Se setor for especificado, filtrar também pelo setor
         if setor and len(linhas_encontradas) > 1:
-            linhas_com_setor = self.df[(self.df['ATIVIDADE'].str.strip().str.lower() == atividade.strip().lower()) & 
-                                      (self.df['SETOR'].str.strip().str.lower() == setor.strip().lower())].index.tolist()
+            linhas_com_setor = []
+            for linha in linhas_encontradas:
+                setor_celula = self.sheet[f'C{linha}'].value
+                if setor_celula and setor_celula.strip().lower() == setor.strip().lower():
+                    linhas_com_setor.append(linha)
             if linhas_com_setor:
                 linhas_encontradas = linhas_com_setor
         
@@ -54,7 +62,7 @@ class ComprovantesManager:
             return False
         
         # Para simplificar, vamos usar a primeira linha encontrada
-        linha_excel = linhas_encontradas[0] + 2  # +2 para compensar cabeçalho e índice 0
+        linha_excel = linhas_encontradas[0]
         
         # Determinar a coluna para preenchimento
         coluna = None
@@ -78,6 +86,10 @@ class ComprovantesManager:
         # Preencher o valor na célula apropriada
         self.sheet[f'{coluna}{linha_excel}'] = valor
         
+        # Se a data foi fornecida, preencha em uma coluna específica (exemplo: coluna G)
+        if data:
+            self.sheet[f'G{linha_excel}'] = data
+        
         # Aplicar formatação verde (pago) à linha
         for col in range(1, 7):  # Colunas A a F
             coluna_letra = openpyxl.utils.get_column_letter(col)
@@ -85,7 +97,7 @@ class ComprovantesManager:
         
         # Salvar as alterações
         self.workbook.save(self.excel_path)
-        print(f"Pagamento de R$ {valor:.2f} registrado para '{atividade}' por {pagador}.")
+        print(f"Pagamento de R$ {valor:.2f} registrado para '{atividade}' por {pagador} na data {data}.")
         return True
     
     def atualizar_status(self):
@@ -133,8 +145,8 @@ class ComprovantesManager:
                 
                 # Verificar se as colunas E e F estão nulas
                 if alex_rute is None and diego_ana is None:
-                    atividade = self.sheet[f'C{i}'].value
-                    setor = self.sheet[f'B{i}'].value
+                    atividade = self.sheet[f'D{i}'].value
+                    setor = self.sheet[f'C{i}'].value
                     
                     atividades_pendentes.append({
                         'Atividade': atividade,
@@ -228,7 +240,7 @@ class ComprovanteReader:
 
 def main():
     # Caminho para o arquivo Excel
-    excel_file = "Fluxo Caixa Construção Guaratinguetá.xlsx"  # Altere para o caminho real do seu arquivo
+    excel_file = "Fluxo Caixa Construção Guaratinguetá.xlsx" 
     
     # Se o arquivo não existir, avisa o usuário
     if not os.path.exists(excel_file):
@@ -267,19 +279,19 @@ def main():
             print(f"Nome: {dados['nome'] or 'Não identificado'}")
             
             # Listar atividades disponíveis para seleção
-            atividades = manager.listar_atividades()
+            atividades = manager.listar_atividades_pendentes()
             print("\nAtividades disponíveis:")
             for i, atv in enumerate(atividades):
-                            valor = atv['Valor']
-                            valor_str = ""
-                            
-                            # Formatar o valor corretamente
-                            if isinstance(valor, (int, float)):
-                                valor_str = f"R$ {valor:.2f}"
-                            else:
-                                valor_str = f"R$ {valor}"
-                            
-                            print(f"{i+1}. {atv['Atividade']} ({atv['Setor']}) - {valor_str}")
+                    valor = atv['Valor Total']  # Substituído 'Valor' por 'Valor Total'
+                    valor_str = ""
+                    
+                    # Formatar o valor corretamente
+                    if isinstance(valor, (int, float)):
+                        valor_str = f"R$ {valor:.2f}"
+                    else:
+                        valor_str = f"R$ {valor}"
+                    
+                    print(f"{i+1}. {atv['Atividade']} ({atv['Setor']}) - {valor_str}")
             
             # Obter inputs do usuário
             idx_atividade = int(input("\nSelecione o número da atividade: ")) - 1
@@ -302,12 +314,12 @@ def main():
             # Preencher pagamento
             if dados['valor']:
                 sucesso = manager.preencher_pagamento(
-                    dados['valor'], 
-                    atividade_selecionada, 
-                    pagador, 
-                    dados['data'], 
-                    setor_selecionado
-                )
+                dados['valor'], 
+                atividade_selecionada, 
+                pagador, 
+                setor_selecionado, 
+                dados['data']  # Incluindo a data
+            )
                 if sucesso:
                     # Atualizar status automaticamente após preencher
                     manager.atualizar_status()
@@ -376,3 +388,4 @@ if __name__ == "__main__":
         sys.exit(1)
     
     main()
+    
