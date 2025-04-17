@@ -264,7 +264,7 @@ class ComprovantesManager:
         }
     
     def listar_atividades_pendentes(self):
-        """Lista todas as atividades que ainda estão pendentes de pagamento, incluindo colunas E e F nulas"""
+        """Lista todas as atividades que ainda estão pendentes de pagamento."""
         atividades_pendentes = []
 
         for i in range(2, self.sheet.max_row + 1):
@@ -272,10 +272,11 @@ class ComprovantesManager:
             if valor_custo is None or not isinstance(valor_custo, (int, float)):
                 continue
 
-            alex_rute = self.sheet[f'E{i}'].value
-            diego_ana = self.sheet[f'F{i}'].value
+            alex_rute = self.sheet[f'E{i}'].value or 0
+            diego_ana = self.sheet[f'F{i}'].value or 0
 
-            if alex_rute is None and diego_ana is None:
+            # Verificar se a soma de Alex-Rute e Diego-Ana é igual ao custo
+            if alex_rute + diego_ana < valor_custo:
                 atividade = self.sheet[f'D{i}'].value
                 setor = self.sheet[f'C{i}'].value
                 data = self.sheet[f'A{i}'].value
