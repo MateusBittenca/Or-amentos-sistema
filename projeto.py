@@ -26,6 +26,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
+
 )
 
 # Configuration
@@ -43,9 +44,11 @@ class Activity(BaseModel):
     value: float
     
 class PendingActivity(BaseModel):
+    id: int  
     activity: str
     sector: Optional[str] = None
     total_value: float
+
 
 class PaymentData(BaseModel):
     activity: str
@@ -263,27 +266,27 @@ class ComprovantesManager:
     def listar_atividades_pendentes(self):
         """Lista todas as atividades que ainda estão pendentes de pagamento, incluindo colunas E e F nulas"""
         atividades_pendentes = []
-        
-        # Para cada linha na tabela (exceto cabeçalho)
+
         for i in range(2, self.sheet.max_row + 1):
             valor_custo = self.sheet[f'B{i}'].value
             if valor_custo is None or not isinstance(valor_custo, (int, float)):
                 continue
-                
+
             alex_rute = self.sheet[f'E{i}'].value
             diego_ana = self.sheet[f'F{i}'].value
-            
-            # Verificar se as colunas E e F estão nulas
+
             if alex_rute is None and diego_ana is None:
                 atividade = self.sheet[f'D{i}'].value
                 setor = self.sheet[f'C{i}'].value
-                
+                data = self.sheet[f'A{i}'].value
+
                 atividades_pendentes.append(PendingActivity(
+                    id=i - 1,  # Use o índice da linha como ID
                     activity=atividade,
                     sector=setor,
                     total_value=valor_custo
                 ))
-        
+
         return atividades_pendentes
     
     def listar_atividades(self):
@@ -295,6 +298,7 @@ class ComprovantesManager:
             atividade = self.sheet[f'D{i}'].value
             setor = self.sheet[f'C{i}'].value
             valor_custo = self.sheet[f'B{i}'].value
+            data = self.sheet[f'A{i}'].value
             
             if atividade and valor_custo:
                 # Garantir que o valor seja um número
@@ -309,7 +313,7 @@ class ComprovantesManager:
                     id=i-1,
                     activity=atividade,
                     sector=setor,
-                    value=valor_custo
+                    value=valor_custo          
                 ))
         
         return atividades
@@ -365,6 +369,20 @@ def add_activity(referencia: str = Form(...),
                 setor: str = Form(...), 
                 atividade: str = Form(...)):
     return manager.adicionar_atividade(referencia, valor, setor, atividade)
+
+@app.get("/valor-total")
+def get_total_value():
+    """Calcula o valor total da obra somando os valores das atividades"""
+    try:
+        total_value = 0
+        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
+            valor_custo = manager.sheet[f'B{i}'].value
+            if isinstance(valor_custo, (int, float)):
+                total_value += valor_custo
+
+        return {"total": total_value}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total: {str(e)}")
 
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
