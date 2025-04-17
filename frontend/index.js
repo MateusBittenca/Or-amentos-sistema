@@ -6,24 +6,29 @@ async function loadActivities() {
     try {
         const response = await fetch(`${API_URL}/atividades-pendentes`);
         const pendingActivities = await response.json();
-        console.log("Atividades pendentes:", pendingActivities); // Verifique a resposta no console
+
         const activitiesList = document.getElementById("activitiesList");
         activitiesList.innerHTML = "";
 
         if (Array.isArray(pendingActivities)) {
             pendingActivities.forEach(activity => {
-                activitiesList.innerHTML += `
-                    <tr>
-                        <td class="py-2 px-4 border-b">${activity.id}</td>
-                        <td class="py-2 px-4 border-b">${activity.activity}</td>
-                        <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
-                        <td class="py-2 px-4 border-b">R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        <td class="py-2 px-4 border-b">
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="py-2 px-4 border-b">${activity.id}</td>
+                    <td class="py-2 px-4 border-b">${activity.activity}</td>
+                    <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
+                    <td class="py-2 px-4 border-b">R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="py-2 px-4 border-b">R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
+                    <td class="py-2 px-4 border-b">
                         <button class="bg-green-500 text-white px-2 py-1 rounded">Pagar</button>
                     </td>
-                        
-                    </tr>
                 `;
+
+                // Adicionar evento de clique para exibir o modal
+                row.addEventListener("click", () => showModal(activity));
+
+                activitiesList.appendChild(row);
             });
         } else {
             console.error("Expected an array but got:", pendingActivities);
@@ -33,6 +38,28 @@ async function loadActivities() {
     }
 }
 
+function showModal(activity) {
+    document.getElementById("modalId").innerText = activity.id;
+    document.getElementById("modalActivity").innerText = activity.activity;
+    document.getElementById("modalSector").innerText = activity.sector || "-";
+    document.getElementById("modalValue").innerText = `R$ ${Number(activity.diego_ana).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalValue2").innerText = `R$ ${Number(activity.alex_rute).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalRemainingValue").innerText = `R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalTotalValue").innerText = `R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalDate").innerText = activity.date || "-";
+
+    // Exibir o modal
+    const modal = document.getElementById("infoModal");
+    modal.classList.remove("hidden");
+    modal.style.display = "flex"; // Exibir o modal
+}
+
+// Função para fechar o modal
+document.getElementById("closeModal").addEventListener("click", () => {
+    const modal = document.getElementById("infoModal");
+    modal.classList.add("hidden");
+    modal.style.display = "none"; // Ocultar o modal
+});
 async function loadTotalValue() {
     try {
         const response = await fetch(`${API_URL}/valor-total`);

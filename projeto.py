@@ -16,6 +16,9 @@ import shutil
 import uuid
 from pydantic import BaseModel
 from typing import List, Optional
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI(title="Construction Expense Manager API")
 
@@ -42,14 +45,18 @@ class Activity(BaseModel):
     activity: str
     sector: Optional[str] = None
     value: float
+    date: Optional[str] = None
     
 class PendingActivity(BaseModel):
     id: int  
     activity: str
     sector: Optional[str] = None
     total_value: float
-
-
+    valor_restante: float  # Valor restante a ser pago
+    date: Optional[str] = None
+    diego_ana: float
+    alex_rute: float
+    
 class PaymentData(BaseModel):
     activity: str
     sector: Optional[str] = None
@@ -275,8 +282,11 @@ class ComprovantesManager:
             alex_rute = self.sheet[f'E{i}'].value or 0
             diego_ana = self.sheet[f'F{i}'].value or 0
 
-            # Verificar se a soma de Alex-Rute e Diego-Ana é igual ao custo
-            if alex_rute + diego_ana < valor_custo:
+            # Calcular o valor restante a ser pago
+            valor_restante = valor_custo - (alex_rute + diego_ana)
+
+            # Verificar se ainda há valor pendente
+            if valor_restante > 0:
                 atividade = self.sheet[f'D{i}'].value
                 setor = self.sheet[f'C{i}'].value
                 data = self.sheet[f'A{i}'].value
@@ -285,7 +295,11 @@ class ComprovantesManager:
                     id=i - 1,  # Use o índice da linha como ID
                     activity=atividade,
                     sector=setor,
-                    total_value=valor_custo
+                    total_value=valor_custo,
+                    valor_restante=valor_restante,  
+                    date=data.strftime("%d/%m/%Y") if hasattr(data, "strftime") else None,
+                    alex_rute=alex_rute,
+                    diego_ana=diego_ana
                 ))
 
         return atividades_pendentes
@@ -314,7 +328,8 @@ class ComprovantesManager:
                     id=i-1,
                     activity=atividade,
                     sector=setor,
-                    value=valor_custo          
+                    value=valor_custo,
+                    date=data.strftime("%d/%m/%Y") if hasattr(data, "strftime") else None  
                 ))
         
         return atividades
@@ -354,7 +369,13 @@ def read_root():
 
 @app.get("/atividades", response_model=List[Activity])
 def get_activities():
-    return manager.listar_atividades()
+    try:
+        return manager.listar_atividades()
+    except Exception as e:
+        logging.error(f"Error fetching activities: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching activities: {str(e)}")
+
+
 
 @app.get("/atividades-pendentes", response_model=List[PendingActivity])
 def get_pending_activities():
