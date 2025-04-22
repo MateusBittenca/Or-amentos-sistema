@@ -115,6 +115,7 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 1.5rem;
+    gap: 12px; 
 }
 
 #closeModal {
@@ -137,6 +138,12 @@
 
 #closeModal:active {
     transform: translateY(0);
+}
+
+#pagamento:hover {
+    background-color: #28a148;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Animação de entrada */

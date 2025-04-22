@@ -1,7 +1,5 @@
 const API_URL = "http://localhost:8000";
 
-
-// Função para carregar atividades
 async function loadActivities() {
     try {
         const response = await fetch(`${API_URL}/atividades-pendentes`);
@@ -21,12 +19,16 @@ async function loadActivities() {
                     <td class="py-2 px-4 border-b">R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
                     <td class="py-2 px-4 border-b">
-                        <button class="bg-green-500 text-white px-2 py-1 rounded">Pagar</button>
+                        <button class="bg-green-500 text-white px-2 py-1 rounded pagar-btn">Pagar</button>
                     </td>
                 `;
 
-                // Adicionar evento de clique para exibir o modal
-                row.addEventListener("click", () => showModal(activity));
+                // Add click event to the "Pagar" button
+                const pagarButton = row.querySelector(".pagar-btn");
+                pagarButton.addEventListener("click", (e) => {
+                    e.stopPropagation(); // Prevent triggering the row click event
+                    showModal(activity);
+                });
 
                 activitiesList.appendChild(row);
             });
@@ -89,6 +91,12 @@ document.getElementById("addActivityForm").addEventListener("submit", async (e) 
         method: "POST",
         body: formData,
     });
+
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateRegex.test(data)) {
+        alert("A data deve estar no formato dd/mm/yyyy.");
+        return;
+    }
 
     if (response.ok) {
         alert("Atividade adicionada com sucesso!");
@@ -155,4 +163,31 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTotalActivities();
     loadPendingActivities(); // Já existente
     loadActivities(); // Já existente
+});
+
+//Sistema de busca
+document.getElementById('searchBtn').addEventListener('click', function () {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const activitiesList = document.getElementById('activitiesList');
+    const rows = activitiesList.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let match = false;
+
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().includes(searchInput)) {
+                match = true;
+                break;
+            }
+        }
+
+        rows[i].style.display = match ? '' : 'none';
+    }
+});
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        document.getElementById('searchBtn').click();
+    }
 });

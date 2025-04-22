@@ -1,5 +1,5 @@
 # app.py - FastAPI Backend for Construction Expense Manager
-
+from datetime import datetime
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,12 +29,11 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
-
 )
 
 # Configuration
 UPLOAD_FOLDER = "uploads"
-EXCEL_PATH = "Fluxo Caixa Construção Guaratinguetá.xlsx"
+EXCEL_PATH = "planilha.xlsx"
 
 # Create upload folder if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -334,18 +333,18 @@ class ComprovantesManager:
         
         return atividades
     
-    def adicionar_atividade(self, referencia, valor, setor, atividade):
+    def adicionar_atividade(self, data, valor, setor, atividade):
         """Adiciona uma nova atividade à tabela"""
-        # Find the next available row
+        # Procura a proxima coluna vazia na planilha
         next_row = self.sheet.max_row + 1
         
-        # Add the new activity
-        self.sheet[f'A{next_row}'] = referencia
+        # Adiciona uma nova atividade
+        self.sheet[f'A{next_row}'] = data
         self.sheet[f'B{next_row}'] = valor
         self.sheet[f'C{next_row}'] = setor
         self.sheet[f'D{next_row}'] = atividade
         
-        # Apply red formatting (unpaid)
+        # Adiciona o formato vermelho (pendente) à nova linha
         for col in range(1, 7):  # Columns A to F
             column_letter = openpyxl.utils.get_column_letter(col)
             self.sheet[f'{column_letter}{next_row}'].fill = self.vermelho
@@ -386,11 +385,17 @@ def update_status():
     return manager.atualizar_status()
 
 @app.post("/add-activity")
-def add_activity(referencia: str = Form(...), 
-                valor: float = Form(...), 
-                setor: str = Form(...), 
-                atividade: str = Form(...)):
-    return manager.adicionar_atividade(referencia, valor, setor, atividade)
+def add_activity(atividade: str = Form(...),
+                 valor: float = Form(...), 
+                 setor: str = Form(...), 
+                 data: str = Form(...)):
+    try:
+        # Validar e formatar a data para o formato dd/mm/yyyy
+        data_formatada = datetime.strptime(data, "%d/%m/%Y").strftime("%d/%m/%Y")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Data inválida. Use o formato dd/mm/yyyy.")
+    
+    return manager.adicionar_atividade(data_formatada, valor, setor, atividade)
 
 @app.get("/valor-total")
 def get_total_value():
