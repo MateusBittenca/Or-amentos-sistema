@@ -11,9 +11,6 @@ from PIL import Image
 import pytesseract
 import re
 import io
-import tempfile
-import shutil
-import uuid
 from pydantic import BaseModel
 from typing import List, Optional
 import logging
@@ -25,7 +22,7 @@ app = FastAPI(title="Construction Expense Manager API")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -334,29 +331,79 @@ class ComprovantesManager:
         return atividades
     
     def adicionar_atividade(self, data, valor, setor, atividade):
-        """Adiciona uma nova atividade à tabela"""
-        # Procura a proxima coluna vazia na planilha
-        next_row = self.sheet.max_row + 1
+            """Adiciona uma nova atividade à tabela"""
+            try:
+                # Registra parâmetros de entrada para depuração
+                logging.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
+                
+                # Determinar a próxima linha disponível
+                proxima_linha = self.sheet.max_row + 1
+                
+                # Converter a data para o formato correto
+                # Input de data HTML retorna formato YYYY-MM-DD
+                try:
+                    if isinstance(data, str):
+                        # Verifica se o formato é YYYY-MM-DD (do input HTML type="date")
+                        if re.match(r'\d{4}-\d{2}-\d{2}', data):
+                            data_formatada = datetime.strptime(data, "%Y-%m-%d")
+                        else:
+                            # Tenta o formato DD/MM/YYYY
+                            data_formatada = datetime.strptime(data, "%d/%m/%Y")
+                    else:
+                        data_formatada = data
+                except ValueError as e:
+                    logging.error(f"Erro na conversão de data: {str(e)}")
+                    # Se a conversão falhar, use o valor original
+                    data_formatada = data
+                
+                # Garantir que valor seja um float
+                try:
+                    valor_float = float(valor)
+                except (ValueError, TypeError):
+                    raise HTTPException(status_code=400, detail="O valor deve ser um número")
+                
+                # Adicionar os dados nas células apropriadas
+                self.sheet[f'A{proxima_linha}'] = data_formatada
+                self.sheet[f'B{proxima_linha}'] = valor_float  # Custo/Valor
+                self.sheet[f'C{proxima_linha}'] = setor  # Setor
+                self.sheet[f'D{proxima_linha}'] = atividade  # Atividade
+                
+                # Aplicar formatação vermelho (pendente) à linha
+                for col in range(1, 7):  # Colunas A a F
+                    coluna_letra = openpyxl.utils.get_column_letter(col)
+                    self.sheet[f'{coluna_letra}{proxima_linha}'].fill = self.vermelho
+                
+                # Salvar as alterações
+                try:
+                    self.workbook.save(self.excel_path)
+                except PermissionError:
+                    logging.error(f"Erro de permissão ao salvar arquivo Excel: {self.excel_path}")
+                    raise HTTPException(status_code=500, detail="Não foi possível salvar o arquivo Excel. Ele pode estar aberto em outro programa.")
+                
+                # Recarregar os dados após a adição
+                try:
+                    self.df = pd.read_excel(self.excel_path)
+                except Exception as e:
+                    logging.error(f"Erro ao recarregar DataFrame: {str(e)}")
+                    # Continue mesmo assim, isso não é crítico
+                
+                return {
+                    "success": True,
+                    "message": f"Atividade '{atividade}' adicionada com sucesso",
+                    "id": proxima_linha - 1,
+                    "activity": atividade,
+                    "sector": setor,
+                    "value": valor_float,
+                    "date": data
+                }
+            except HTTPException as he:
+                # Re-levantar exceções HTTP
+                raise he
+            except Exception as e:
+                logging.error(f"Erro inesperado ao adicionar atividade: {str(e)}", exc_info=True)
+                raise HTTPException(status_code=500, detail=f"Erro ao adicionar atividade: {str(e)}")
         
-        # Adiciona uma nova atividade
-        self.sheet[f'A{next_row}'] = data
-        self.sheet[f'B{next_row}'] = valor
-        self.sheet[f'C{next_row}'] = setor
-        self.sheet[f'D{next_row}'] = atividade
-        
-        # Adiciona o formato vermelho (pendente) à nova linha
-        for col in range(1, 7):  # Columns A to F
-            column_letter = openpyxl.utils.get_column_letter(col)
-            self.sheet[f'{column_letter}{next_row}'].fill = self.vermelho
-        
-        # Save changes
-        self.workbook.save(self.excel_path)
-        
-        return {
-            "success": True,
-            "message": f"Atividade '{atividade}' Adicionada com sucesso!",
-            "id": next_row - 1
-        }
+     
 
 
 # Initialize the manager
@@ -386,16 +433,29 @@ def update_status():
 
 @app.post("/add-activity")
 def add_activity(atividade: str = Form(...),
-                 valor: float = Form(...), 
+                 valor: str = Form(...),  # Alterado para str para lidar com qualquer formato de entrada
                  setor: str = Form(...), 
                  data: str = Form(...)):
-    try:
-        # Validar e formatar a data para o formato dd/mm/yyyy
-        data_formatada = datetime.strptime(data, "%d/%m/%Y").strftime("%d/%m/%Y")
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Data inválida. Use o formato dd/mm/yyyy.")
+    logging.debug(f"Dados recebidos: atividade={atividade}, valor={valor}, setor={setor}, data={data}")
     
-    return manager.adicionar_atividade(data_formatada, valor, setor, atividade)
+    try:
+        # Converter valor para float, lidando com diferentes formatos de número
+        try:
+            # Trata tanto ',' como '.' como separadores decimais
+            valor_float = float(valor.replace(',', '.'))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="O valor deve ser um número")
+        
+        resultado = manager.adicionar_atividade(data, valor_float, setor, atividade)
+        logging.debug(f"Resultado da adição: {resultado}")
+        return resultado
+    except HTTPException as he:
+        # Re-levantar exceções HTTP
+        raise he
+    except Exception as e:
+        mensagem_erro = f"Erro no endpoint add-activity: {str(e)}"
+        logging.error(mensagem_erro, exc_info=True)
+        raise HTTPException(status_code=500, detail=mensagem_erro)
 
 @app.get("/valor-total")
 def get_total_value():

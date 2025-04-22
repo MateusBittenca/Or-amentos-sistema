@@ -86,24 +86,29 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-
-    const response = await fetch(`${API_URL}/add-activity`, {
-        method: "POST",
-        body: formData,
-    });
-
-    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!dateRegex.test(data)) {
-        alert("A data deve estar no formato dd/mm/yyyy.");
-        return;
+    
+    // Debug log of form data
+    console.log("Submitting form data:");
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
     }
 
-    if (response.ok) {
-        alert("Atividade adicionada com sucesso!");
-        loadActivities();
-    } else {
-        alert("Erro ao adicionar atividade.");
-    }
+    
+        const response = await fetch(`${API_URL}/add-activity`, {
+            method: "POST",
+            body: formData,
+        });
+
+        const result = await response.json();
+        console.log("Response:", result);
+
+        if (response.ok) {
+            alert("Atividade adicionada com sucesso!");
+            loadActivities();
+        } else {
+            alert("Erro ao adicionar atividade: " + (result.detail || "Unknown error"));
+        }
+   
 });
 
 // Função para processar comprovante
