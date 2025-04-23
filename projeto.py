@@ -498,7 +498,6 @@ def get_valor_pago():
 
 @app.get("/valor-pago-diego")
 def get_valor_pago_diego():
-    
     try:
         total_pago_diego = 0
         for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho

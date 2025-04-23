@@ -150,26 +150,6 @@ document.getElementById("addActivityForm").addEventListener("submit", async (e) 
 });
 
 // Função para processar comprovante
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const fileInput = document.getElementById("receiptFile");
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-
-    const response = await fetch(`${API_URL}/processar-comprovante`, {
-        method: "POST",
-        body: formData,
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        document.getElementById("extractedValue").innerText = data.valor || "-";
-        document.getElementById("extractedDate").innerText = data.data || "-";
-        document.getElementById("extractedName").innerText = data.nome || "-";
-    } else {
-        alert("Erro ao processar comprovante.");
-    }
-});
 
 async function loadPendingActivities() {
     try {
