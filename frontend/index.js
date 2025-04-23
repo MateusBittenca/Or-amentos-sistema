@@ -62,6 +62,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     modal.classList.add("hidden");
     modal.style.display = "none"; // Ocultar o modal
 });
+
 async function loadTotalValue() {
     try {
         const response = await fetch(`${API_URL}/valor-total`);
@@ -76,11 +77,47 @@ async function loadTotalValue() {
     }
 }
 
-// Atualizar o valor total da obra ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-    loadTotalValue();
-});
+async function valorTotalPago() {
+    try {
+        const response = await fetch(`${API_URL}/valor-total-pago`);
+        const data = await response.json();
+        const totalValueElement = document.getElementById("valorPagoObra");
+        totalValueElement.innerText = `R$ ${Number(data.total_pago).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+    } catch (error) {
+        console.error("Erro ao carregar o valor total pago:", error);
+    }
+}
 
+async function valorPagoDiego() {
+    try {
+        const response = await fetch(`${API_URL}/valor-pago-diego`);
+        const data = await response.json();
+        const totalValueElement = document.getElementById("valorPagoDiego");
+        totalValueElement.innerText = `R$ ${Number(data.total_pago_diego).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+    } catch (error) {
+        console.error("Erro ao carregar o valor pago por Diego:", error);
+    }
+}
+
+async function valorPagoAlex() {
+    try {
+        const response = await fetch(`${API_URL}/valor-pago-alex`);
+        const data = await response.json();
+        const totalValueElement = document.getElementById("valorPagoAlex");
+        totalValueElement.innerText = `R$ ${Number(data.total_pago_alex).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+    } catch (error) {
+        console.error("Erro ao carregar o valor pago por Alex:", error);
+    }
+}
 
 // Função para adicionar uma nova atividade
 document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
@@ -92,7 +129,6 @@ document.getElementById("addActivityForm").addEventListener("submit", async (e) 
     for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);
     }
-
     
         const response = await fetch(`${API_URL}/add-activity`, {
             method: "POST",
@@ -103,8 +139,10 @@ document.getElementById("addActivityForm").addEventListener("submit", async (e) 
         console.log("Response:", result);
 
         if (response.ok) {
+            console.log("Atividade adicionada com sucesso:", result);
             alert("Atividade adicionada com sucesso!");
-            loadActivities();
+            loadActivities(); // Recarregar atividades após adicionar
+            
         } else {
             alert("Erro ao adicionar atividade: " + (result.detail || "Unknown error"));
         }
@@ -133,9 +171,6 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
     }
 });
 
-// Carregar atividades ao carregar a página
-document.addEventListener("DOMContentLoaded", loadActivities);
-
 async function loadPendingActivities() {
     try {
         const response = await fetch(`${API_URL}/atividades-pendentes`);
@@ -145,13 +180,6 @@ async function loadPendingActivities() {
         console.error("Erro ao carregar atividades pendentes:", error);
     }
 }
-
-// Atualizar a quantidade de atividades pendentes ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-    loadPendingActivities();
-    loadActivities(); // Já existente
-});
-
 
 async function loadTotalActivities() {
     try {
@@ -168,6 +196,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTotalActivities();
     loadPendingActivities(); // Já existente
     loadActivities(); // Já existente
+    valorTotalPago();
+    loadTotalValue();
+    valorPagoDiego();
+    valorPagoAlex(); // Já existente
 });
 
 //Sistema de busca

@@ -42,6 +42,8 @@ class Activity(BaseModel):
     sector: Optional[str] = None
     value: float
     date: Optional[str] = None
+    diego_ana: Optional[float] = None
+    alex_rute: Optional[float] = None
     
 class PendingActivity(BaseModel):
     id: int  
@@ -274,7 +276,7 @@ class ComprovantesManager:
             valor_custo = self.sheet[f'B{i}'].value
             if valor_custo is None or not isinstance(valor_custo, (int, float)):
                 continue
-
+            
             alex_rute = self.sheet[f'E{i}'].value or 0
             diego_ana = self.sheet[f'F{i}'].value or 0
 
@@ -286,6 +288,7 @@ class ComprovantesManager:
                 atividade = self.sheet[f'D{i}'].value
                 setor = self.sheet[f'C{i}'].value
                 data = self.sheet[f'A{i}'].value
+                
 
                 atividades_pendentes.append(PendingActivity(
                     id=i - 1,  # Use o índice da linha como ID
@@ -310,6 +313,8 @@ class ComprovantesManager:
             setor = self.sheet[f'C{i}'].value
             valor_custo = self.sheet[f'B{i}'].value
             data = self.sheet[f'A{i}'].value
+            diego_ana = self.sheet[f'F{i}'].value or 0
+            alex_rute = self.sheet[f'E{i}'].value or 0
             
             if atividade and valor_custo:
                 # Garantir que o valor seja um número
@@ -325,7 +330,9 @@ class ComprovantesManager:
                     activity=atividade,
                     sector=setor,
                     value=valor_custo,
-                    date=data.strftime("%d/%m/%Y") if hasattr(data, "strftime") else None  
+                    date=data.strftime("%d/%m/%Y") if hasattr(data, "strftime") else None,
+                    alex_rute=alex_rute,
+                    diego_ana=diego_ana
                 ))
         
         return atividades
@@ -470,6 +477,53 @@ def get_total_value():
         return {"total": total_value}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total: {str(e)}")
+
+@app.get("/valor-total-pago")
+def get_valor_pago():
+    """Calcula o valor total pago somando os valores preenchidos nas colunas Alex-Rute e Diego-Ana"""
+    try:
+        total_pago = 0
+        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
+            alex_rute = manager.sheet[f'E{i}'].value or 0
+            diego_ana = manager.sheet[f'F{i}'].value or 0
+            
+            if isinstance(alex_rute, (int, float)):
+                total_pago += alex_rute
+            if isinstance(diego_ana, (int, float)):
+                total_pago += diego_ana
+
+        return {"total_pago": total_pago}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago: {str(e)}")
+
+@app.get("/valor-pago-diego")
+def get_valor_pago_diego():
+    
+    try:
+        total_pago_diego = 0
+        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
+            diego_ana = manager.sheet[f'F{i}'].value or 0
+            
+            if isinstance(diego_ana, (int, float)):
+                total_pago_diego += diego_ana
+
+        return {"total_pago_diego": total_pago_diego}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago por Diego-Ana: {str(e)}")
+
+@app.get("/valor-pago-alex")
+def get_valor_pago_alex():
+        try:
+            total_pago_alex = 0
+            for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
+                alex_rute = manager.sheet[f'E{i}'].value or 0
+                
+                if isinstance(alex_rute, (int, float)):
+                    total_pago_alex += alex_rute
+    
+            return {"total_pago_alex": total_pago_alex}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago por Alex-Rute: {str(e)}")
 
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
