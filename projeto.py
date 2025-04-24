@@ -141,7 +141,7 @@ class ComprovantesManager:
     
     def _create_excel_template(self):
         """Create a new Excel file with the expected structure"""
-        wb = openpyxl.Workbook()
+        wb = openpyxl.Workbook() 
         ws = wb.active
         
         # Set headers
@@ -527,13 +527,13 @@ def get_valor_pago_alex():
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
     try:
-        # Read uploaded file
+        # Leia o arquivo enviado
         contents = await file.read()
         
-        # Process the receipt image
+        # Processa a imagem do comprovante
         result = ComprovanteReader.ler_comprovante(contents)
         
-        # Return extracted data
+        # Retorna os dados extraídos
         return ExtractedData(
             value=result['valor'],
             date=result['data'],

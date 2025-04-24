@@ -227,10 +227,7 @@
             <div class="modal-section">
                 <div class="modal-section-title">Detalhes do Pagamento</div>
                 <form id="modalPaymentForm">
-                    <div class="form-group">
-                        <label for="paymentValue">Valor a Pagar (R$)</label>
-                        <input type="number" id="paymentModalValue" name="paymentValue" step="0.01" class="payment-input" required>
-                    </div>
+                  
                     
                     <div class="form-group">
                         <label>Quem está pagando?</label>
@@ -252,29 +249,11 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Método de Pagamento</label>
-                        <div class="payment-methods">
-                            <div class="payment-method">
-                                <input type="radio" id="pix" name="paymentMethod" value="pix" checked>
-                                <label for="pix" class="payment-method-label">
-                                    <i class="fas fa-qrcode"></i>
-                                    <span>PIX</span>
-                                </label>
-                            </div>
-                            <div class="payment-method">
-                                <input type="radio" id="cash" name="paymentMethod" value="cash">
-                                <label for="cash" class="payment-method-label">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                    <span>Dinheiro</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                   
     
                     <!-- Nova seção para upload de imagem/comprovante -->
                     <div class="form-group">
-                        <label>Comprovante de Pagamento (opcional)</label>
+                        <label>Comprovante de Pagamento</label>
                         <div class="image-upload-container">
                             <div class="image-upload-preview">
                                 <div class="image-upload-placeholder">
