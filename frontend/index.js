@@ -12,7 +12,6 @@ async function loadActivities() {
             pendingActivities.forEach(activity => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td class="py-2 px-4 border-b">${activity.id}</td>
                     <td class="py-2 px-4 border-b">${activity.activity}</td>
                     <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
                     <td class="py-2 px-4 border-b">R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>

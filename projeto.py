@@ -1,4 +1,3 @@
-# app.py - FastAPI Backend for Construction Expense Manager
 from datetime import datetime
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -155,13 +154,6 @@ class ComprovantesManager:
     def preencher_pagamento(self, valor_str, atividade, pagador, setor=None, data=None):
         """
         Preenche a tabela com os dados do comprovante
-        
-        Args:
-            valor_str (str): Valor do pagamento extraído do comprovante (formato: R$ X.XXX,XX)
-            atividade (str): Descrição da atividade
-            pagador (str): Quem pagou (Alex-Rute ou Diego-Ana)
-            setor (str, optional): Setor relacionado ao pagamento
-            data (str, optional): Data do pagamento no formato DD/MM/AAAA
         """
         # Converter o valor de string para float
         valor_str = valor_str.replace('R$', '').replace(' ', '').replace('.', '').replace(',', '.')
@@ -208,8 +200,11 @@ class ComprovantesManager:
             else:
                 raise HTTPException(status_code=400, detail=f"Payer '{pagador}' not recognized. Use 'Alex-Rute' or 'Diego-Ana'")
         
-        # Preencher o valor na célula apropriada
-        self.sheet[f'{coluna}{linha_excel}'] = valor
+        # Somar o valor ao existente na célula
+        valor_existente = self.sheet[f'{coluna}{linha_excel}'].value or 0
+        if not isinstance(valor_existente, (int, float)):
+            valor_existente = 0
+        self.sheet[f'{coluna}{linha_excel}'] = valor_existente + valor
         
         # Se a data foi fornecida, preencha em uma coluna específica
         if data:
@@ -228,7 +223,7 @@ class ComprovantesManager:
             "message": f"Payment of R$ {valor:.2f} registered for '{atividade}' by {pagador}",
             "date": data
         }
-    
+        
     def atualizar_status(self):
         """Atualiza o status de pagamento de todas as linhas com base nos valores preenchidos"""
         # Para cada linha na tabela (exceto cabeçalho)
@@ -527,12 +522,12 @@ def get_valor_pago_alex():
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
     try:
+
+        logging.debug(f"Arquivo recebido: {file.filename}, tipo: {file.content_type}")
         # Leia o arquivo enviado
         contents = await file.read()
-        
         # Processa a imagem do comprovante
         result = ComprovanteReader.ler_comprovante(contents)
-        
         # Retorna os dados extraídos
         return ExtractedData(
             value=result['valor'],
@@ -540,23 +535,30 @@ async def process_receipt(file: UploadFile = File(...)):
             name=result['nome'],
             full_text=result['texto_completo']
         )
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register-payment")
 def register_payment(payment: PaymentData):
-    result = manager.preencher_pagamento(
-        payment.value,
-        payment.activity,
-        payment.payer,
-        payment.sector,
-        payment.date
-    )
-    
-    # Update status after registering payment
-    manager.atualizar_status()
-    
-    return result
+    try:
+        # Preencher o pagamento na planilha
+        result = manager.preencher_pagamento(
+            payment.value,
+            payment.activity,
+            payment.payer,
+            payment.sector,
+            payment.date
+        )
+        
+        # Atualizar o status após registrar o pagamento
+        manager.atualizar_status()
+        
+        return {"message": "Pagamento registrado com sucesso!", "result": result}
+    except Exception as e:
+        logging.error(f"Erro ao registrar pagamento: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao registrar pagamento: {str(e)}")
+        
 
 # Run the app
 if __name__ == "__main__":

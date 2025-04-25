@@ -1,6 +1,4 @@
-
-
-
+const URL_api = "http://localhost:8000"; // URL do seu backend
 
 document.getElementById("pagamento").addEventListener("click", () => {
     // Fechar o modal de informações
@@ -37,38 +35,83 @@ document.getElementById("closePaymentModal").addEventListener("click", () => {
     paymentModal.style.display = "none";
 });
 
-async function extrairDadosComprovante () {
+async function extrairDadosComprovante() {
     const comprovante = document.getElementById("receiptImage").files[0];
 
     if (!comprovante) {
         alert("Por favor, selecione um comprovante.");
-        return; 
+        return;
     }
-    
+
     const formData = new FormData();
-    formData.append("comprovante", comprovante);
+    formData.append("file", comprovante);
+
+    console.log([...formData.entries()]); // Verifique se o arquivo está sendo anexado corretamente
 
     try {
-        const response = await fetch("/process-receipt", {
+        // Extrair dados do comprovante
+        const response = await fetch(`${URL_api}/process-receipt`, {
             method: "POST",
-            body: formData
-            
+            body: formData,
         });
-        if (response.ok) { 
+
+        if (response.ok) {
             const result = await response.json();
-            console.log("Upload bem sucedido:" , result);
-        }else{
+            console.log("Dados extraídos do comprovante:", result);
+
+            // Preencher os campos do modal com os dados extraídos
+            document.getElementById("summaryValue").innerText = result.value || "0,00";
+
+            // Registrar o pagamento automaticamente
+            await registrarPagamento(result);
+        } else {
             console.error("Erro ao fazer upload do comprovante:", response.statusText);
         }
-    }catch (error) {
-        console.error("Erro ao enviar o arquivo :", error);
+    } catch (error) {
+        console.error("Erro ao enviar o arquivo:", error);
+    }
+}
+
+async function registrarPagamento(dadosComprovante) {
+    const atividade = document.getElementById("paymentModalActivity").textContent;
+    const setor = document.getElementById("paymentModalSector").textContent || null;
+    const valor = dadosComprovante.value;
+    const pagador = "Diego-Ana"; // Ou Alex-Rute, dependendo do contexto
+    const data = dadosComprovante.date || new Date().toISOString().split("T")[0]; // Data extraída ou data atual
+
+    const paymentData = {
+        activity: atividade,
+        sector: setor,
+        payer: pagador,
+        value: valor,
+        date: data,
+    };
+
+    try {
+        const response = await fetch(`${URL_api}/register-payment`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Pagamento registrado com sucesso:", result);
+            alert("Pagamento registrado com sucesso!");
+        } else {
+            console.error("Erro ao registrar o pagamento:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Erro ao registrar o pagamento:", error);
     }
 }
 
 const btnPagar = document.getElementById("confirmPayment");
 btnPagar.addEventListener("click", async () => {
     extrairDadosComprovante();
-})
+});
 
 
 document.getElementById("receiptImage").addEventListener("change", function (event) {

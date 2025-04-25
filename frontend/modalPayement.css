@@ -34,7 +34,7 @@
 
 /* Cabeçalho do Modal */
 .payment-modal h2 {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background-color: #1E40AF;
     color: white;
     padding: 18px 20px;
     margin: 0;
