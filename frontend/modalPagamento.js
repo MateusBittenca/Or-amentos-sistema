@@ -1,4 +1,5 @@
 const URL_api = "http://localhost:8000"; // URL do seu backend
+const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {
     // Fechar o modal de informações
@@ -25,8 +26,6 @@ document.getElementById("pagamento").addEventListener("click", () => {
     document.getElementById("paymentModalActivity").innerText = activity;
     document.getElementById("paymentModalSector").innerText = sector;
     document.getElementById("paymentModalPending").innerText = pendingValue;
-    document.getElementById("summaryActivity").innerText = activity;
-    document.getElementById("summaryValue").innerText = pendingValue;
 });
 
 document.getElementById("closePaymentModal").addEventListener("click", () => {
@@ -59,11 +58,12 @@ async function extrairDadosComprovante() {
             const result = await response.json();
             console.log("Dados extraídos do comprovante:", result);
 
-            // Preencher os campos do modal com os dados extraídos
-            document.getElementById("summaryValue").innerText = result.value || "0,00";
-
             // Registrar o pagamento automaticamente
             await registrarPagamento(result);
+            paymentModal.classList.add("hidden");
+            paymentModal.style.display = "none";
+            
+         
         } else {
             console.error("Erro ao fazer upload do comprovante:", response.statusText);
         }
@@ -76,8 +76,15 @@ async function registrarPagamento(dadosComprovante) {
     const atividade = document.getElementById("paymentModalActivity").textContent;
     const setor = document.getElementById("paymentModalSector").textContent || null;
     const valor = dadosComprovante.value;
-    const pagador = "Diego-Ana"; // Ou Alex-Rute, dependendo do contexto
     const data = dadosComprovante.date || new Date().toISOString().split("T")[0]; // Data extraída ou data atual
+
+    const payerOptions = document.querySelectorAll('input[name="payer"]');
+    let pagador = "";
+    payerOptions.forEach(option => {
+        if (option.checked) {
+            pagador = option.value;
+        }
+    });
 
     const paymentData = {
         activity: atividade,
@@ -99,7 +106,6 @@ async function registrarPagamento(dadosComprovante) {
         if (response.ok) {
             const result = await response.json();
             console.log("Pagamento registrado com sucesso:", result);
-            alert("Pagamento registrado com sucesso!");
         } else {
             console.error("Erro ao registrar o pagamento:", response.statusText);
         }
@@ -112,6 +118,9 @@ const btnPagar = document.getElementById("confirmPayment");
 btnPagar.addEventListener("click", async () => {
     extrairDadosComprovante();
 });
+
+
+
 
 
 document.getElementById("receiptImage").addEventListener("change", function (event) {

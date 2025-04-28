@@ -171,14 +171,23 @@ async function loadTotalActivities() {
 }
 
 // Atualizar o total de atividades ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-    loadTotalActivities();
-    loadPendingActivities(); // Já existente
-    loadActivities(); // Já existente
-    valorTotalPago();
-    loadTotalValue();
-    valorPagoDiego();
-    valorPagoAlex(); // Já existente
+document.addEventListener("DOMContentLoaded", async () => {
+    showLoader(); // Mostrar o loader ao carregar a página
+    try {
+        await Promise.all([
+            loadTotalActivities(),
+            loadPendingActivities(),
+            loadActivities(),
+            valorTotalPago(),
+            loadTotalValue(),
+            valorPagoDiego(),
+            valorPagoAlex(),
+        ]);
+    } catch (error) {
+        console.error("Erro ao carregar os dados iniciais:", error);
+    } finally {
+        hideLoader(); // Esconder o loader após carregar todos os dados
+    }
 });
 
 //Sistema de busca
@@ -207,3 +216,14 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
         document.getElementById('searchBtn').click();
     }
 });
+
+
+function showLoader() {
+    const loader = document.getElementById("loader");
+    loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+    const loader = document.getElementById("loader");
+    loader.classList.add("hidden");
+}
