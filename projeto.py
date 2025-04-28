@@ -11,23 +11,14 @@ import pytesseract
 import re
 import io
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Union
 import logging
 
+# Configure logging
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Construction Expense Manager API")
-
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
-
-# Configuration
+# Constants
 UPLOAD_FOLDER = "uploads"
 EXCEL_PATH = "planilha.xlsx"
 
@@ -49,7 +40,7 @@ class PendingActivity(BaseModel):
     activity: str
     sector: Optional[str] = None
     total_value: float
-    valor_restante: float  # Valor restante a ser pago
+    valor_restante: float
     date: Optional[str] = None
     diego_ana: float
     alex_rute: float
@@ -67,29 +58,33 @@ class ExtractedData(BaseModel):
     name: Optional[str] = None
     full_text: Optional[str] = None
 
+
 class ComprovanteReader:
+    """Class responsible for reading and extracting information from payment receipts"""
+    
     @staticmethod
-    def extrair_valor(texto):
+    def extrair_valor(texto: str) -> Optional[str]:
+        """Extract monetary value from text"""
         match = re.search(r'R?\$?\s?\d{1,3}(?:\.\d{3})*,\d{2}', texto)
-        if match:
-            return match.group()
-        return None
+        return match.group() if match else None
 
     @staticmethod
-    def extrair_data(texto):
+    def extrair_data(texto: str) -> Optional[str]:
+        """Extract date in DD/MM/YYYY format from text"""
         match = re.search(r'\d{2}/\d{2}/\d{4}', texto)
-        if match:
-            return match.group()
-        return None
+        return match.group() if match else None
 
     @staticmethod
-    def extrair_nome(texto):
+    def extrair_nome(texto: str) -> Optional[str]:
+        """Extract person name from text"""
+        # Try to find name after keywords like "Titular", "Pagador", etc.
         match = re.search(r'(?:Titular|Pagador|Quem pagou|Nome do titular)\s*[:\-]?\s*([A-Za-z\s]+)', texto, re.IGNORECASE)
         if match:
             nome = match.group(1).strip()
             nome = re.sub(r'\bCPF\b.*', '', nome, flags=re.IGNORECASE).strip()
             return ' '.join([word.capitalize() for word in nome.split()])
 
+        # Alternative pattern: look for name after "de"
         match = re.search(r'\bde\s([A-Za-z\s]+)', texto, re.IGNORECASE)
         if match:
             nome = match.group(1).strip()
@@ -99,46 +94,49 @@ class ComprovanteReader:
         return None
 
     @classmethod
-    def ler_comprovante(cls, imagem_bytes):
-        """Lê um comprovante a partir de bytes de imagem e extrai as informações relevantes"""
+    def ler_comprovante(cls, imagem_bytes: bytes) -> Dict[str, Any]:
+        """Read a receipt from image bytes and extract relevant information"""
         try:
             with Image.open(io.BytesIO(imagem_bytes)) as imagem:
                 texto = pytesseract.image_to_string(imagem, lang='eng')
                 
-                valor = cls.extrair_valor(texto)
-                data = cls.extrair_data(texto)
-                nome = cls.extrair_nome(texto)
-                
                 return {
                     'texto_completo': texto,
-                    'valor': valor,
-                    'data': data,
-                    'nome': nome
+                    'valor': cls.extrair_valor(texto),
+                    'data': cls.extrair_data(texto),
+                    'nome': cls.extrair_nome(texto)
                 }
         except Exception as e:
+            logger.error(f"Error processing image: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
 
 class ComprovantesManager:
-    def __init__(self, excel_path):
+    """Class to manage construction expenses in an Excel file"""
+    
+    def __init__(self, excel_path: str):
         self.excel_path = excel_path
+        
         # Ensure the file exists
         if not os.path.exists(excel_path):
-            # Create new Excel file with basic structure if it doesn't exist
             self._create_excel_template()
             
-        # Load the Excel file, maintaining existing formatting
-        self.workbook = openpyxl.load_workbook(excel_path)
-        self.sheet = self.workbook.active
-        
-        # Define colors for formatting
-        self.verde = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
-        self.vermelho = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
-        
-        # Load data to pandas for easier manipulation
-        self.df = pd.read_excel(excel_path)
+        try:
+            # Load the Excel file, maintaining existing formatting
+            self.workbook = openpyxl.load_workbook(excel_path)
+            self.sheet = self.workbook.active
+            
+            # Define colors for formatting
+            self.verde = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
+            self.vermelho = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
+            
+            # Load data to pandas for easier manipulation
+            self.df = pd.read_excel(excel_path)
+        except Exception as e:
+            logger.error(f"Error initializing ComprovantesManager: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error loading Excel file: {str(e)}")
     
-    def _create_excel_template(self):
+    def _create_excel_template(self) -> None:
         """Create a new Excel file with the expected structure"""
         wb = openpyxl.Workbook() 
         ws = wb.active
@@ -149,84 +147,142 @@ class ComprovantesManager:
             ws.cell(row=1, column=col_num).value = header
         
         # Save the file
-        wb.save(self.excel_path)
-        
-    def preencher_pagamento(self, valor_str, atividade, pagador, setor=None, data=None):
-        """
-        Preenche a tabela com os dados do comprovante
-        """
-        # Converter o valor de string para float
-        valor_str = valor_str.replace('R$', '').replace(' ', '').replace('.', '').replace(',', '.')
         try:
-            valor = float(valor_str)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"Error converting value: {valor_str}")
+            wb.save(self.excel_path)
+        except Exception as e:
+            logger.error(f"Error creating Excel template: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error creating Excel template: {str(e)}")
+    
+    def _find_activity_rows(self, activity: str, sector: Optional[str] = None) -> List[int]:
+        """Find rows in Excel sheet that match the given activity and sector"""
+        matching_rows = []
         
-        # Procurar linha com a atividade especificada na coluna D
-        linhas_encontradas = []
         for i in range(2, self.sheet.max_row + 1):
-            atividade_celula = self.sheet[f'D{i}'].value
-            if atividade_celula and atividade_celula.strip().lower() == atividade.strip().lower():
-                linhas_encontradas.append(i)
+            cell_activity = self.sheet[f'D{i}'].value
+            
+            if cell_activity and cell_activity.strip().lower() == activity.strip().lower():
+                matching_rows.append(i)
         
-        # Se setor for especificado, filtrar também pelo setor
-        if setor and len(linhas_encontradas) > 1:
-            linhas_com_setor = []
-            for linha in linhas_encontradas:
-                setor_celula = self.sheet[f'C{linha}'].value
-                if setor_celula and setor_celula.strip().lower() == setor.strip().lower():
-                    linhas_com_setor.append(linha)
-            if linhas_com_setor:
-                linhas_encontradas = linhas_com_setor
+        # Filter by sector if provided
+        if sector and matching_rows:
+            sector_filtered = []
+            for row in matching_rows:
+                cell_sector = self.sheet[f'C{row}'].value
+                if cell_sector and cell_sector.strip().lower() == sector.strip().lower():
+                    sector_filtered.append(row)
+            
+            if sector_filtered:
+                return sector_filtered
+                
+        return matching_rows
+
+    def _parse_value(self, value_str: str) -> float:
+        """Convert string value to float, handling different formats"""
+        try:
+            # Log para diagnóstico
+            logger.debug(f"Parsing value: '{value_str}', type: {type(value_str)}")
+            
+            if isinstance(value_str, (int, float)):
+                return float(value_str)
+                    
+            # Remover símbolos de moeda e espaços
+            clean_value = value_str.replace('R$', '').strip()
+            logger.debug(f"Clean value after removing currency symbol: '{clean_value}'")
+            
+            # Substituir separadores - formato brasileiro (1.234,56) para ponto decimal (1234.56)
+            if ',' in clean_value:
+                # Se tiver vírgula, assume formato brasileiro
+                clean_value = clean_value.replace('.', '').replace(',', '.')
+            
+            logger.debug(f"Final clean value: '{clean_value}'")
+            
+            return float(clean_value)
+        except ValueError as e:
+            logger.error(f"Value parsing error for '{value_str}': {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Invalid value format: {value_str}")
+    
+    def _save_workbook(self) -> None:
+        """Save Excel workbook with error handling"""
+        try:
+            self.workbook.save(self.excel_path)
+            # Reload dataframe after saving
+            self.df = pd.read_excel(self.excel_path)
+        except PermissionError:
+            logger.error(f"Permission error while saving Excel file: {self.excel_path}")
+            raise HTTPException(
+                status_code=500, 
+                detail="Could not save Excel file. It may be open in another program."
+            )
+        except Exception as e:
+            logger.error(f"Error saving Excel file: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error saving Excel file: {str(e)}")
+    
+    def _apply_row_format(self, row: int, color: PatternFill) -> None:
+        """Apply formatting to a row"""
+        for col in range(1, 7):  # Columns A to F
+            col_letter = openpyxl.utils.get_column_letter(col)
+            self.sheet[f'{col_letter}{row}'].fill = color
+    
+    def preencher_pagamento(self, valor_str: str, atividade: str, pagador: str, 
+                            setor: Optional[str] = None, data: Optional[str] = None) -> Dict[str, Any]:
+        """Register a payment in the Excel sheet"""
+        # Convert value to float
+        valor = self._parse_value(valor_str)
+        
+        # Find matching rows
+        linhas_encontradas = self._find_activity_rows(atividade, setor)
         
         if not linhas_encontradas:
-            raise HTTPException(status_code=404, detail=f"Activity '{atividade}' not found in the table")
+            raise HTTPException(status_code=404, detail=f"Activity '{atividade}' not found")
         
-        # Para simplificar, vamos usar a primeira linha encontrada
+        # Use the first matching row
         linha_excel = linhas_encontradas[0]
         
-        # Determinar a coluna para preenchimento
-        coluna = None
-        if pagador.lower() in ['alex-rute', 'alex rute', 'alex', 'rute']:
-            coluna = 'E'  # Coluna Alex-Rute
-        elif pagador.lower() in ['diego-ana', 'diego ana', 'diego', 'ana']:
-            coluna = 'F'  # Coluna Diego-Ana
-        else:
-            # Tentar inferir com base no nome extraído do comprovante
-            if 'alex' in pagador.lower() or 'rute' in pagador.lower():
-                coluna = 'E'
-            elif 'diego' in pagador.lower() or 'ana' in pagador.lower():
-                coluna = 'F'
-            else:
-                raise HTTPException(status_code=400, detail=f"Payer '{pagador}' not recognized. Use 'Alex-Rute' or 'Diego-Ana'")
+        # Determine column for payment based on payer
+        coluna = self._determine_payer_column(pagador)
         
-        # Somar o valor ao existente na célula
+        # Add value to existing value in cell
         valor_existente = self.sheet[f'{coluna}{linha_excel}'].value or 0
         if not isinstance(valor_existente, (int, float)):
             valor_existente = 0
+            
         self.sheet[f'{coluna}{linha_excel}'] = valor_existente + valor
+      
         
-        # Se a data foi fornecida, preencha em uma coluna específica
-        if data:
-            self.sheet[f'G{linha_excel}'] = data
+        # Apply green formatting (paid) to row
+        self._apply_row_format(linha_excel, self.verde)
         
-        # Aplicar formatação verde (pago) à linha
-        for col in range(1, 7):  # Colunas A a F
-            coluna_letra = openpyxl.utils.get_column_letter(col)
-            self.sheet[f'{coluna_letra}{linha_excel}'].fill = self.verde
-        
-        # Salvar as alterações
-        self.workbook.save(self.excel_path)
+        # Save changes
+        self._save_workbook()
         
         return {
-            "success": True,
-            "message": f"Payment of R$ {valor:.2f} registered for '{atividade}' by {pagador}",
-            "date": data
+            "sucesso": True,
+            "mensagem": f"Pagamento no valor de R$ {valor:.2f} Registrado na atividade : '{atividade}' por {pagador}",
+            "data": data
         }
+    
+    def _determine_payer_column(self, payer: str) -> str:
+        """Determine the column letter based on payer name"""
+        payer = payer.lower()
         
-    def atualizar_status(self):
-        """Atualiza o status de pagamento de todas as linhas com base nos valores preenchidos"""
-        # Para cada linha na tabela (exceto cabeçalho)
+        if payer in ['alex-rute', 'alex rute', 'alex', 'rute']:
+            return 'E'  # Alex-Rute column
+        elif payer in ['diego-ana', 'diego ana', 'diego', 'ana']:
+            return 'F'  # Diego-Ana column
+        else:
+            # Try to infer based on name extracted from receipt
+            if 'alex' in payer or 'rute' in payer:
+                return 'E'
+            elif 'diego' in payer or 'ana' in payer:
+                return 'F'
+            else:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Payer '{payer}' not recognized. Use 'Alex-Rute' or 'Diego-Ana'"
+                )
+        
+    def atualizar_status(self) -> Dict[str, Any]:
+        """Update payment status for all rows based on filled values"""
         updated_rows = 0
         
         for i in range(2, self.sheet.max_row + 1):
@@ -237,25 +293,23 @@ class ComprovantesManager:
             alex_rute = self.sheet[f'E{i}'].value or 0
             diego_ana = self.sheet[f'F{i}'].value or 0
             
-            # Verificar se o valor total foi pago
+            # Check if total amount has been paid
             valor_pago = 0
             if isinstance(alex_rute, (int, float)):
                 valor_pago += alex_rute
             if isinstance(diego_ana, (int, float)):
                 valor_pago += diego_ana
             
-            # Definir cor com base no status de pagamento
+            # Define color based on payment status
             cor = self.verde if valor_pago >= valor_custo else self.vermelho
             
-            # Aplicar cor à linha inteira
-            for col in range(1, 7):  # Colunas A a F
-                coluna_letra = openpyxl.utils.get_column_letter(col)
-                self.sheet[f'{coluna_letra}{i}'].fill = cor
+            # Apply color to entire row
+            self._apply_row_format(i, cor)
             
             updated_rows += 1
         
-        # Salvar as alterações
-        self.workbook.save(self.excel_path)
+        # Save changes
+        self._save_workbook()
         
         return {
             "success": True,
@@ -263,8 +317,8 @@ class ComprovantesManager:
             "updated_rows": updated_rows
         }
     
-    def listar_atividades_pendentes(self):
-        """Lista todas as atividades que ainda estão pendentes de pagamento."""
+    def listar_atividades_pendentes(self) -> List[PendingActivity]:
+        """List all activities with pending payments"""
         atividades_pendentes = []
 
         for i in range(2, self.sheet.max_row + 1):
@@ -275,18 +329,17 @@ class ComprovantesManager:
             alex_rute = self.sheet[f'E{i}'].value or 0
             diego_ana = self.sheet[f'F{i}'].value or 0
 
-            # Calcular o valor restante a ser pago
+            # Calculate remaining amount to be paid
             valor_restante = valor_custo - (alex_rute + diego_ana)
 
-            # Verificar se ainda há valor pendente
+            # Check if there's still a pending amount
             if valor_restante > 0:
                 atividade = self.sheet[f'D{i}'].value
                 setor = self.sheet[f'C{i}'].value
                 data = self.sheet[f'A{i}'].value
                 
-
                 atividades_pendentes.append(PendingActivity(
-                    id=i - 1,  # Use o índice da linha como ID
+                    id=i - 1,  # Use row index as ID
                     activity=atividade,
                     sector=setor,
                     total_value=valor_custo,
@@ -298,11 +351,10 @@ class ComprovantesManager:
 
         return atividades_pendentes
     
-    def listar_atividades(self):
-        """Lista todas as atividades disponíveis na tabela"""
+    def listar_atividades(self) -> List[Activity]:
+        """List all activities in the table"""
         atividades = []
         
-        # Para cada linha na tabela (exceto cabeçalho)
         for i in range(2, self.sheet.max_row + 1):
             atividade = self.sheet[f'D{i}'].value
             setor = self.sheet[f'C{i}'].value
@@ -312,12 +364,12 @@ class ComprovantesManager:
             alex_rute = self.sheet[f'E{i}'].value or 0
             
             if atividade and valor_custo:
-                # Garantir que o valor seja um número
+                # Ensure value is a number
                 if isinstance(valor_custo, str):
                     try:
                         valor_custo = float(valor_custo.replace('R$', '').replace('.', '').replace(',', '.').strip())
                     except ValueError:
-                        # Se não conseguir converter, pular esta linha
+                        # Skip this row if conversion fails
                         continue
                 
                 atividades.append(Activity(
@@ -332,81 +384,122 @@ class ComprovantesManager:
         
         return atividades
     
-    def adicionar_atividade(self, data, valor, setor, atividade):
-            """Adiciona uma nova atividade à tabela"""
+    def adicionar_atividade(self, data: Union[str, datetime], valor: float, 
+                           setor: str, atividade: str) -> Dict[str, Any]:
+        """Add a new activity to the table"""
+        try:
+            logger.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
+            
+            # Determine next available row
+            proxima_linha = self.sheet.max_row + 1
+            
+            # Convert date to correct format
             try:
-                # Registra parâmetros de entrada para depuração
-                logging.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
-                
-                # Determinar a próxima linha disponível
-                proxima_linha = self.sheet.max_row + 1
-                
-                # Converter a data para o formato correto
-                # Input de data HTML retorna formato YYYY-MM-DD
-                try:
-                    if isinstance(data, str):
-                        # Verifica se o formato é YYYY-MM-DD (do input HTML type="date")
-                        if re.match(r'\d{4}-\d{2}-\d{2}', data):
-                            data_formatada = datetime.strptime(data, "%Y-%m-%d")
-                        else:
-                            # Tenta o formato DD/MM/YYYY
-                            data_formatada = datetime.strptime(data, "%d/%m/%Y")
+                if isinstance(data, str):
+                    # Check if format is YYYY-MM-DD (from HTML type="date" input)
+                    if re.match(r'\d{4}-\d{2}-\d{2}', data):
+                        data_formatada = datetime.strptime(data, "%Y-%m-%d")
                     else:
-                        data_formatada = data
-                except ValueError as e:
-                    logging.error(f"Erro na conversão de data: {str(e)}")
-                    # Se a conversão falhar, use o valor original
+                        # Try DD/MM/YYYY format
+                        data_formatada = datetime.strptime(data, "%d/%m/%Y")
+                else:
                     data_formatada = data
+            except ValueError as e:
+                logger.error(f"Falha na conversão de data: {e}")
+                # Use original value if conversion fails
+                data_formatada = data
+            
+            # Ensure value is a float
+            try:
+                valor_float = float(valor)
+            except (ValueError, TypeError):
+                raise HTTPException(status_code=400, detail="O valor deve ser um número")
+            
+            # Add data to appropriate cells
+            self.sheet[f'A{proxima_linha}'] = data_formatada
+            self.sheet[f'B{proxima_linha}'] = valor_float  # Cost/Value
+            self.sheet[f'C{proxima_linha}'] = setor  # Sector
+            self.sheet[f'D{proxima_linha}'] = atividade  # Activity
+            
+            # Apply red formatting (pending) to row
+            self._apply_row_format(proxima_linha, self.vermelho)
+            
+            # Save changes
+            self._save_workbook()
+            
+            return {
+                "success": True,
+                "mensagem": f"Atividade: '{atividade}' adicionada com sucesso",
+                "id": proxima_linha - 1,
+                "atividade": atividade,
+                "setor": setor,
+                "valor": valor_float,
+                "data": data
+            }
+        except HTTPException as he:
+            # Re-raise HTTP exceptions
+            raise he
+        except Exception as e:
+            logger.error(f"Erro inesperado ao adicionar a atividade: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao adcionar a atividade: {str(e)}")
+            
+    def calcular_valor_total(self) -> float:
+        """Calculate total value of construction by summing activity values"""
+        total_value = 0
+        for i in range(2, self.sheet.max_row + 1):
+            valor_custo = self.sheet[f'B{i}'].value
+            if isinstance(valor_custo, (int, float)):
+                total_value += valor_custo
+        return total_value
+    
+    def calcular_valor_total_pago(self) -> float:
+        """Calculate total amount paid by summing values in Alex-Rute and Diego-Ana columns"""
+        total_pago = 0
+        for i in range(2, self.sheet.max_row + 1):
+            alex_rute = self.sheet[f'E{i}'].value or 0
+            diego_ana = self.sheet[f'F{i}'].value or 0
+            
+            if isinstance(alex_rute, (int, float)):
+                total_pago += alex_rute
+            if isinstance(diego_ana, (int, float)):
+                total_pago += diego_ana
                 
-                # Garantir que valor seja um float
-                try:
-                    valor_float = float(valor)
-                except (ValueError, TypeError):
-                    raise HTTPException(status_code=400, detail="O valor deve ser um número")
+        return total_pago
+    
+    def calcular_valor_pago_diego(self) -> float:
+        """Calculate total amount paid by Diego-Ana"""
+        total_diego = 0
+        for i in range(2, self.sheet.max_row + 1):
+            diego_ana = self.sheet[f'F{i}'].value or 0
+            
+            if isinstance(diego_ana, (int, float)):
+                total_diego += diego_ana
                 
-                # Adicionar os dados nas células apropriadas
-                self.sheet[f'A{proxima_linha}'] = data_formatada
-                self.sheet[f'B{proxima_linha}'] = valor_float  # Custo/Valor
-                self.sheet[f'C{proxima_linha}'] = setor  # Setor
-                self.sheet[f'D{proxima_linha}'] = atividade  # Atividade
+        return total_diego
+    
+    def calcular_valor_pago_alex(self) -> float:
+        """Calculate total amount paid by Alex-Rute"""
+        total_alex = 0
+        for i in range(2, self.sheet.max_row + 1):
+            alex_rute = self.sheet[f'E{i}'].value or 0
+            
+            if isinstance(alex_rute, (int, float)):
+                total_alex += alex_rute
                 
-                # Aplicar formatação vermelho (pendente) à linha
-                for col in range(1, 7):  # Colunas A a F
-                    coluna_letra = openpyxl.utils.get_column_letter(col)
-                    self.sheet[f'{coluna_letra}{proxima_linha}'].fill = self.vermelho
-                
-                # Salvar as alterações
-                try:
-                    self.workbook.save(self.excel_path)
-                except PermissionError:
-                    logging.error(f"Erro de permissão ao salvar arquivo Excel: {self.excel_path}")
-                    raise HTTPException(status_code=500, detail="Não foi possível salvar o arquivo Excel. Ele pode estar aberto em outro programa.")
-                
-                # Recarregar os dados após a adição
-                try:
-                    self.df = pd.read_excel(self.excel_path)
-                except Exception as e:
-                    logging.error(f"Erro ao recarregar DataFrame: {str(e)}")
-                    # Continue mesmo assim, isso não é crítico
-                
-                return {
-                    "success": True,
-                    "message": f"Atividade '{atividade}' adicionada com sucesso",
-                    "id": proxima_linha - 1,
-                    "activity": atividade,
-                    "sector": setor,
-                    "value": valor_float,
-                    "date": data
-                }
-            except HTTPException as he:
-                # Re-levantar exceções HTTP
-                raise he
-            except Exception as e:
-                logging.error(f"Erro inesperado ao adicionar atividade: {str(e)}", exc_info=True)
-                raise HTTPException(status_code=500, detail=f"Erro ao adicionar atividade: {str(e)}")
-        
-     
+        return total_alex
 
+
+# Initialize FastAPI app
+app = FastAPI(title="Construction Expense Manager API")
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize the manager
 manager = ComprovantesManager(EXCEL_PATH)
@@ -420,145 +513,155 @@ def get_activities():
     try:
         return manager.listar_atividades()
     except Exception as e:
-        logging.error(f"Error fetching activities: {str(e)}")
+        logger.error(f"Error fetching activities: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error fetching activities: {str(e)}")
-
-
 
 @app.get("/atividades-pendentes", response_model=List[PendingActivity])
 def get_pending_activities():
-    return manager.listar_atividades_pendentes()
+    try:
+        return manager.listar_atividades_pendentes()
+    except Exception as e:
+        logger.error(f"Error fetching pending activities: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error fetching pending activities: {str(e)}")
 
 @app.post("/update-status")
 def update_status():
-    return manager.atualizar_status()
+    try:
+        return manager.atualizar_status()
+    except Exception as e:
+        logger.error(f"Error updating status: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error updating status: {str(e)}")
 
 @app.post("/add-activity")
-def add_activity(atividade: str = Form(...),
-                 valor: str = Form(...),  # Alterado para str para lidar com qualquer formato de entrada
-                 setor: str = Form(...), 
-                 data: str = Form(...)):
-    logging.debug(f"Dados recebidos: atividade={atividade}, valor={valor}, setor={setor}, data={data}")
+def add_activity(
+    atividade: str = Form(...),
+    valor: str = Form(...),
+    setor: str = Form(...), 
+    data: str = Form(...)
+):
+    logger.debug(f"Received data: activity={atividade}, value={valor}, sector={setor}, date={data}")
     
     try:
-        # Converter valor para float, lidando com diferentes formatos de número
+        # Convert string value to float, handling different number formats
         try:
-            # Trata tanto ',' como '.' como separadores decimais
             valor_float = float(valor.replace(',', '.'))
         except ValueError:
-            raise HTTPException(status_code=400, detail="O valor deve ser um número")
+            raise HTTPException(status_code=400, detail="Value must be a number")
         
-        resultado = manager.adicionar_atividade(data, valor_float, setor, atividade)
-        logging.debug(f"Resultado da adição: {resultado}")
-        return resultado
+        result = manager.adicionar_atividade(data, valor_float, setor, atividade)
+        logger.debug(f"Resultado da adição: {result}")
+        return result
     except HTTPException as he:
-        # Re-levantar exceções HTTP
+        # Re-raise HTTP exceptions
         raise he
     except Exception as e:
-        mensagem_erro = f"Erro no endpoint add-activity: {str(e)}"
-        logging.error(mensagem_erro, exc_info=True)
-        raise HTTPException(status_code=500, detail=mensagem_erro)
+        error_message = f"Erro no endpoint /add-activity: {str(e)}"
+        logger.error(error_message, exc_info=True)
+        raise HTTPException(status_code=500, detail=error_message)
 
 @app.get("/valor-total")
 def get_total_value():
-    """Calcula o valor total da obra somando os valores das atividades"""
+    """Calculate total construction value by summing activity values"""
     try:
-        total_value = 0
-        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
-            valor_custo = manager.sheet[f'B{i}'].value
-            if isinstance(valor_custo, (int, float)):
-                total_value += valor_custo
-
+        total_value = manager.calcular_valor_total()
         return {"total": total_value}
     except Exception as e:
+        logger.error(f"Erro ao calcular o valor total: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total: {str(e)}")
 
 @app.get("/valor-total-pago")
 def get_valor_pago():
-    """Calcula o valor total pago somando os valores preenchidos nas colunas Alex-Rute e Diego-Ana"""
+    """Calculate total amount paid by summing values in Alex-Rute and Diego-Ana columns"""
     try:
-        total_pago = 0
-        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
-            alex_rute = manager.sheet[f'E{i}'].value or 0
-            diego_ana = manager.sheet[f'F{i}'].value or 0
-            
-            if isinstance(alex_rute, (int, float)):
-                total_pago += alex_rute
-            if isinstance(diego_ana, (int, float)):
-                total_pago += diego_ana
-
+        total_pago = manager.calcular_valor_total_pago()
         return {"total_pago": total_pago}
     except Exception as e:
+        logger.error(f"Erro ao calcular o valor total pago: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago: {str(e)}")
 
 @app.get("/valor-pago-diego")
 def get_valor_pago_diego():
     try:
-        total_pago_diego = 0
-        for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
-            diego_ana = manager.sheet[f'F{i}'].value or 0
-            
-            if isinstance(diego_ana, (int, float)):
-                total_pago_diego += diego_ana
-
+        total_pago_diego = manager.calcular_valor_pago_diego()
         return {"total_pago_diego": total_pago_diego}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago por Diego-Ana: {str(e)}")
+        logger.error(f"Erro ao calcular o total pago por diego-Ana : {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Erro ao calcular o total pago por diego-Ana :  {str(e)}")
 
 @app.get("/valor-pago-alex")
 def get_valor_pago_alex():
-        try:
-            total_pago_alex = 0
-            for i in range(2, manager.sheet.max_row + 1):  # Ignorar cabeçalho
-                alex_rute = manager.sheet[f'E{i}'].value or 0
-                
-                if isinstance(alex_rute, (int, float)):
-                    total_pago_alex += alex_rute
-    
-            return {"total_pago_alex": total_pago_alex}
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago por Alex-Rute: {str(e)}")
+    try:
+        total_pago_alex = manager.calcular_valor_pago_alex()
+        return {"total_pago_alex": total_pago_alex}
+    except Exception as e:
+        logger.error(f"Erro ao calcular o total pago por Alex-Rute: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Erro ao calcular o total pago por Alex-Rute: {str(e)}")
 
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
     try:
-
-        logging.debug(f"Arquivo recebido: {file.filename}, tipo: {file.content_type}")
-        # Leia o arquivo enviado
+        logger.debug(f"Arquivo recebido: {file.filename}, tipo: {file.content_type}")
+        # Read uploaded file
         contents = await file.read()
-        # Processa a imagem do comprovante
+        # Process receipt image
         result = ComprovanteReader.ler_comprovante(contents)
-        # Retorna os dados extraídos
+        # Return extracted data
         return ExtractedData(
             value=result['valor'],
             date=result['data'],
             name=result['nome'],
             full_text=result['texto_completo']
         )
-    
     except Exception as e:
+        logger.error(f"Erro ao processar o comprovante {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register-payment")
 def register_payment(payment: PaymentData):
     try:
-        # Preencher o pagamento na planilha
-        result = manager.preencher_pagamento(
-            payment.value,
-            payment.activity,
-            payment.payer,
-            payment.sector,
-            payment.date
-        )
+        # Log detalhado para diagnóstico
+        logger.debug(f"Received payment data: {payment.model_dump()}")
         
-        # Atualizar o status após registrar o pagamento
-        manager.atualizar_status()
+        # Validar os dados recebidos
+        if not payment.activity:
+            raise HTTPException(status_code=400, detail="Activity name is required")
+        if not payment.payer:
+            raise HTTPException(status_code=400, detail="Payer is required")
+        if not payment.value:
+            raise HTTPException(status_code=400, detail="Payment value is required")
+            
+        # Log do valor antes da conversão
+        logger.debug(f"Payment value before processing: '{payment.value}'")
         
-        return {"message": "Pagamento registrado com sucesso!", "result": result}
+        # Register payment in spreadsheet (this might raise exceptions)
+        try:
+            result = manager.preencher_pagamento(
+                payment.value,
+                payment.activity,
+                payment.payer,
+                payment.sector,
+                payment.date
+            )
+        except Exception as e:
+            logger.error(f"Error in preencher_pagamento: {str(e)}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error processing payment: {str(e)}")
+        
+        # Update status after registering payment
+        try:
+            status_result = manager.atualizar_status()
+            logger.debug(f"Status update result: {status_result}")
+        except Exception as e:
+            logger.error(f"Error updating status: {str(e)}", exc_info=True)
+            # Continue anyway since the payment was registered
+        
+        return {"message": "Payment registered successfully!", "result": result}
+    except HTTPException as he:
+        # Re-raise HTTP exceptions
+        logger.error(f"HTTP Exception: {he.detail}")
+        raise he
     except Exception as e:
-        logging.error(f"Erro ao registrar pagamento: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erro ao registrar pagamento: {str(e)}")
-        
+        logger.error(f"Unhandled exception in register_payment: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error registering payment: {str(e)}")
 
 # Run the app
 if __name__ == "__main__":

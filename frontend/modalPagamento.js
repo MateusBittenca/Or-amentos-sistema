@@ -2,26 +2,25 @@ const URL_api = "http://localhost:8000"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {
-    // Fechar o modal de informações
+    console.log("Abrindo modal de pagamento...");
     const infoModal = document.getElementById("infoModal");
     infoModal.classList.add("hidden");
     infoModal.style.display = "none";
 
-    // Abrir o modal de pagamento
     const paymentModal = document.getElementById("paymentModal");
     paymentModal.classList.remove("hidden");
     paymentModal.style.display = "flex";
 
-    // Garantir que o modal abra no topo
     const modalContent = document.querySelector("#paymentModal .modal-content");
     if (modalContent) {
-        modalContent.scrollTop = 0; // Define a rolagem para o topo
+        modalContent.scrollTop = 0;
     }
 
-    // Preencher informações no modal de pagamento (opcional)
     const activity = document.getElementById("modalActivity").innerText;
     const sector = document.getElementById("modalSector").innerText;
     const pendingValue = document.getElementById("modalRemainingValue").innerText;
+
+    console.log("Atividade:", activity, "Setor:", sector, "Valor pendente:", pendingValue);
 
     document.getElementById("paymentModalActivity").innerText = activity;
     document.getElementById("paymentModalSector").innerText = sector;
@@ -29,6 +28,7 @@ document.getElementById("pagamento").addEventListener("click", () => {
 });
 
 document.getElementById("closePaymentModal").addEventListener("click", () => {
+    console.log("Fechando modal de pagamento...");
     const paymentModal = document.getElementById("paymentModal");
     paymentModal.classList.add("hidden");
     paymentModal.style.display = "none";
@@ -39,33 +39,31 @@ async function extrairDadosComprovante() {
 
     if (!comprovante) {
         alert("Por favor, selecione um comprovante.");
+        console.error("Nenhum comprovante selecionado.");
         return;
     }
 
     const formData = new FormData();
     formData.append("file", comprovante);
 
-    console.log([...formData.entries()]); // Verifique se o arquivo está sendo anexado corretamente
+    console.log("Enviando comprovante para extração:", [...formData.entries()]);
 
     try {
-        // Extrair dados do comprovante
         const response = await fetch(`${URL_api}/process-receipt`, {
             method: "POST",
             body: formData,
         });
 
+        console.log("Resposta da extração do comprovante:", response);
+
         if (response.ok) {
             const result = await response.json();
             console.log("Dados extraídos do comprovante:", result);
 
-            // Registrar o pagamento automaticamente
             await registrarPagamento(result);
-            paymentModal.classList.add("hidden");
-            paymentModal.style.display = "none";
-            
-         
+            alert("Pagamento registrado com sucesso!");
         } else {
-            console.error("Erro ao fazer upload do comprovante:", response.statusText);
+            console.error("Erro ao fazer upload do comprovante:", response.status, response.statusText);
         }
     } catch (error) {
         console.error("Erro ao enviar o arquivo:", error);
@@ -75,8 +73,12 @@ async function extrairDadosComprovante() {
 async function registrarPagamento(dadosComprovante) {
     const atividade = document.getElementById("paymentModalActivity").textContent;
     const setor = document.getElementById("paymentModalSector").textContent || null;
-    const valor = dadosComprovante.value;
-    const data = dadosComprovante.date || new Date().toISOString().split("T")[0]; // Data extraída ou data atual
+    const valor = dadosComprovante.value
+        .replace('R$', '') // Remove o símbolo de moeda
+        .replace(/\./g, '') // Remove separadores de milhar
+        .replace(',', '.') // Substitui vírgula por ponto (formato numérico)
+        .trim();
+    const data = dadosComprovante.date || new Date().toISOString().split("T")[0];
 
     const payerOptions = document.querySelectorAll('input[name="payer"]');
     let pagador = "";
@@ -86,13 +88,21 @@ async function registrarPagamento(dadosComprovante) {
         }
     });
 
+    if (!pagador) {
+        alert("Por favor, selecione um pagador.");
+        console.error("Nenhum pagador selecionado.");
+        return false;
+    }
+
     const paymentData = {
         activity: atividade,
-        sector: setor,
+        sector: setor || null,
         payer: pagador,
         value: valor,
         date: data,
     };
+
+    console.log("Dados do pagamento formatados:", paymentData);
 
     try {
         const response = await fetch(`${URL_api}/register-payment`, {
@@ -103,44 +113,50 @@ async function registrarPagamento(dadosComprovante) {
             body: JSON.stringify(paymentData),
         });
 
+        console.log("Resposta do registro de pagamento:", response);
+
         if (response.ok) {
             const result = await response.json();
             console.log("Pagamento registrado com sucesso:", result);
+            alert("Pagamento registrado com sucesso!");
+            return true;
         } else {
-            console.error("Erro ao registrar o pagamento:", response.statusText);
+            const errorBody = await response.json();
+            console.error("Erro detalhado do servidor:", errorBody);
+            alert(`Erro ao registrar pagamento: ${errorBody.detail || "Erro desconhecido"}`);
+            return false;
         }
     } catch (error) {
         console.error("Erro ao registrar o pagamento:", error);
+        alert(`Erro na comunicação com o servidor: ${error.message}`);
+        return false;
     }
 }
 
 const btnPagar = document.getElementById("confirmPayment");
 btnPagar.addEventListener("click", async () => {
-    extrairDadosComprovante();
+    console.log("Botão de pagamento clicado.");
+    await extrairDadosComprovante();
 });
 
-
-
-
-
 document.getElementById("receiptImage").addEventListener("change", function (event) {
-    const file = event.target.files[0]; // Obtém o arquivo selecionado
-    const preview = document.getElementById("receiptPreview"); // Seleciona o elemento <img>
-    const placeholder = document.querySelector(".image-upload-placeholder"); // Seleciona o placeholder
+    const file = event.target.files[0];
+    const preview = document.getElementById("receiptPreview");
+    const placeholder = document.querySelector(".image-upload-placeholder");
 
     if (file) {
+        console.log("Arquivo selecionado:", file.name);
         const reader = new FileReader();
 
-        // Quando o arquivo for carregado, atualiza o src da imagem
         reader.onload = function (e) {
-            preview.src = e.target.result; // Define o src da imagem
-            preview.style.display = "block"; // Mostra a imagem
-            placeholder.style.display = "none"; // Esconde o placeholder
+            preview.src = e.target.result;
+            preview.style.display = "block";
+            placeholder.style.display = "none";
         };
 
-        reader.readAsDataURL(file); // Lê o arquivo como uma URL de dados
+        reader.readAsDataURL(file);
     } else {
-        // Caso nenhum arquivo seja selecionado, restaura o estado original
+        console.log("Nenhum arquivo selecionado.");
         preview.src = "";
         preview.style.display = "none";
         placeholder.style.display = "flex";
