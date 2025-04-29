@@ -110,6 +110,24 @@
     margin: 12px 0;
 }
 
+.modal-head {
+    display: flex;  
+
+}
+
+.modal-head i {
+    font-size: 1.3rem;
+    color: #9b9b9b;
+    margin-top: 12px;
+}
+
+
+.modal-head i:hover {
+    color: #cf2626;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
 /* Botão de fechar */
 .modal-footer {
     display: flex;

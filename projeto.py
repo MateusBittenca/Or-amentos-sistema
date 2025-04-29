@@ -357,6 +357,30 @@ class ComprovantesManager:
         except Exception as e:
             logger.error(f"Erro inesperado ao adicionar a atividade: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao adcionar a atividade: {str(e)}")
+        
+    def excluir_atividade(self, id: int) -> Dict[str, Any]:
+        """Delete an activity by its ID"""
+        try:
+            if id < 0 or id >= len(self.data["activities"]):
+                raise HTTPException(status_code=404, detail="Activity not found")
+            
+            # Remove activity
+            removed_activity = self.data["activities"].pop(id)
+            
+            # Save changes
+            self._save_data()
+            
+            return {
+                "success": True,
+                "message": f"Atividade: '{removed_activity['activity']}' removida com sucesso!"
+            }
+        except HTTPException as he:
+            # Re-raise HTTP exceptions
+            raise he
+        except Exception as e:
+            logger.error(f"Error deleting activity: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error deleting activity: {str(e)}")
+
             
     def calcular_valor_total(self) -> float:
         """Calculate total value of construction by summing activity values"""
@@ -447,6 +471,19 @@ def add_activity(
         error_message = f"Erro no endpoint /add-activity: {str(e)}"
         logger.error(error_message, exc_info=True)
         raise HTTPException(status_code=500, detail=error_message)
+    
+@app.delete("/delete-activity/{id}")
+def delete_activity(id: int):
+    """Delete an activity by its ID"""
+    try:
+        result = manager.excluir_atividade(id)
+        return result
+    except HTTPException as he:
+        # Re-raise HTTP exceptions
+        raise he
+    except Exception as e:
+        logger.error(f"Error deleting activity: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error deleting activity: {str(e)}")
 
 @app.get("/valor-total")
 def get_total_value():

@@ -18,7 +18,7 @@ async function loadActivities() {
                     <td class="py-2 px-4 border-b">R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
                     <td class="py-2 px-4 border-b">
-                        <button class="bg-green-500 text-white px-2 py-1 rounded pagar-btn">Pagar</button>
+                        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Informação</button>
                     </td>
                 `;
 
@@ -39,28 +39,6 @@ async function loadActivities() {
     }
 }
 
-function showModal(activity) {
-    document.getElementById("modalId").innerText = activity.id;
-    document.getElementById("modalActivity").innerText = activity.activity;
-    document.getElementById("modalSector").innerText = activity.sector || "-";
-    document.getElementById("modalValue").innerText = `R$ ${Number(activity.diego_ana).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalValue2").innerText = `R$ ${Number(activity.alex_rute).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalRemainingValue").innerText = `R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalTotalValue").innerText = `R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalDate").innerText = activity.date || "-";
-
-    // Exibir o modal
-    const modal = document.getElementById("infoModal");
-    modal.classList.remove("hidden");
-    modal.style.display = "flex"; // Exibir o modal
-}
-
-// Função para fechar o modal
-document.getElementById("closeModal").addEventListener("click", () => {
-    const modal = document.getElementById("infoModal");
-    modal.classList.add("hidden");
-    modal.style.display = "none"; // Ocultar o modal
-});
 
 async function loadTotalValue() {
     try {
@@ -118,38 +96,6 @@ async function valorPagoAlex() {
     }
 }
 
-// Função para adicionar uma nova atividade
-document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    // Debug log of form data
-    console.log("Submitting form data:");
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-    }
-    
-        const response = await fetch(`${API_URL}/add-activity`, {
-            method: "POST",
-            body: formData,
-        });
-
-        const result = await response.json();
-        console.log("Response:", result);
-
-        if (response.ok) {
-            console.log("Atividade adicionada com sucesso:", result);
-            alert("Atividade adicionada com sucesso!");
-            loadActivities(); // Recarregar atividades após adicionar
-            
-        } else {
-            alert("Erro ao adicionar atividade: " + (result.detail || "Unknown error"));
-        }
-   
-});
-
-// Função para processar comprovante
-
 async function loadPendingActivities() {
     try {
         const response = await fetch(`${API_URL}/atividades-pendentes`);
@@ -170,24 +116,97 @@ async function loadTotalActivities() {
     }
 }
 
-// Atualizar o total de atividades ao carregar a página
-document.addEventListener("DOMContentLoaded", async () => {
-    showLoader(); // Mostrar o loader ao carregar a página
+async function deleteAtividade(id) {
     try {
-        await Promise.all([
-            loadTotalActivities(),
-            loadPendingActivities(),
-            loadActivities(),
-            valorTotalPago(),
-            loadTotalValue(),
-            valorPagoDiego(),
-            valorPagoAlex(),
-        ]);
+        const response = await fetch(`${API_URL}/delete-activity/${id}`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            console.log("Atividade deletada com sucesso:", id);
+            alert("Atividade deletada com sucesso!");
+            loadActivities(); // Recarregar atividades após deletar
+        } else {
+            const result = await response.json();
+            alert("Erro ao deletar atividade: " + (result.detail || "Unknown error"));
+        }
     } catch (error) {
-        console.error("Erro ao carregar os dados iniciais:", error);
-    } finally {
-        hideLoader(); // Esconder o loader após carregar todos os dados
+        console.error("Erro ao deletar atividade:", error);
+        alert("Erro ao deletar atividade: " + error.message);
     }
+}
+
+function showModal(activity) {
+    document.getElementById("modalId").innerText = activity.id;
+    document.getElementById("modalActivity").innerText = activity.activity;
+    document.getElementById("modalSector").innerText = activity.sector || "-";
+    document.getElementById("modalValue").innerText = `R$ ${Number(activity.diego_ana).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalValue2").innerText = `R$ ${Number(activity.alex_rute).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalRemainingValue").innerText = `R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalTotalValue").innerText = `R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById("modalDate").innerText = activity.date || "-";
+
+    // Exibir o modal
+    const modal = document.getElementById("infoModal");
+    modal.classList.remove("hidden");
+    modal.style.display = "flex"; // Exibir o modal
+}
+
+document.getElementById("btnDelete").addEventListener("click", async () => {
+    const activityId = document.getElementById("modalId").innerText;
+    if (confirm("Tem certeza que deseja deletar esta atividade?")) {
+        await deleteAtividade(activityId);
+        const modal = document.getElementById("infoModal");
+        modal.classList.add("hidden");
+        modal.style.display = "none"; // Ocultar o modal
+    }
+}
+);
+
+function showLoader() {
+    const loader = document.getElementById("loader");
+    loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+    const loader = document.getElementById("loader");
+    loader.classList.add("hidden");
+}
+
+// Função para fechar o modal
+document.getElementById("closeModal").addEventListener("click", () => {
+    const modal = document.getElementById("infoModal");
+    modal.classList.add("hidden");
+    modal.style.display = "none"; // Ocultar o modal
+});
+
+// Função para adicionar uma nova atividade
+document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    // Debug log of form data
+    console.log("Submitting form data:");
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+    }
+
+    const response = await fetch(`${API_URL}/add-activity`, {
+        method: "POST",
+        body: formData,
+    });
+
+    const result = await response.json();
+    console.log("Response:", result);
+
+    if (response.ok) {
+        console.log("Atividade adicionada com sucesso:", result);
+        alert("Atividade adicionada com sucesso!");
+        loadActivities(); // Recarregar atividades após adicionar
+
+    } else {
+        alert("Erro ao adicionar atividade: " + (result.detail || "Unknown error"));
+    }
+
 });
 
 //Sistema de busca
@@ -218,12 +237,26 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 
-function showLoader() {
-    const loader = document.getElementById("loader");
-    loader.classList.remove("hidden");
-}
 
-function hideLoader() {
-    const loader = document.getElementById("loader");
-    loader.classList.add("hidden");
-}
+
+
+// Atualizar o total de atividades ao carregar a página
+document.addEventListener("DOMContentLoaded", async () => {
+    showLoader(); // Mostrar o loader ao carregar a página
+    try {
+        await Promise.all([
+            loadTotalActivities(),
+            loadPendingActivities(),
+            loadActivities(),
+            valorTotalPago(),
+            loadTotalValue(),
+            valorPagoDiego(),
+            valorPagoAlex(),
+        ]);
+    } catch (error) {
+        console.error("Erro ao carregar os dados iniciais:", error);
+    } finally {
+        hideLoader(); // Esconder o loader após carregar todos os dados
+    }
+});
+

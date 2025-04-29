@@ -61,7 +61,6 @@ async function extrairDadosComprovante() {
             console.log("Dados extraídos do comprovante:", result);
 
             await registrarPagamento(result);
-            alert("Pagamento registrado com sucesso!");
         } else {
             console.error("Erro ao fazer upload do comprovante:", response.status, response.statusText);
         }
