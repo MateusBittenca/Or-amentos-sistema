@@ -1,262 +1,324 @@
+
 const API_URL = "http://localhost:8000";
 
-async function loadActivities() {
+
+const api = {
+  async fetchData(endpoint) {
     try {
-        const response = await fetch(`${API_URL}/atividades-pendentes`);
-        const pendingActivities = await response.json();
-
-        const activitiesList = document.getElementById("activitiesList");
-        activitiesList.innerHTML = "";
-
-        if (Array.isArray(pendingActivities)) {
-            pendingActivities.forEach(activity => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="py-2 px-4 border-b">${activity.activity}</td>
-                    <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
-                    <td class="py-2 px-4 border-b">R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td class="py-2 px-4 border-b">R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Informação</button>
-                    </td>
-                `;
-
-                // Add click event to the "Pagar" button
-                const pagarButton = row.querySelector(".pagar-btn");
-                pagarButton.addEventListener("click", (e) => {
-                    e.stopPropagation(); // Prevent triggering the row click event
-                    showModal(activity);
-                });
-
-                activitiesList.appendChild(row);
-            });
-        } else {
-            console.error("Expected an array but got:", pendingActivities);
-        }
+      const response = await fetch(`${API_URL}/${endpoint}`);
+      return await response.json();
     } catch (error) {
-        console.error("Erro ao carregar atividades pendentes:", error);
+      console.error(`Erro ao buscar dados de ${endpoint}:`, error);
+      throw error;
     }
-}
+  },
 
-
-async function loadTotalValue() {
+  async deleteActivity(id) {
     try {
-        const response = await fetch(`${API_URL}/valor-total`);
-        const data = await response.json();
-        const totalValueElement = document.getElementById("totalValue");
-        totalValueElement.innerText = `R$ ${Number(data.total).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}`;
+      const response = await fetch(`${API_URL}/delete-activity/${id}`, {
+        method: "DELETE",
+      });
+      
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.detail || "Erro desconhecido");
+      }
+      
+      return true;
     } catch (error) {
-        console.error("Erro ao carregar o valor total da obra:", error);
+      console.error("Erro ao deletar atividade:", error);
+      throw error;
     }
-}
+  },
 
-async function valorTotalPago() {
+  async addActivity(formData) {
     try {
-        const response = await fetch(`${API_URL}/valor-total-pago`);
-        const data = await response.json();
-        const totalValueElement = document.getElementById("valorPagoObra");
-        totalValueElement.innerText = `R$ ${Number(data.total_pago).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}`;
-    } catch (error) {
-        console.error("Erro ao carregar o valor total pago:", error);
-    }
-}
-
-async function valorPagoDiego() {
-    try {
-        const response = await fetch(`${API_URL}/valor-pago-diego`);
-        const data = await response.json();
-        const totalValueElement = document.getElementById("valorPagoDiego");
-        totalValueElement.innerText = `R$ ${Number(data.total_pago_diego).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}`;
-    } catch (error) {
-        console.error("Erro ao carregar o valor pago por Diego:", error);
-    }
-}
-
-async function valorPagoAlex() {
-    try {
-        const response = await fetch(`${API_URL}/valor-pago-alex`);
-        const data = await response.json();
-        const totalValueElement = document.getElementById("valorPagoAlex");
-        totalValueElement.innerText = `R$ ${Number(data.total_pago_alex).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}`;
-    } catch (error) {
-        console.error("Erro ao carregar o valor pago por Alex:", error);
-    }
-}
-
-async function loadPendingActivities() {
-    try {
-        const response = await fetch(`${API_URL}/atividades-pendentes`);
-        const pendingActivities = await response.json();
-        document.getElementById("pendingActivities").innerText = pendingActivities.length;
-    } catch (error) {
-        console.error("Erro ao carregar atividades pendentes:", error);
-    }
-}
-
-async function loadTotalActivities() {
-    try {
-        const response = await fetch(`${API_URL}/atividades`);
-        const activities = await response.json();
-        document.getElementById("totalActivities").innerText = activities.length;
-    } catch (error) {
-        console.error("Erro ao carregar o total de atividades:", error);
-    }
-}
-
-async function deleteAtividade(id) {
-    try {
-        const response = await fetch(`${API_URL}/delete-activity/${id}`, {
-            method: "DELETE",
-        });
-        if (response.ok) {
-            console.log("Atividade deletada com sucesso:", id);
-            alert("Atividade deletada com sucesso!");
-            loadActivities(); // Recarregar atividades após deletar
-        } else {
-            const result = await response.json();
-            alert("Erro ao deletar atividade: " + (result.detail || "Unknown error"));
-        }
-    } catch (error) {
-        console.error("Erro ao deletar atividade:", error);
-        alert("Erro ao deletar atividade: " + error.message);
-    }
-}
-
-function showModal(activity) {
-    document.getElementById("modalId").innerText = activity.id;
-    document.getElementById("modalActivity").innerText = activity.activity;
-    document.getElementById("modalSector").innerText = activity.sector || "-";
-    document.getElementById("modalValue").innerText = `R$ ${Number(activity.diego_ana).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalValue2").innerText = `R$ ${Number(activity.alex_rute).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalRemainingValue").innerText = `R$ ${Number(activity.valor_restante).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalTotalValue").innerText = `R$ ${Number(activity.total_value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById("modalDate").innerText = activity.date || "-";
-
-    // Exibir o modal
-    const modal = document.getElementById("infoModal");
-    modal.classList.remove("hidden");
-    modal.style.display = "flex"; // Exibir o modal
-}
-
-document.getElementById("btnDelete").addEventListener("click", async () => {
-    const activityId = document.getElementById("modalId").innerText;
-    if (confirm("Tem certeza que deseja deletar esta atividade?")) {
-        await deleteAtividade(activityId);
-        const modal = document.getElementById("infoModal");
-        modal.classList.add("hidden");
-        modal.style.display = "none"; // Ocultar o modal
-    }
-}
-);
-
-function showLoader() {
-    const loader = document.getElementById("loader");
-    loader.classList.remove("hidden");
-}
-
-function hideLoader() {
-    const loader = document.getElementById("loader");
-    loader.classList.add("hidden");
-}
-
-// Função para fechar o modal
-document.getElementById("closeModal").addEventListener("click", () => {
-    const modal = document.getElementById("infoModal");
-    modal.classList.add("hidden");
-    modal.style.display = "none"; // Ocultar o modal
-});
-
-// Função para adicionar uma nova atividade
-document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-
-    // Debug log of form data
-    console.log("Submitting form data:");
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-    }
-
-    const response = await fetch(`${API_URL}/add-activity`, {
+      const response = await fetch(`${API_URL}/add-activity`, {
         method: "POST",
         body: formData,
+      });
+      
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.detail || "Erro desconhecido");
+      }
+      
+      return result;
+    } catch (error) {
+      console.error("Erro ao adicionar atividade:", error);
+      throw error;
+    }
+  }
+};
+
+// Módulo de formatação para centralizar as funções de formatação
+const formatter = {
+  currency(value) {
+    return `R$ ${Number(value).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
+};
+
+// Módulo de UI para gerenciar a interface do usuário
+const ui = {
+  showLoader() {
+    document.getElementById("loader").classList.remove("hidden");
+  },
+  
+  hideLoader() {
+    document.getElementById("loader").classList.add("hidden");
+  },
+  
+  showSuccessMessage(message) {
+    const messageContainer = document.createElement("div");
+    messageContainer.innerText = message;
+    messageContainer.className = "success-message";
+    document.body.appendChild(messageContainer);
+    
+    setTimeout(() => {
+      messageContainer.remove();
+    }, 5000);
+  },
+  
+  updateElementText(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.innerText = text;
+    }
+  },
+  
+  showModal(activity) {
+    this.updateElementText("modalId", activity.id);
+    this.updateElementText("modalActivity", activity.activity);
+    this.updateElementText("modalSector", activity.sector || "-");
+    this.updateElementText("modalValue", formatter.currency(activity.diego_ana));
+    this.updateElementText("modalValue2", formatter.currency(activity.alex_rute));
+    this.updateElementText("modalRemainingValue", formatter.currency(activity.valor_restante));
+    this.updateElementText("modalTotalValue", formatter.currency(activity.total_value));
+    this.updateElementText("modalDate", activity.date || "-");
+
+    const modal = document.getElementById("infoModal");
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+  },
+  
+  hideModal() {
+    const modal = document.getElementById("infoModal");
+    modal.classList.add("hidden");
+    modal.style.display = "none";
+  },
+  
+  confirmAction(message) {
+    return confirm(message);
+  }
+};
+
+// Módulo de atividades para gerenciar dados relacionados a atividades
+const activityManager = {
+  async loadActivities() {
+    try {
+      const pendingActivities = await api.fetchData("atividades-pendentes");
+      const activitiesList = document.getElementById("activitiesList");
+      activitiesList.innerHTML = "";
+
+      if (Array.isArray(pendingActivities)) {
+        pendingActivities.forEach(activity => {
+          const row = this.createActivityRow(activity);
+          activitiesList.appendChild(row);
+        });
+      } else {
+        console.error("Expected an array but got:", pendingActivities);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar atividades pendentes:", error);
+    }
+  },
+
+  createActivityRow(activity) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="py-2 px-4 border-b">${activity.activity}</td>
+      <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.valor_restante)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
+      <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
+      <td class="py-2 px-4 border-b">
+        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Informação</button>
+      </td>
+    `;
+
+    const pagarButton = row.querySelector(".pagar-btn");
+    pagarButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      ui.showModal(activity);
     });
 
-    const result = await response.json();
-    console.log("Response:", result);
+    return row;
+  },
 
-    if (response.ok) {
-        console.log("Atividade adicionada com sucesso:", result);
-        alert("Atividade adicionada com sucesso!");
-        loadActivities(); // Recarregar atividades após adicionar
-
-    } else {
-        alert("Erro ao adicionar atividade: " + (result.detail || "Unknown error"));
+  async loadTotalValue() {
+    try {
+      const data = await api.fetchData("valor-total");
+      ui.updateElementText("totalValue", formatter.currency(data.total));
+    } catch (error) {
+      console.error("Erro ao carregar o valor total da obra:", error);
     }
+  },
 
-});
+  async loadTotalPaid() {
+    try {
+      const data = await api.fetchData("valor-total-pago");
+      ui.updateElementText("valorPagoObra", formatter.currency(data.total_pago));
+    } catch (error) {
+      console.error("Erro ao carregar o valor total pago:", error);
+    }
+  },
 
-//Sistema de busca
-document.getElementById('searchBtn').addEventListener('click', function () {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+  async loadDiegoPaid() {
+    try {
+      const data = await api.fetchData("valor-pago-diego");
+      ui.updateElementText("valorPagoDiego", formatter.currency(data.total_pago_diego));
+    } catch (error) {
+      console.error("Erro ao carregar o valor pago por Diego:", error);
+    }
+  },
+
+  async loadAlexPaid() {
+    try {
+      const data = await api.fetchData("valor-pago-alex");
+      ui.updateElementText("valorPagoAlex", formatter.currency(data.total_pago_alex));
+    } catch (error) {
+      console.error("Erro ao carregar o valor pago por Alex:", error);
+    }
+  },
+
+  async loadPendingActivities() {
+    try {
+      const pendingActivities = await api.fetchData("atividades-pendentes");
+      ui.updateElementText("pendingActivities", pendingActivities.length);
+    } catch (error) {
+      console.error("Erro ao carregar atividades pendentes:", error);
+    }
+  },
+
+  async loadTotalActivities() {
+    try {
+      const activities = await api.fetchData("atividades");
+      ui.updateElementText("totalActivities", activities.length);
+    } catch (error) {
+      console.error("Erro ao carregar o total de atividades:", error);
+    }
+  },
+
+  async deleteActivity(id) {
+    try {
+      await api.deleteActivity(id);
+      console.log("Atividade deletada com sucesso:", id);
+      ui.showSuccessMessage("Atividade deletada com sucesso!");
+      this.loadActivities();
+      this.refreshAllData();
+    } catch (error) {
+      alert("Erro ao deletar atividade: " + error.message);
+    }
+  },
+
+  async addActivity(formData) {
+    try {
+      const result = await api.addActivity(formData);
+      console.log("Atividade adicionada com sucesso:", result);
+      ui.showSuccessMessage("Atividade adicionada com sucesso!");
+      this.refreshAllData();
+    } catch (error) {
+      alert("Erro ao adicionar atividade: " + error.message);
+    }
+  },
+
+  filterActivities(searchText) {
     const activitiesList = document.getElementById('activitiesList');
     const rows = activitiesList.getElementsByTagName('tr');
+    const searchLower = searchText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        let match = false;
+      const cells = rows[i].getElementsByTagName('td');
+      let match = false;
 
-        for (let j = 0; j < cells.length; j++) {
-            if (cells[j].textContent.toLowerCase().includes(searchInput)) {
-                match = true;
-                break;
-            }
+      for (let j = 0; j < cells.length; j++) {
+        if (cells[j].textContent.toLowerCase().includes(searchLower)) {
+          match = true;
+          break;
         }
+      }
 
-        rows[i].style.display = match ? '' : 'none';
+      rows[i].style.display = match ? '' : 'none';
     }
-});
+  },
 
-document.getElementById('searchInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        document.getElementById('searchBtn').click();
-    }
-});
-
-
-
-
-
-// Atualizar o total de atividades ao carregar a página
-document.addEventListener("DOMContentLoaded", async () => {
-    showLoader(); // Mostrar o loader ao carregar a página
+  async refreshAllData() {
+    ui.showLoader();
     try {
-        await Promise.all([
-            loadTotalActivities(),
-            loadPendingActivities(),
-            loadActivities(),
-            valorTotalPago(),
-            loadTotalValue(),
-            valorPagoDiego(),
-            valorPagoAlex(),
-        ]);
+      await Promise.all([
+        this.loadTotalActivities(),
+        this.loadPendingActivities(),
+        this.loadActivities(),
+        this.loadTotalPaid(),
+        this.loadTotalValue(),
+        this.loadDiegoPaid(),
+        this.loadAlexPaid(),
+      ]);
     } catch (error) {
-        console.error("Erro ao carregar os dados iniciais:", error);
+      console.error("Erro ao atualizar os dados:", error);
     } finally {
-        hideLoader(); // Esconder o loader após carregar todos os dados
+      ui.hideLoader();
     }
-});
+  }
+};
 
+// Event Listeners - Inicialização e configuração de eventos
+document.addEventListener("DOMContentLoaded", () => {
+  // Inicializar dados
+  activityManager.refreshAllData();
+  
+  // Configurar evento do botão de fechar modal
+  document.getElementById("closeModal").addEventListener("click", () => {
+    ui.hideModal();
+  });
+  
+  // Configurar evento do botão de excluir
+  document.getElementById("btnDelete").addEventListener("click", async () => {
+    const activityId = document.getElementById("modalId").innerText;
+    
+    if (ui.confirmAction("Tem certeza que deseja deletar esta atividade?")) {
+      await activityManager.deleteActivity(activityId);
+      ui.hideModal();
+    }
+  });
+  
+  // Configurar evento do formulário de adicionar atividade
+  document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
+    // Debug log dos dados do formulário
+    console.log("Enviando dados do formulário:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+    
+    await activityManager.addActivity(formData);
+  });
+  
+  // Configurar eventos de busca
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    const searchInput = document.getElementById('searchInput').value;
+    activityManager.filterActivities(searchInput);
+  });
+  
+  document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('searchBtn').click();
+    }
+  });
+});
