@@ -18,14 +18,14 @@ const api = {
       const response = await fetch(`${API_URL}/delete-activity/${id}`, {
         method: "DELETE",
       });
-      
+
       if (!response.ok) {
         const result = await response.json();
         throw new Error(result.detail || "Erro desconhecido");
       }
-      
+
       return true;
-  
+
     } catch (error) {
       console.error("Erro ao deletar atividade:", error);
       throw error;
@@ -38,13 +38,13 @@ const api = {
         method: "POST",
         body: formData,
       });
-      
+
       const result = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(result.detail || "Erro desconhecido");
       }
-      
+
       return result;
     } catch (error) {
       console.error("Erro ao adicionar atividade:", error);
@@ -68,29 +68,29 @@ const ui = {
   showLoader() {
     document.getElementById("loader").classList.remove("hidden");
   },
-  
+
   hideLoader() {
     document.getElementById("loader").classList.add("hidden");
   },
-  
+
   showSuccessMessage(message) {
     const messageContainer = document.createElement("div");
     messageContainer.innerText = message;
     messageContainer.className = "success-message";
     document.body.appendChild(messageContainer);
-    
+
     setTimeout(() => {
       messageContainer.remove();
     }, 5000);
   },
-  
+
   updateElementText(elementId, text) {
     const element = document.getElementById(elementId);
     if (element) {
       element.innerText = text;
     }
   },
-  
+
   showModal(activity) {
     this.updateElementText("modalId", activity.id);
     this.updateElementText("modalActivity", activity.activity);
@@ -108,14 +108,13 @@ const ui = {
 
   showModalpaid(activity) {
     console.log("Exibindo modal para atividade:", activity);
-    this.updateElementText("modalId", activity.id);
-    this.updateElementText("modalActivity", activity.activity);
-    this.updateElementText("modalSector", activity.sector || "-");
-    this.updateElementText("modalValue", formatter.currency(activity.diego_ana));
-    this.updateElementText("modalValue2", formatter.currency(activity.alex_rute));
-    this.updateElementText("modalRemainingValue", formatter.currency(activity.valor_restante));
-    this.updateElementText("modalTotalValue", formatter.currency(activity.total_value));
-    this.updateElementText("modalDate", activity.date || "-");
+    this.updateElementText("modalPaidID", activity.id);
+    this.updateElementText("modalPaidActivity", activity.activity);
+    this.updateElementText("modalPaidSector", activity.sector || "-");
+    this.updateElementText("modalPaidValue", formatter.currency(activity.diego_ana));
+    this.updateElementText("modalPaidValue2", formatter.currency(activity.alex_rute));
+    this.updateElementText("modalPaidTotalValue", formatter.currency(activity.total_value));
+    this.updateElementText("modalPaidDate", activity.date || "-");
 
     const modal = document.getElementById("infoModalPaid");
     console.log("Modal encontrado:", modal);
@@ -128,13 +127,13 @@ const ui = {
     modal.classList.add("hidden");
     modal.style.display = "none";
   },
-  
+
   hideModal() {
     const modal = document.getElementById("infoModal");
     modal.classList.add("hidden");
     modal.style.display = "none";
   },
-  
+
   confirmAction(message) {
     return confirm(message);
   }
@@ -193,7 +192,7 @@ const activityManager = {
     row.innerHTML = `
       <td class="py-2 px-4 border-b">${activity.activity}</td>
       <td class="py-2 px-4 border-b">${activity.sector}</td>
-      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value) }</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
       <td class="py-2 px-4 border-b">${activity.date}</td>
       <td class="py-2 px-4 border-b">
         <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Informação</button>
@@ -232,7 +231,7 @@ const activityManager = {
     return row;
   },
 
-  
+
 
   async loadTotalValue() {
     try {
@@ -331,6 +330,26 @@ const activityManager = {
     }
   },
 
+  filterpaidActivities(searchText) {
+    const paidActivitiesList = document.getElementById('paidActivitiesList');
+    const rows = paidActivitiesList.getElementsByTagName('tr');
+    const searchLower = searchText.toLowerCase();
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName('td');
+      let match = false;
+
+      for (let j = 0; j < cells.length; j++) {
+        if (cells[j].textContent.toLowerCase().includes(searchLower)) {
+          match = true;
+          break;
+        }
+      }
+
+      rows[i].style.display = match ? '' : 'none';
+    }
+  },
+
   async refreshAllData() {
     ui.showLoader();
     try {
@@ -357,70 +376,81 @@ document.addEventListener("DOMContentLoaded", () => {
   activityManager.refreshAllData();
   activityManager.loadPaidActivities();
   activityManager.loadActivitiesPending();
-  
+
   // Configurar evento do botão de fechar modal
   document.getElementById("closeModal").addEventListener("click", () => {
     ui.hideModal();
   });
-  
+
   // Configurar evento do botão de excluir
   document.getElementById("btnDelete").addEventListener("click", async () => {
     const activityId = document.getElementById("modalId").innerText;
-    
+
     if (ui.confirmAction("Tem certeza que deseja deletar esta atividade?")) {
       await activityManager.deleteActivity(activityId);
       ui.hideModal();
     }
   });
-  
+
   // Configurar evento do formulário de adicionar atividade
   document.getElementById("addActivityForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    
+
     // Debug log dos dados do formulário
     console.log("Enviando dados do formulário:");
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
-    
+
     await activityManager.addActivity(formData);
   });
-  
+
   // Configurar eventos de busca
   document.getElementById('searchBtn').addEventListener('click', () => {
     const searchInput = document.getElementById('searchInput').value;
     activityManager.filterActivities(searchInput);
   });
-  
+
+  document.getElementById('searchPaidBtn').addEventListener('click', () => {
+    const searchInput = document.getElementById('searchPaidInput').value;
+    activityManager.filterpaidActivities(searchInput);
+  });
+
   document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       document.getElementById('searchBtn').click();
     }
   });
+
+  document.getElementById('searchPaidInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('searchPaidBtn').click();
+    }
+  });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Seleciona todos os elementos de aba
   const tabs = document.querySelectorAll('.tab');
-  
+
   // Adiciona evento de clique para cada aba
   tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-          // Remove a classe active de todas as abas
-          tabs.forEach(t => t.classList.remove('active'));
-          
-          // Adiciona a classe active na aba clicada
-          this.classList.add('active');
-          
-          // Oculta todos os conteúdos de aba
-          const tabContents = document.querySelectorAll('.tab-content');
-          tabContents.forEach(content => content.classList.remove('active'));
-          
-          // Mostra o conteúdo correspondente à aba clicada
-          const tabId = this.getAttribute('data-tab');
-          document.getElementById(`${tabId}-tab`).classList.add('active');
-      });
+    tab.addEventListener('click', function () {
+      // Remove a classe active de todas as abas
+      tabs.forEach(t => t.classList.remove('active'));
+
+      // Adiciona a classe active na aba clicada
+      this.classList.add('active');
+
+      // Oculta todos os conteúdos de aba
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => content.classList.remove('active'));
+
+      // Mostra o conteúdo correspondente à aba clicada
+      const tabId = this.getAttribute('data-tab');
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+    });
   });
 });
 
