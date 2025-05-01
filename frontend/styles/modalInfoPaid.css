@@ -1,0 +1,193 @@
+/* Estilo geral para o modal */
+#infoModalPaid {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo mais escuro para melhor contraste */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px); /* Efeito de desfoque no fundo */
+}
+
+/* Caixa do modal */
+#infoModalPaid .modal-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+    width: 50%;
+    max-width: 600px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Título do modal */
+#infoModalPaid h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.75rem;
+}
+
+/* Seções do modal */
+.modal-section {
+    margin-bottom: 1.5rem;
+}
+
+.modal-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+}
+
+/* Linhas de informação */
+.info-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid #b6bdc5;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    flex: 0 0 40%;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.info-value {
+    flex: 0 0 60%;
+    color: #2d3748;
+}
+
+/* Seção de valores financeiros */
+.financial-section {
+    background-color: #f7fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 1rem;
+}
+
+.financial-row {
+    display: flex;
+    padding: 8px 0;
+}
+
+.financial-label {
+    flex: 0 0 60%;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.financial-value {
+    flex: 0 0 40%;
+    color: #2d3748;
+    text-align: right;
+    font-family: monospace;
+    font-size: 1.05rem;
+}
+
+/* Valor pendente e total com destaque */
+.financial-pending {
+    color: #e53e3e;
+}
+
+.financial-total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2b6cb0;
+}
+
+/* Separador */
+.divider {
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 12px 0;
+}
+
+.modal-head {
+    display: flex;  
+
+}
+
+.modal-head i {
+    font-size: 1.3rem;
+    color: #9b9b9b;
+    margin-top: 12px;
+}
+
+
+.modal-head i:hover {
+    color: #cf2626;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Botão de fechar */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    gap: 12px; 
+}
+
+#closeModalPaid {
+    background-color: #e53e3e;
+    color: #ffffff;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#closeModalPaid:hover {
+    background-color: #c53030;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#closeModalPaid:active {
+    transform: translateY(0);
+}
+
+
+/* Animação de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #infoModalPaid .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .info-row, .financial-row {
+        flex-direction: column;
+    }
+    
+    .info-label, .info-value, .financial-label, .financial-value {
+        flex: 0 0 100%;
+    }
+    
+    .financial-value {
+        text-align: left;
+        margin-top: 4px;
+    }
+}

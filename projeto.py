@@ -32,6 +32,7 @@ class Activity(BaseModel):
     date: Optional[str] = None
     diego_ana: Optional[float] = None
     alex_rute: Optional[float] = None
+ 
     
 class PendingActivity(BaseModel):
     id: int  
@@ -42,6 +43,16 @@ class PendingActivity(BaseModel):
     date: Optional[str] = None
     diego_ana: float
     alex_rute: float
+
+class PaidActivity(BaseModel):
+    id: int
+    activity: str
+    sector: Optional[str] = None
+    total_value: float
+    date: Optional[str] = None
+    diego_ana: float
+    alex_rute: float
+    status : str
     
 class PaymentData(BaseModel):
     activity: str
@@ -436,6 +447,28 @@ def get_pending_activities():
     except Exception as e:
         logger.error(f"Error fetching pending activities: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error fetching pending activities: {str(e)}")
+
+@app.get("/atividades-pagas" , response_model=List[PaidActivity])
+def get_paid_activities():
+    try:
+        atividades_pagas = []
+        for idx, activity in enumerate(manager.data["activities"]):
+            if activity.get("status") == "paid":
+                atividades_pagas.append(PaidActivity(
+                    id=idx,
+                    activity=activity.get("activity", ""),
+                    sector=activity.get("sector", ""),
+                    total_value=activity.get("value", 0),
+                    date=activity.get("date", None),
+                    diego_ana=activity.get("diego_ana", 0) or 0,
+                    alex_rute=activity.get("alex_rute", 0) or 0,
+                    status = activity.get("status")
+                ))
+        return atividades_pagas
+    except Exception as e:
+        logger.error(f"Error fetching paid activities: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error fetching paid activities: {str(e)}")
+
 
 @app.post("/update-status")
 def update_status():

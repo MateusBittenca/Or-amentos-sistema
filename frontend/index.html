@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestão de Gastos de Obra</title>
+    <link rel="stylesheet" href="styles/tabs.css">
     <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/modalInfoPaid.css">
     <link rel="stylesheet" href="styles/modalPayement.css">
     <link rel="stylesheet" href="styles/loader.css">
     <link rel="stylesheet" href="styles/message.css">
@@ -71,34 +73,73 @@
         <div class="flex flex-col md:flex-row gap-4 mb-8">
             <div class="w-full md:w-2/3">
                 <div class="bg-white rounded-lg shadow-md p-4">
-                    <h2 class="text-xl font-semibold mb-4 text-blue-800">
-                        <i class="fas fa-exclamation-circle mr-2 text-blue-800"></i> Atividades Pendentes
-                    </h2>
-                    <div class="buscar">
-                        <input type="text" id="searchInput" placeholder="Buscar atividade..."
-                            class="w-full px-3 py-2 border rounded mb-4">
-                        <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4  rounded">
-                            <i class="fas fa-search mr-2"></i>Buscar
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <div class="divider"></div>
-                        <table class="min-w-full bg-white">
-                            <thead class="bg-gray-100">
-                                <tr>
-
-                                    <th class="py-2 px-4 border-b text-left">Atividade</th>
-                                    <th class="py-2 px-4 border-b text-left">Setor</th>
-                                    <th class="py-2 px-4 border-b text-left">Valor pendente</th>
-                                    <th class="py-2 px-4 border-b text-left">Valor total</th>
-                                    <th class="py-2 px-4 border-b text-left">Data Vencimento</th>
-                                    <th class="py-2 px-4 border-b text-left">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="activitiesList">
-                                <!-- Activities will be loaded here -->
-                            </tbody>
-                        </table>
+                    <!-- Abas de navegação -->
+                    <div class="tabs-container">
+                        <div class="tabs-header">
+                            <div class="tab active" data-tab="pending">
+                                <i class="fas fa-exclamation-circle mr-2"></i> Atividades Pendentes
+                            </div>
+                            <div class="tab" data-tab="paid">
+                                <i class="fas fa-check-circle mr-2"></i> Atividades Pagas
+                            </div>
+                        </div>
+                        
+                        <!-- Conteúdo da aba Atividades Pendentes -->
+                        <div class="tab-content active" id="pending-tab">
+                            <div class="buscar">
+                                <input type="text" id="searchInput" placeholder="Buscar atividade pendente..."
+                                    class="w-full px-3 py-2 border rounded mb-4">
+                                <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                    <i class="fas fa-search mr-2"></i>Buscar
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <div class="divider"></div>
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="py-2 px-4 border-b text-left">Atividade</th>
+                                            <th class="py-2 px-4 border-b text-left">Setor</th>
+                                            <th class="py-2 px-4 border-b text-left">Valor pendente</th>
+                                            <th class="py-2 px-4 border-b text-left">Valor total</th>
+                                            <th class="py-2 px-4 border-b text-left">Data Vencimento</th>
+                                            <th class="py-2 px-4 border-b text-left">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activitiesList">
+                                        <!-- Atividades pendentes serão carregadas aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Conteúdo da aba Atividades Pagas -->
+                        <div class="tab-content" id="paid-tab">
+                            <div class="buscar">
+                                <input type="text" id="searchPaidInput" placeholder="Buscar atividade paga..."
+                                    class="w-full px-3 py-2 border rounded mb-4">
+                                <button id="searchPaidBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                    <i class="fas fa-search mr-2"></i>Buscar
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <div class="divider"></div>
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="py-2 px-4 border-b text-left">Atividade</th>
+                                            <th class="py-2 px-4 border-b text-left">Setor</th>
+                                            <th class="py-2 px-4 border-b text-left">Valor pago</th>
+                                            <th class="py-2 px-4 border-b text-left">Data Pagamento</th>
+                                            <th class="py-2 px-4 border-b text-left">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paidActivitiesList">
+                                        <!-- Atividades pagas serão carregadas aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,6 +247,75 @@
                 <button id="pagamento" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
                     Pagar
                     <button id="closeModal">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoModalPaid" class="hidden">
+        <div class="modal-content">
+            <div class="modal-head">
+                <h2>Detalhes da Atividade </h2>
+                <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2"></i>
+            </div>
+         
+
+            <!-- Seção de identificação -->
+            <div class="modal-section">
+                <div class="modal-section-title">Informações Gerais</div>
+                <div class="info-row">
+                    <div class="info-label">ID:</div>
+                    <div class="info-value" id="modalId"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Atividade:</div>
+                    <div class="info-value" id="modalActivity"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Setor:</div>
+                    <div class="info-value" id="modalSector">Documentação</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Seção de valores -->
+            <div class="modal-section">
+                <div class="modal-section-title">Valores</div>
+                <div class="financial-section">
+                    <div class="financial-row">
+                        <div class="financial-label">Valor pago por: Diego-Ana</div>
+                        <div class="financial-value" id="modalValue"></div>
+                    </div>
+                    <div class="financial-row">
+                        <div class="financial-label">Valor pago por: Alex-Rute</div>
+                        <div class="financial-value" id="modalValue2"></div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="financial-row">
+                        <div class="financial-label">Valor pendente:</div>
+                        <div class="financial-value financial-pending" id="modalRemainingValue"></div>
+                    </div>
+                    <div class="financial-row">
+                        <div class="financial-label">Valor Total:</div>
+                        <div class="financial-value financial-total" id="modalTotalValue"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Data de vencimento -->
+            <div class="modal-section">
+                <div class="info-row">
+                    <div class="info-label">Data de vencimento:</div>
+                    <div class="info-value" id="modalDate">15/09/2021</div>
+                </div>
+            </div>
+
+            <!-- Botão de fechar -->
+            <div class="modal-footer">
+                
+                    <button id="closeModalPaid">Fechar</button>
             </div>
         </div>
     </div>

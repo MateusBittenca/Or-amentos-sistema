@@ -25,6 +25,7 @@ const api = {
       }
       
       return true;
+  
     } catch (error) {
       console.error("Erro ao deletar atividade:", error);
       throw error;
@@ -104,6 +105,29 @@ const ui = {
     modal.classList.remove("hidden");
     modal.style.display = "flex";
   },
+
+  showModalpaid(activity) {
+    console.log("Exibindo modal para atividade:", activity);
+    this.updateElementText("modalId", activity.id);
+    this.updateElementText("modalActivity", activity.activity);
+    this.updateElementText("modalSector", activity.sector || "-");
+    this.updateElementText("modalValue", formatter.currency(activity.diego_ana));
+    this.updateElementText("modalValue2", formatter.currency(activity.alex_rute));
+    this.updateElementText("modalRemainingValue", formatter.currency(activity.valor_restante));
+    this.updateElementText("modalTotalValue", formatter.currency(activity.total_value));
+    this.updateElementText("modalDate", activity.date || "-");
+
+    const modal = document.getElementById("infoModalPaid");
+    console.log("Modal encontrado:", modal);
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+  },
+
+  hideModalPaid() {
+    const modal = document.getElementById("infoModalPaid");
+    modal.classList.add("hidden");
+    modal.style.display = "none";
+  },
   
   hideModal() {
     const modal = document.getElementById("infoModal");
@@ -118,7 +142,7 @@ const ui = {
 
 // Módulo de atividades para gerenciar dados relacionados a atividades
 const activityManager = {
-  async loadActivities() {
+  async loadActivitiesPending() {
     try {
       const pendingActivities = await api.fetchData("atividades-pendentes");
       const activitiesList = document.getElementById("activitiesList");
@@ -136,6 +160,55 @@ const activityManager = {
       console.error("Erro ao carregar atividades pendentes:", error);
     }
   },
+
+  async loadPaidActivities() {
+    try {
+      const paidActivities = await api.fetchData("atividades-pagas");
+      console.log("Atividades pagas:", paidActivities);
+      const paidActivitiesList = document.getElementById("paidActivitiesList");
+      paidActivitiesList.innerHTML = "";
+
+      if (Array.isArray(paidActivities) && paidActivities.length > 0) {
+        paidActivities.forEach(activity => {
+          const row = this.createPaidActivityRow(activity);
+          paidActivitiesList.appendChild(row);
+        });
+      } else {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td colspan="6" class="py-4 px-4 text-center text-gray-500">
+              <i class="fas fa-info-circle mr-2"></i>
+              Nenhuma atividade paga encontrada
+          </td>
+        `;
+        paidActivitiesList.appendChild(tr);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar atividades pagas:", error);
+    }
+  },
+
+  createPaidActivityRow(activity) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="py-2 px-4 border-b">${activity.activity}</td>
+      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value) }</td>
+      <td class="py-2 px-4 border-b">${activity.date}</td>
+      <td class="py-2 px-4 border-b">
+        <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Informação</button>
+      </td>
+    `;
+
+    const viewDetailsButton = row.querySelector(".view-details");
+    viewDetailsButton.addEventListener("click", () => {
+      // Aqui você pode chamar uma função para exibir mais detalhes no modal
+      ui.showModalpaid(activity);
+    });
+
+    return row;
+  },
+
 
   createActivityRow(activity) {
     const row = document.createElement("tr");
@@ -158,6 +231,8 @@ const activityManager = {
 
     return row;
   },
+
+  
 
   async loadTotalValue() {
     try {
@@ -218,7 +293,7 @@ const activityManager = {
       await api.deleteActivity(id);
       console.log("Atividade deletada com sucesso:", id);
       ui.showSuccessMessage("Atividade deletada com sucesso!");
-      this.loadActivities();
+      this.loadActivitiesPending();
       this.refreshAllData();
     } catch (error) {
       alert("Erro ao deletar atividade: " + error.message);
@@ -262,7 +337,7 @@ const activityManager = {
       await Promise.all([
         this.loadTotalActivities(),
         this.loadPendingActivities(),
-        this.loadActivities(),
+        this.loadActivitiesPending(),
         this.loadTotalPaid(),
         this.loadTotalValue(),
         this.loadDiegoPaid(),
@@ -280,6 +355,8 @@ const activityManager = {
 document.addEventListener("DOMContentLoaded", () => {
   // Inicializar dados
   activityManager.refreshAllData();
+  activityManager.loadPaidActivities();
+  activityManager.loadActivitiesPending();
   
   // Configurar evento do botão de fechar modal
   document.getElementById("closeModal").addEventListener("click", () => {
@@ -321,4 +398,34 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('searchBtn').click();
     }
   });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Seleciona todos os elementos de aba
+  const tabs = document.querySelectorAll('.tab');
+  
+  // Adiciona evento de clique para cada aba
+  tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+          // Remove a classe active de todas as abas
+          tabs.forEach(t => t.classList.remove('active'));
+          
+          // Adiciona a classe active na aba clicada
+          this.classList.add('active');
+          
+          // Oculta todos os conteúdos de aba
+          const tabContents = document.querySelectorAll('.tab-content');
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Mostra o conteúdo correspondente à aba clicada
+          const tabId = this.getAttribute('data-tab');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+      });
+  });
+});
+
+
+
+document.getElementById("closeModalPaid").addEventListener("click", () => {
+  ui.hideModalPaid();
 });
