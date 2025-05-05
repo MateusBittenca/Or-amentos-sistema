@@ -1,4 +1,4 @@
-const URL_api = "https://3d41-2804-7f0-463-9a6-3df-3728-9e-7e4c.ngrok-free.app/"; // URL do seu backend
+const URL_api = "http://localhost:8000"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {

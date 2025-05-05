@@ -1,5 +1,5 @@
 
-const API_URL = "https://3d41-2804-7f0-463-9a6-3df-3728-9e-7e4c.ngrok-free.app/";
+const API_URL = "http://localhost:8000";
 
 
 const api = {
