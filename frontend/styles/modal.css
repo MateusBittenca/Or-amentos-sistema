@@ -1,34 +1,71 @@
-/* Estilo geral para o modal */
-#infoModal {
+
+/* Estilo geral para todos os modais */
+#infoModal, #infoModalPaid, #paymentModal {
     display: none; /* Escondido por padrão */
     position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* Fundo mais escuro para melhor contraste */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    backdrop-filter: blur(3px); /* Efeito de desfoque no fundo */
+    backdrop-filter: blur(3px);
+    overflow-y: auto; /* Permite rolagem quando o conteúdo é maior que a tela */
+}
+
+/* Quando o modal estiver ativo */
+#infoModal.active, #infoModalPaid.active, #paymentModal.active {
+    display: flex;
 }
 
 /* Caixa do modal */
-#infoModal .modal-content {
+.modal-content {
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     padding: 24px;
-    width: 50%;
+    width: 90%;
     max-width: 600px;
+    margin: auto; /* Centraliza o modal */
     animation: fadeIn 0.3s ease-in-out;
+    position: relative; /* Para posicionamento absoluto interno */
+    max-height: 90vh; /* Altura máxima para evitar ultrapassar a tela */
+    overflow-y: auto; /* Permite rolagem quando o conteúdo é maior que o modal */
 }
 
-/* Título do modal */
-#infoModal h2 {
-    font-size: 1.6rem;
-    font-weight: 700;
+/* Cabeçalho do modal */
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1.5rem;
+}
+
+.modal-head h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
     color: #2d3748;
-    border-bottom: 2px solid #e2e8f0;
+    margin: 0;
     padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+    flex: 1;
+}
+
+.modal-head i {
+    font-size: 1.3rem;
+    color: #9b9b9b;
+    margin-left: 12px;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-head i:hover {
+    color: #cf2626;
 }
 
 /* Seções do modal */
@@ -46,8 +83,9 @@
 /* Linhas de informação */
 .info-row {
     display: flex;
+    flex-wrap: wrap; /* Permite quebra em telas menores */
     padding: 8px 0;
-    border-bottom: 1px solid #b6bdc5;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .info-row:last-child {
@@ -55,13 +93,15 @@
 }
 
 .info-label {
-    flex: 0 0 40%;
+    flex: 1 1 30%;
+    min-width: 120px;
     font-weight: 600;
     color: #4a5568;
+    padding-right: 10px;
 }
 
 .info-value {
-    flex: 0 0 60%;
+    flex: 1 1 70%;
     color: #2d3748;
 }
 
@@ -75,17 +115,21 @@
 
 .financial-row {
     display: flex;
+    flex-wrap: wrap; /* Permite quebra em telas menores */
     padding: 8px 0;
 }
 
 .financial-label {
-    flex: 0 0 60%;
+    flex: 1 1 60%;
+    min-width: 150px;
     font-weight: 600;
     color: #4a5568;
+    padding-right: 10px;
 }
 
 .financial-value {
-    flex: 0 0 40%;
+    flex: 1 1 40%;
+    min-width: 100px;
     color: #2d3748;
     text-align: right;
     font-family: monospace;
@@ -110,56 +154,45 @@
     margin: 12px 0;
 }
 
-.modal-head {
-    display: flex;  
-
-}
-
-.modal-head i {
-    font-size: 1.3rem;
-    color: #9b9b9b;
-    margin-top: 12px;
-}
-
-
-.modal-head i:hover {
-    color: #cf2626;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* Botão de fechar */
+/* Rodapé do modal */
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     margin-top: 1.5rem;
-    gap: 12px; 
+    gap: 12px;
+    flex-wrap: wrap; /* Permite quebra em telas menores */
 }
 
-#closeModal {
-    background-color: #e53e3e;
-    color: #ffffff;
-    padding: 10px 24px;
+/* Botões do modal */
+.modal-footer button {
+    padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.2s ease;
+    min-width: 120px;
 }
 
-#closeModal:hover {
+#closeModal, #closeModalPaid, #closePaymentModal {
+    background-color: #e53e3e;
+    color: #ffffff;
+}
+
+#closeModal:hover, #closeModalPaid:hover, #closePaymentModal:hover {
     background-color: #c53030;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#closeModal:active {
-    transform: translateY(0);
+#pagamento, #confirmPayment {
+    background-color: #38a169;
+    color: #ffffff;
 }
 
-#pagamento:hover {
-    background-color: #28a148;
+#pagamento:hover, #confirmPayment:hover {
+    background-color: #2f855a;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -176,23 +209,74 @@
     }
 }
 
-/* Responsividade */
+/* Responsividade para telas pequenas */
 @media (max-width: 768px) {
-    #infoModal .modal-content {
-        width: 90%;
-        padding: 20px;
+    .modal-content {
+        width: 95%;
+        padding: 16px;
+        margin: 20px auto;
     }
-
-    .info-row, .financial-row {
-        flex-direction: column;
+    
+    .modal-head h2 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-section-title {
+        font-size: 1rem;
     }
     
     .info-label, .info-value, .financial-label, .financial-value {
-        flex: 0 0 100%;
+        flex: 1 1 100%;
+        min-width: 100%;
     }
     
     .financial-value {
         text-align: left;
         margin-top: 4px;
+    }
+    
+    .modal-footer {
+        justify-content: center;
+    }
+    
+    .modal-footer button {
+        flex: 1 1 100%;
+        margin-bottom: 8px;
+    }
+}
+
+/* Ajustes específicos para dispositivos muito pequenos */
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 12px;
+    }
+    
+    .modal-head h2 {
+        font-size: 1.2rem;
+    }
+    
+    .info-row, .financial-row {
+        padding: 6px 0;
+    }
+}
+
+/* Ajustes específicos para o modal de pagamento */
+#paymentModal .modal-content.payment-modal {
+    padding: 0;
+}
+
+#paymentModal .image-upload-preview {
+    height: 120px;
+}
+
+@media (max-width: 576px) {
+    .payment-options, .payment-methods {
+        justify-content: center;
+    }
+    
+    .payment-option-label, .payment-method-label {
+        width: 90px;
+        height: 70px;
+        font-size: 0.9rem;
     }
 }
