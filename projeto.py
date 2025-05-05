@@ -432,6 +432,21 @@ manager = ComprovantesManager(JSON_PATH)
 def read_root():
     return {"message": "Construction Expense Manager API"}
 
+@app.head("/")
+def head_root():
+    """Handler for HEAD requests to the root path"""
+    return {"message": "Construction Expense Manager API"}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for service monitoring"""
+    return {"status": "healthy"}
+
+@app.head("/health")
+def head_health_check():
+    """HEAD handler for health check endpoint"""
+    return {"status": "healthy"}
+
 @app.get("/atividades", response_model=List[Activity])
 def get_activities():
     try:
