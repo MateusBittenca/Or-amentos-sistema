@@ -268,9 +268,9 @@ class ComprovantesManager:
         self._save_data()
         
         return {
-            "success": True,
-            "message": "Payment status updated successfully",
-            "updated_rows": updated_count
+            "sucesso": True,
+            "mensagem": "Status do pagamento atualizado com sucesso",
+            "atividades_atualizadas": updated_count
         }
     
     def listar_atividades_pendentes(self) -> List[PendingActivity]:

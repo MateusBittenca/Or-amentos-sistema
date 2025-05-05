@@ -1,5 +1,5 @@
 
-const API_URL = "http://localhost:8000";
+const API_URL = "https://3d41-2804-7f0-463-9a6-3df-3728-9e-7e4c.ngrok-free.app/";
 
 
 const api = {
@@ -107,7 +107,7 @@ const ui = {
   },
 
   showModalpaid(activity) {
-    console.log("Exibindo modal para atividade:", activity);
+    
     this.updateElementText("modalPaidID", activity.id);
     this.updateElementText("modalPaidActivity", activity.activity);
     this.updateElementText("modalPaidSector", activity.sector || "-");
@@ -117,7 +117,6 @@ const ui = {
     this.updateElementText("modalPaidDate", activity.date || "-");
 
     const modal = document.getElementById("infoModalPaid");
-    console.log("Modal encontrado:", modal);
     modal.classList.remove("hidden");
     modal.style.display = "flex";
   },
@@ -163,7 +162,6 @@ const activityManager = {
   async loadPaidActivities() {
     try {
       const paidActivities = await api.fetchData("atividades-pagas");
-      console.log("Atividades pagas:", paidActivities);
       const paidActivitiesList = document.getElementById("paidActivitiesList");
       paidActivitiesList.innerHTML = "";
 
@@ -290,7 +288,6 @@ const activityManager = {
   async deleteActivity(id) {
     try {
       await api.deleteActivity(id);
-      console.log("Atividade deletada com sucesso:", id);
       ui.showSuccessMessage("Atividade deletada com sucesso!");
       this.loadActivitiesPending();
       this.refreshAllData();
@@ -302,7 +299,6 @@ const activityManager = {
   async addActivity(formData) {
     try {
       const result = await api.addActivity(formData);
-      console.log("Atividade adicionada com sucesso:", result);
       ui.showSuccessMessage("Atividade adicionada com sucesso!");
       this.refreshAllData();
     } catch (error) {
@@ -398,7 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData(e.target);
 
     // Debug log dos dados do formulário
-    console.log("Enviando dados do formulário:");
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
