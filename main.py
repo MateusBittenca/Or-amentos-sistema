@@ -17,11 +17,10 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Constants
-UPLOAD_FOLDER = "uploads"
 JSON_PATH = "./json/atividades.json"
 
-# Create upload folder if it doesn't exist
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    
+
 
 # Pydantic models for request/response data
 class Activity(BaseModel):
