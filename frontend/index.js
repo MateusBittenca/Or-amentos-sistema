@@ -301,7 +301,7 @@ const activityManager = {
       const result = await api.addActivity(formData);
       ui.showSuccessMessage("Atividade adicionada com sucesso!");
       this.refreshAllData();
-      formData.reset(); // Limpa o formulário após adicionar a atividade
+      document.getElementById("addActivityForm").reset();
     } catch (error) {
       alert("Erro ao adicionar atividade: " + error.message);
     }

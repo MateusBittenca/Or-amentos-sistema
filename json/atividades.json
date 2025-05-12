@@ -3229,6 +3229,15 @@
       "diego_ana": 0,
       "alex_rute": 286.37,
       "status": "paid"
+    },
+    {
+      "activity": "Parcela",
+      "sector": "testes",
+      "value": 1.0,
+      "date": "31/12/2321",
+      "alex_rute": 0,
+      "diego_ana": 1.0,
+      "status": "paid"
     }
   ],
   "setores": [
