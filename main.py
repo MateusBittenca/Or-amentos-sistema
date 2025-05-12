@@ -32,7 +32,6 @@ class Activity(BaseModel):
     date: Optional[str] = None
     diego_ana: Optional[float] = None
     alex_rute: Optional[float] = None
- 
     
 class PendingActivity(BaseModel):
     id: int  
@@ -115,6 +114,7 @@ class ComprovanteReader:
                     'data': cls.extrair_data(texto),
                     'nome': cls.extrair_nome(texto)
                 }
+            
         except Exception as e:
             logger.error(f"Error processing image: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")

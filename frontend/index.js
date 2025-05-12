@@ -1,5 +1,5 @@
 
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:8000";
 
 
 const api = {
@@ -301,6 +301,7 @@ const activityManager = {
       const result = await api.addActivity(formData);
       ui.showSuccessMessage("Atividade adicionada com sucesso!");
       this.refreshAllData();
+      formData.reset(); // Limpa o formulário após adicionar a atividade
     } catch (error) {
       alert("Erro ao adicionar atividade: " + error.message);
     }

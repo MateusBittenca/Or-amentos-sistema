@@ -1,0 +1,2909 @@
+[
+    {
+    "id": 3,
+    "activity": "Taxa Correspondente Caixa",
+    "sector": "Documentação",
+    "value": 800,
+    "date": "08/10/2020",
+    "diego_ana": 0,
+    "alex_rute": 800
+  },
+  {
+    "id": 4,
+    "activity": "Contrato Caixa",
+    "sector": "Documentação",
+    "value": 5892,
+    "date": "05/11/2020",
+    "diego_ana": 0,
+    "alex_rute": 5892
+  },
+  {
+    "id": 5,
+    "activity": "ITBI Casa",
+    "sector": "Documentação",
+    "value": 3352,
+    "date": "05/11/2020",
+    "diego_ana": 0,
+    "alex_rute": 3352
+  },
+  {
+    "id": 6,
+    "activity": "Cartório",
+    "sector": "Documentação",
+    "value": 6300,
+    "date": "05/11/2020",
+    "diego_ana": 0,
+    "alex_rute": 6300
+  },
+  {
+    "id": 7,
+    "activity": "Honorários Advogada Leilane - custos de despejo",
+    "sector": "Documentação",
+    "value": 8455.81,
+    "date": "15/09/2021",
+    "diego_ana": 4227.9,
+    "alex_rute": 4227.9
+  },
+  {
+    "id": 9,
+    "activity": "Entrada Imóvel",
+    "sector": "Financiamento",
+    "value": 29150,
+    "date": "25/11/2020",
+    "diego_ana": 29150,
+    "alex_rute": 0
+  },
+  {
+    "id": 10,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/11/2020",
+    "diego_ana": 0,
+    "alex_rute": 3900
+  },
+  {
+    "id": 11,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/12/2020",
+    "diego_ana": 0,
+    "alex_rute": 3900
+  },
+  {
+    "id": 12,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/01/2021",
+    "diego_ana": 0,
+    "alex_rute": 3900
+  },
+  {
+    "id": 13,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/02/2021",
+    "diego_ana": 1400,
+    "alex_rute": 2506
+  },
+  {
+    "id": 14,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/03/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 15,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/04/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 16,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/05/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 17,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/06/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 18,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/07/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 19,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/08/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 20,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/09/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 21,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/10/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 22,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/11/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 23,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/12/2021",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 24,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/01/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 25,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/02/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 26,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/03/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 27,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/04/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 28,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/05/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 29,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/06/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 30,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/07/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 31,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/08/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 32,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/09/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 33,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/10/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 34,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/11/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 35,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/12/2022",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 36,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/01/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 37,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/02/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 38,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/03/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 39,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/04/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 40,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/05/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 41,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/06/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 42,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/07/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 43,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/08/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 44,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/09/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 45,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/10/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 46,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/11/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 47,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/12/2023",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 48,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/01/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 49,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/02/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 50,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/03/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 51,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/04/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 52,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/05/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 53,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/06/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 54,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/07/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 55,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/08/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 56,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/09/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 57,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/10/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 58,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 3900,
+    "date": "25/11/2024",
+    "diego_ana": 1950,
+    "alex_rute": 1950
+  },
+  {
+    "id": 59,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/12/2024",
+    "diego_ana": 2000,
+    "alex_rute": 2000
+  },
+  {
+    "id": 60,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/01/2025",
+    "diego_ana": 2000,
+    "alex_rute": 2000
+  },
+  {
+    "id": 61,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/02/2025",
+    "diego_ana": 2000,
+    "alex_rute": 2000
+  },
+  {
+    "id": 62,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/03/2025",
+    "diego_ana": 2000,
+    "alex_rute": 2000
+  },
+  {
+    "id": 63,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/04/2025",
+    "diego_ana": 2000,
+    "alex_rute": 2000
+  },
+  {
+    "id": 64,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/05/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 65,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/06/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 66,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/07/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 67,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/08/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 68,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/09/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 69,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/10/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 70,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/11/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 71,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 4000,
+    "date": "25/12/2025",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 72,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2026",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 73,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2027",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 74,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2028",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 75,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2029",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 76,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2030",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 77,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2031",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 78,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2032",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 79,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2033",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 80,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2034",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 81,
+    "activity": "Parcela da Casa - Caixa Economica",
+    "sector": "Financiamento",
+    "value": 46800,
+    "date": "25/12/2035",
+    "diego_ana": 0,
+    "alex_rute": 0
+  },
+  {
+    "id": 84,
+    "activity": "Projeto Arquit. e Interiores 1° parcela - Carla Rocha",
+    "sector": "Projetos",
+    "value": 6750,
+    "date": "13/04/2022",
+    "diego_ana": 6750,
+    "alex_rute": 0
+  },
+  {
+    "id": 85,
+    "activity": "Projeto Arquit. e Interiores 2° parcela - Carla Rocha",
+    "sector": "Projetos",
+    "value": 6750,
+    "date": "13/05/2023",
+    "diego_ana": 6750,
+    "alex_rute": 0
+  },
+  {
+    "id": 86,
+    "activity": "Projeto Arquit. e Interiores 3° parcela - Carla Rocha",
+    "sector": "Projetos",
+    "value": 4800,
+    "date": "13/04/2022",
+    "diego_ana": 4800,
+    "alex_rute": 0
+  },
+  {
+    "id": 87,
+    "activity": "1ª Parcela Projeto Elétrico - Renato Garcia",
+    "sector": "Projetos",
+    "value": 900,
+    "date": "06/09/2022",
+    "diego_ana": 900,
+    "alex_rute": 0
+  },
+  {
+    "id": 88,
+    "activity": "2ª Parcela Projeto Elétrico - Renato Garcia",
+    "sector": "Projetos",
+    "value": 900,
+    "date": "22/10/2022",
+    "diego_ana": 900,
+    "alex_rute": 0
+  },
+  {
+    "id": 89,
+    "activity": "1ª ParcelaProjeto Hidráulico - Diego Leonardo",
+    "sector": "Projetos",
+    "value": 950,
+    "date": "06/09/2022",
+    "diego_ana": 950,
+    "alex_rute": 0
+  },
+  {
+    "id": 90,
+    "activity": "2ª ParcelaProjeto Hidráulico - Diego Leonardo",
+    "sector": "Projetos",
+    "value": 950,
+    "date": "22/10/2022",
+    "diego_ana": 950,
+    "alex_rute": 0
+  },
+  {
+    "id": 92,
+    "activity": "MO Construtora Marcos 1ª Quinzena",
+    "sector": "Construtor",
+    "value": 6820,
+    "date": "02/09/2022",
+    "diego_ana": 6820,
+    "alex_rute": 0
+  },
+  {
+    "id": 93,
+    "activity": "MO Construtora Marcos 2ª Quinzena",
+    "sector": "Construtor",
+    "value": 7150,
+    "date": "16/09/2022",
+    "diego_ana": 7150,
+    "alex_rute": 0
+  },
+  {
+    "id": 94,
+    "activity": "MO Construtora Marcos 3ª Quinzena",
+    "sector": "Construtor",
+    "value": 10570,
+    "date": "30/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 10570
+  },
+  {
+    "id": 95,
+    "activity": "MO Construtora Marcos 4ª Quinzena",
+    "sector": "Construtor",
+    "value": 10861,
+    "date": "14/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 10861
+  },
+  {
+    "id": 96,
+    "activity": "MO Construtora Marcos 5ª Quinzena",
+    "sector": "Construtor",
+    "value": 10110,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 10110
+  },
+  {
+    "id": 97,
+    "activity": "MO Construtora Marcos 6ª Quinzena",
+    "sector": "Construtor",
+    "value": 15060,
+    "date": "16/11/2022",
+    "diego_ana": 15060,
+    "alex_rute": 0
+  },
+  {
+    "id": 98,
+    "activity": "MO Construtora Marcos 7ª Quinzena",
+    "sector": "Construtor",
+    "value": 13120,
+    "date": "02/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 13120
+  },
+  {
+    "id": 99,
+    "activity": "MO Construtora Marcos 8ª Quinzena",
+    "sector": "Construtor",
+    "value": 10867.4,
+    "date": "15/12/2022",
+    "diego_ana": 10867.4,
+    "alex_rute": 0
+  },
+  {
+    "id": 100,
+    "activity": "MO Construtora Marcos 9ª Quinzena",
+    "sector": "Construtor",
+    "value": 8841.6,
+    "date": "30/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 8841.6
+  },
+  {
+    "id": 101,
+    "activity": "MO Construtora Marcos 10ª Quinzena",
+    "sector": "Construtor",
+    "value": 9000,
+    "date": "16/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 9000
+  },
+  {
+    "id": 102,
+    "activity": "MO Construtora Marcos 10ª Quinzena",
+    "sector": "Construtor",
+    "value": 7000,
+    "date": "01/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 7000
+  },
+  {
+    "id": 103,
+    "activity": "MO Construtora Marcos 10ª Quinzena",
+    "sector": "Construtor",
+    "value": 4500,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 4500
+  },
+  {
+    "id": 104,
+    "activity": "MO Construtora Marcos 11ª Quinzena",
+    "sector": "Construtor",
+    "value": 4500,
+    "date": "14/04/2023",
+    "diego_ana": 4500,
+    "alex_rute": 0
+  },
+  {
+    "id": 105,
+    "activity": "MO Construtora Marcos Área externa 1ª",
+    "sector": "Construtor",
+    "value": 6400,
+    "date": "14/04/2023",
+    "diego_ana": 6400,
+    "alex_rute": 0
+  },
+  {
+    "id": 106,
+    "activity": "MO Construtora Marcos Área externa 2ª",
+    "sector": "Construtor",
+    "value": 6400,
+    "date": "12/05/2023",
+    "diego_ana": 6400,
+    "alex_rute": 0
+  },
+  {
+    "id": 107,
+    "activity": "MO Construtora Marcos Extras esgoto",
+    "sector": "Construtor",
+    "value": 12000,
+    "date": "07/07/2023",
+    "diego_ana": 12000,
+    "alex_rute": 0
+  },
+  {
+    "id": 108,
+    "activity": "MO Construtora Marcos Escada e Muro de entrada",
+    "sector": "Construtor",
+    "value": 6000,
+    "date": "02/06/2023",
+    "diego_ana": 0,
+    "alex_rute": 6000
+  },
+  {
+    "id": 109,
+    "activity": "MO Construtora Marcos Escada e Muro de entrada",
+    "sector": "Construtor",
+    "value": 6000,
+    "date": "24/06/2023",
+    "diego_ana": 0,
+    "alex_rute": 6000
+  },
+  {
+    "id": 110,
+    "activity": "MO Construtora Marcos Rampa e Calçada",
+    "sector": "Construtor",
+    "value": 4000,
+    "date": "21/09/2023",
+    "diego_ana": 4000,
+    "alex_rute": 0
+  },
+  {
+    "id": 111,
+    "activity": "MO Construtora Marcos Escada e Muro de entrada",
+    "sector": "Construtor",
+    "value": 9000,
+    "date": "31/01/2024",
+    "diego_ana": 9000,
+    "alex_rute": 0
+  },
+  {
+    "id": 114,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 5369,
+    "date": "07/10/2022",
+    "diego_ana": 5369,
+    "alex_rute": 0
+  },
+  {
+    "id": 115,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 3948.6,
+    "date": "04/11/2022",
+    "diego_ana": 3948.6,
+    "alex_rute": 0
+  },
+  {
+    "id": 116,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 4139.85,
+    "date": "11/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 4139.85
+  },
+  {
+    "id": 117,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 5848.54,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 5848.54
+  },
+  {
+    "id": 118,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 7616.74,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 7616.74
+  },
+  {
+    "id": 119,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 4233.79,
+    "date": "30/03/2023",
+    "diego_ana": 0,
+    "alex_rute": 4233.79
+  },
+  {
+    "id": 120,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 3475.68,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 3475.68
+  },
+  {
+    "id": 121,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 8806.41,
+    "date": "24/05/2023",
+    "diego_ana": 8806.41,
+    "alex_rute": 0
+  },
+  {
+    "id": 122,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 3966.4,
+    "date": "16/06/2023",
+    "diego_ana": 3966.4,
+    "alex_rute": 0
+  },
+  {
+    "id": 123,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 5462.1,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 5462.1
+  },
+  {
+    "id": 124,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 5294.91,
+    "date": "22/08/2023",
+    "diego_ana": 5294.91,
+    "alex_rute": 0
+  },
+  {
+    "id": 125,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 2890.46,
+    "date": "21/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 2890.46
+  },
+  {
+    "id": 126,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 1053,
+    "date": "31/10/2023",
+    "diego_ana": 1053,
+    "alex_rute": 0
+  },
+  {
+    "id": 127,
+    "activity": "Zezinho Materiais de construção",
+    "sector": "Depósito",
+    "value": 45,
+    "date": "23/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 45
+  },
+  {
+    "id": 130,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 1168,
+    "date": "07/10/2022",
+    "diego_ana": 1168,
+    "alex_rute": 0
+  },
+  {
+    "id": 131,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 6907.11,
+    "date": "04/11/2022",
+    "diego_ana": 6907.11,
+    "alex_rute": 0
+  },
+  {
+    "id": 132,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 13284.39,
+    "date": "11/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 13284.39
+  },
+  {
+    "id": 133,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 3316.37,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 3316.37
+  },
+  {
+    "id": 134,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 3954.9,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 3954.9
+  },
+  {
+    "id": 135,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 3013.76,
+    "date": "30/03/2023",
+    "diego_ana": 0,
+    "alex_rute": 3013.76
+  },
+  {
+    "id": 136,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 476.77,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 476.77
+  },
+  {
+    "id": 137,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 50.25,
+    "date": "24/05/2023",
+    "diego_ana": 50.25,
+    "alex_rute": 0
+  },
+  {
+    "id": 138,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 1316.44,
+    "date": "16/06/2023",
+    "diego_ana": 1316.44,
+    "alex_rute": 0
+  },
+  {
+    "id": 139,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 196.97,
+    "date": "22/08/2023",
+    "diego_ana": 196.97,
+    "alex_rute": 0
+  },
+  {
+    "id": 140,
+    "activity": "Himaza Materiais de construção",
+    "sector": "Depósito",
+    "value": 4907.54,
+    "date": "21/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 4907.54
+  },
+  {
+    "id": 143,
+    "activity": "Frete Piso",
+    "sector": "Piso e Revestimento",
+    "value": 650,
+    "date": "30/03/2023",
+    "diego_ana": 0,
+    "alex_rute": 650
+  },
+  {
+    "id": 144,
+    "activity": "Revestimento Eliane - Depósito Bandeirantes",
+    "sector": "Piso e Revestimento",
+    "value": 2700,
+    "date": "21/09/2022",
+    "diego_ana": 2700,
+    "alex_rute": 0
+  },
+  {
+    "id": 145,
+    "activity": "Piso Delta + Cimentocola - Depósito Bandeirantes",
+    "sector": "Piso e Revestimento",
+    "value": 24132.95,
+    "date": "30/09/2022",
+    "diego_ana": 24132.95,
+    "alex_rute": 0
+  },
+  {
+    "id": 146,
+    "activity": "Revestimento Eliane - Leroy",
+    "sector": "Piso e Revestimento",
+    "value": 838.8,
+    "date": "30/09/2022",
+    "diego_ana": 838.8,
+    "alex_rute": 0
+  },
+  {
+    "id": 147,
+    "activity": "Piso Delta - Depósito Bandeirantes",
+    "sector": "Piso e Revestimento",
+    "value": 1774.24,
+    "date": "22/03/2023",
+    "diego_ana": 1774.24,
+    "alex_rute": 0
+  },
+  {
+    "id": 148,
+    "activity": "Piso Delta - Depósito Bandeirantes",
+    "sector": "Piso e Revestimento",
+    "value": 544.67,
+    "date": "22/03/2023",
+    "diego_ana": 544.67,
+    "alex_rute": 0
+  },
+  {
+    "id": 149,
+    "activity": "Piso Fuget 43 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 3000,
+    "date": "19/08/2023",
+    "diego_ana": 0,
+    "alex_rute": 3000
+  },
+  {
+    "id": 150,
+    "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 4000,
+    "date": "24/08/2023",
+    "diego_ana": 0,
+    "alex_rute": 4000
+  },
+  {
+    "id": 151,
+    "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 4000,
+    "date": "30/08/2023",
+    "diego_ana": 0,
+    "alex_rute": 4000
+  },
+  {
+    "id": 152,
+    "activity": "Piso Fuget 43 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 3000,
+    "date": "11/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 3000
+  },
+  {
+    "id": 153,
+    "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 4000,
+    "date": "15/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 4000
+  },
+  {
+    "id": 154,
+    "activity": "Piso Fuget 14 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 1000,
+    "date": "20/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 1000
+  },
+  {
+    "id": 155,
+    "activity": "Piso Fuget 14 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 1000,
+    "date": "22/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 1000
+  },
+  {
+    "id": 156,
+    "activity": "Piso Fuget 68 m² = R$ 70,00 o metro - Wellington",
+    "sector": "Piso e Revestimento",
+    "value": 4710,
+    "date": "23/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 4710
+  },
+  {
+    "id": 158,
+    "activity": "Telhas",
+    "sector": "Telhado",
+    "value": 12396.5,
+    "date": "30/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 12396.5
+  },
+  {
+    "id": 159,
+    "activity": "Madeiras Tábuas",
+    "sector": "Telhado",
+    "value": 996,
+    "date": "30/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 996
+  },
+  {
+    "id": 160,
+    "activity": "Caibro, Viga e Tábua",
+    "sector": "Telhado",
+    "value": 2400,
+    "date": "14/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 2400
+  },
+  {
+    "id": 161,
+    "activity": "Ripão e Madeirite",
+    "sector": "Telhado",
+    "value": 3718.4,
+    "date": "14/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 3718.4
+  },
+  {
+    "id": 162,
+    "activity": "Ripão 400 mts",
+    "sector": "Telhado",
+    "value": 2000,
+    "date": "28/10/2022",
+    "diego_ana": 2000,
+    "alex_rute": 0
+  },
+  {
+    "id": 163,
+    "activity": "Ripão 300 mts",
+    "sector": "Telhado",
+    "value": 1500,
+    "date": "28/10/2022",
+    "diego_ana": 1500,
+    "alex_rute": 0
+  },
+  {
+    "id": 164,
+    "activity": "Maderite",
+    "sector": "Telhado",
+    "value": 593.6,
+    "date": "28/10/2022",
+    "diego_ana": 593.6,
+    "alex_rute": 0
+  },
+  {
+    "id": 165,
+    "activity": "Calheiro 1ª parcela",
+    "sector": "Telhado",
+    "value": 2400,
+    "date": "04/11/2022",
+    "diego_ana": 2400,
+    "alex_rute": 0
+  },
+  {
+    "id": 166,
+    "activity": "Calheiro 2ª parcela",
+    "sector": "Telhado",
+    "value": 2400,
+    "date": "18/11/2022",
+    "diego_ana": 0,
+    "alex_rute": 2400
+  },
+  {
+    "id": 167,
+    "activity": "Material Calha",
+    "sector": "Telhado",
+    "value": 3182,
+    "date": "04/11/2022",
+    "diego_ana": 3182,
+    "alex_rute": 0
+  },
+  {
+    "id": 168,
+    "activity": "Testeira + Maderite + Rebite",
+    "sector": "Telhado",
+    "value": 2901,
+    "date": "17/11/2022",
+    "diego_ana": 2901,
+    "alex_rute": 0
+  },
+  {
+    "id": 169,
+    "activity": "Colocação Testeira",
+    "sector": "Telhado",
+    "value": 1000,
+    "date": "17/11/2022",
+    "diego_ana": 1000,
+    "alex_rute": 0
+  },
+  {
+    "id": 170,
+    "activity": "Colocação Testeira",
+    "sector": "Telhado",
+    "value": 1000,
+    "date": "01/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 1000
+  },
+  {
+    "id": 171,
+    "activity": "Colocação Testeira",
+    "sector": "Telhado",
+    "value": 1000,
+    "date": "29/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 1000
+  },
+  {
+    "id": 172,
+    "activity": "Alçapão telhado",
+    "sector": "Telhado",
+    "value": 982,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 982
+  },
+  {
+    "id": 173,
+    "activity": "Rufos",
+    "sector": "Telhado",
+    "value": 194,
+    "date": "01/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 194
+  },
+  {
+    "id": 174,
+    "activity": "Calhas",
+    "sector": "Telhado",
+    "value": 233,
+    "date": "01/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 233
+  },
+  {
+    "id": 176,
+    "activity": "3 Privadas Leroy",
+    "sector": "Louça",
+    "value": 1121.94,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 1121.94
+  },
+  {
+    "id": 177,
+    "activity": "1 Privada Leroy",
+    "sector": "Louça",
+    "value": 594.9,
+    "date": "09/06/2023",
+    "diego_ana": 0,
+    "alex_rute": 594.9
+  },
+  {
+    "id": 179,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 496,
+    "date": "30/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 496
+  },
+  {
+    "id": 180,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 817,
+    "date": "17/11/2022",
+    "diego_ana": 817,
+    "alex_rute": 0
+  },
+  {
+    "id": 181,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 250,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 250
+  },
+  {
+    "id": 182,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 300,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 300
+  },
+  {
+    "id": 183,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 250,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 250
+  },
+  {
+    "id": 184,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 579,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 579
+  },
+  {
+    "id": 185,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 624,
+    "date": "24/05/2023",
+    "diego_ana": 624,
+    "alex_rute": 0
+  },
+  {
+    "id": 186,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 300,
+    "date": "16/06/2023",
+    "diego_ana": 300,
+    "alex_rute": 0
+  },
+  {
+    "id": 187,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 470,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 470
+  },
+  {
+    "id": 188,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 250,
+    "date": "22/08/2023",
+    "diego_ana": 250,
+    "alex_rute": 0
+  },
+  {
+    "id": 189,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 420,
+    "date": "21/09/2023",
+    "diego_ana": 420,
+    "alex_rute": 0
+  },
+  {
+    "id": 190,
+    "activity": "Aluguel Máquinas e Andaimes Construfácil",
+    "sector": "Aluguel Equipamento",
+    "value": 200,
+    "date": "21/09/2023",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 192,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 1090,
+    "date": "20/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 1090
+  },
+  {
+    "id": 193,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 490,
+    "date": "22/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 490
+  },
+  {
+    "id": 194,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 490,
+    "date": "11/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 490
+  },
+  {
+    "id": 195,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 600,
+    "date": "29/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 600
+  },
+  {
+    "id": 196,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 650,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 650
+  },
+  {
+    "id": 197,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 1190,
+    "date": "16/06/2023",
+    "diego_ana": 1190,
+    "alex_rute": 0
+  },
+  {
+    "id": 198,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 490,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 490
+  },
+  {
+    "id": 199,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 1050,
+    "date": "22/08/2023",
+    "diego_ana": 1050,
+    "alex_rute": 0
+  },
+  {
+    "id": 200,
+    "activity": "Brita e areia Helio Bolar",
+    "sector": "Areia e Pedra",
+    "value": 560,
+    "date": "21/09/2023",
+    "diego_ana": 560,
+    "alex_rute": 0
+  },
+  {
+    "id": 201,
+    "activity": "Areia",
+    "sector": "Areia e Pedra",
+    "value": 490,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 490
+  },
+  {
+    "id": 203,
+    "activity": "Esquadrias de Alumínio HZ",
+    "sector": "Esquadrias",
+    "value": 20000,
+    "date": "28/09/2022",
+    "diego_ana": 0,
+    "alex_rute": 20000
+  },
+  {
+    "id": 205,
+    "activity": "Rebaixamento de teto Dry Wall 1º parcela",
+    "sector": "Gesso",
+    "value": 5000,
+    "date": "21/11/2022",
+    "diego_ana": 5000,
+    "alex_rute": 0
+  },
+  {
+    "id": 206,
+    "activity": "Rebaixamento de teto Dry Wall 2º parcela",
+    "sector": "Gesso",
+    "value": 3000,
+    "date": "21/11/2022",
+    "diego_ana": 3000,
+    "alex_rute": 0
+  },
+  {
+    "id": 207,
+    "activity": "Rebaixamento de teto Dry Wall 3° parcela ",
+    "sector": "Gesso",
+    "value": 10000,
+    "date": "16/12/2022",
+    "diego_ana": 10000,
+    "alex_rute": 0
+  },
+  {
+    "id": 208,
+    "activity": "Rebaixamento de teto Dry Wall 4° parcela ",
+    "sector": "Gesso",
+    "value": 6000,
+    "date": "16/12/2022",
+    "diego_ana": 6000,
+    "alex_rute": 0
+  },
+  {
+    "id": 209,
+    "activity": "Rebaixamento de teto Dry Wall 5° parcela ",
+    "sector": "Gesso",
+    "value": 4200,
+    "date": "27/02/2023",
+    "diego_ana": 4200,
+    "alex_rute": 0
+  },
+  {
+    "id": 210,
+    "activity": "Rebaixamento de teto Dry Wall 5° parcela ",
+    "sector": "Gesso",
+    "value": 1552,
+    "date": "16/01/2025",
+    "diego_ana": 1552,
+    "alex_rute": 0
+  },
+  {
+    "id": 212,
+    "activity": "Tira entulho Jackson",
+    "sector": "Limpeza",
+    "value": 2000,
+    "date": "13/10/2022",
+    "diego_ana": 2000,
+    "alex_rute": 0
+  },
+  {
+    "id": 213,
+    "activity": "Tira entulho Jackson",
+    "sector": "Limpeza",
+    "value": 1340,
+    "date": "18/11/2022",
+    "diego_ana": 0,
+    "alex_rute": 1340
+  },
+  {
+    "id": 214,
+    "activity": "Tira entulho Jackson",
+    "sector": "Limpeza",
+    "value": 1000,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 1000
+  },
+  {
+    "id": 215,
+    "activity": "Tira entulho Jackson",
+    "sector": "Limpeza",
+    "value": 3500,
+    "date": "20/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 3500
+  },
+  {
+    "id": 216,
+    "activity": "So Entulho",
+    "sector": "Limpeza",
+    "value": 600,
+    "date": "06/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 600
+  },
+  {
+    "id": 217,
+    "activity": "Limpeza da Obra",
+    "sector": "Limpeza",
+    "value": 300,
+    "date": "22/08/2023",
+    "diego_ana": 300,
+    "alex_rute": 0
+  },
+  {
+    "id": 218,
+    "activity": "Limpeza Final da Obra",
+    "sector": "Limpeza",
+    "value": 1050.25,
+    "date": "21/12/2023",
+    "diego_ana": 0,
+    "alex_rute": 1050.25
+  },
+  {
+    "id": 219,
+    "activity": "Limpeza Final da Obra",
+    "sector": "Limpeza",
+    "value": 300.81,
+    "date": "10/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 300.81
+  },
+  {
+    "id": 220,
+    "activity": "Limpeza Final da Obra",
+    "sector": "Limpeza",
+    "value": 46,
+    "date": "17/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 46
+  },
+  {
+    "id": 221,
+    "activity": "Limpeza Final da Obra",
+    "sector": "Limpeza",
+    "value": 475,
+    "date": "19/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 475
+  },
+  {
+    "id": 222,
+    "activity": "Limpeza Final da Obra",
+    "sector": "Limpeza",
+    "value": 350,
+    "date": "22/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 350
+  },
+  {
+    "id": 223,
+    "activity": "Tira entulho Marcelo",
+    "sector": "Limpeza",
+    "value": 600,
+    "date": "22/08/2023",
+    "diego_ana": 600,
+    "alex_rute": 0
+  },
+  {
+    "id": 224,
+    "activity": "So Entulho",
+    "sector": "Limpeza",
+    "value": 400,
+    "date": "13/09/2023",
+    "diego_ana": 0,
+    "alex_rute": 400
+  },
+  {
+    "id": 226,
+    "activity": "Compra de 400m² - Grama R$ 8,00 M²  Natalia (sem entrega)",
+    "sector": "Paisagismo",
+    "value": 3200,
+    "date": "22/08/2023",
+    "diego_ana": 3200,
+    "alex_rute": 0
+  },
+  {
+    "id": 227,
+    "activity": "Compra de 300m² de Grama Esmeralda R$ 7,00 M²",
+    "sector": "Paisagismo",
+    "value": 2100,
+    "date": "19/10/2023",
+    "diego_ana": 2100,
+    "alex_rute": 0
+  },
+  {
+    "id": 228,
+    "activity": "Compra de 300m² de Grama Esmeralda R$ 7,00 M²",
+    "sector": "Paisagismo",
+    "value": 2100,
+    "date": "09/11/2023",
+    "diego_ana": 0,
+    "alex_rute": 2100
+  },
+  {
+    "id": 229,
+    "activity": "Compra de 100m² de Grama Esmeralda",
+    "sector": "Paisagismo",
+    "value": 600,
+    "date": "21/09/2023",
+    "diego_ana": 600,
+    "alex_rute": 0
+  },
+  {
+    "id": 230,
+    "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
+    "sector": "Paisagismo",
+    "value": 200,
+    "date": "19/10/2023",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 231,
+    "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
+    "sector": "Paisagismo",
+    "value": 200,
+    "date": "22/08/2023",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 232,
+    "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
+    "sector": "Paisagismo",
+    "value": 800,
+    "date": "22/08/2023",
+    "diego_ana": 800,
+    "alex_rute": 0
+  },
+  {
+    "id": 233,
+    "activity": "Retirada de corte de grama e árvore",
+    "sector": "Paisagismo",
+    "value": 200,
+    "date": "02/11/2023",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 234,
+    "activity": "Retirada de corte de grama e árvore",
+    "sector": "Paisagismo",
+    "value": 200,
+    "date": "01/12/2023",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 235,
+    "activity": "Poda das arvores",
+    "sector": "Paisagismo",
+    "value": 2500,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 2500
+  },
+  {
+    "id": 236,
+    "activity": "Compra das 50 mudas para repor as podas",
+    "sector": "Paisagismo",
+    "value": 1250,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 1250
+  },
+  {
+    "id": 237,
+    "activity": "Retirada das árvores e raizes",
+    "sector": "Paisagismo",
+    "value": 3000,
+    "date": "16/06/2023",
+    "diego_ana": 3000,
+    "alex_rute": 0
+  },
+  {
+    "id": 238,
+    "activity": "Caminhão de terra Jardim R$ 180 cada",
+    "sector": "Paisagismo",
+    "value": 360,
+    "date": "21/09/2023",
+    "diego_ana": 360,
+    "alex_rute": 0
+  },
+  {
+    "id": 239,
+    "activity": "Caminhão de terra Jardim R$ 180 cada",
+    "sector": "Paisagismo",
+    "value": 360,
+    "date": "31/10/2023",
+    "diego_ana": 360,
+    "alex_rute": 0
+  },
+  {
+    "id": 241,
+    "activity": "Portão e grade da entrada da casa 1ª parcela",
+    "sector": "Portão",
+    "value": 10000,
+    "date": "31/05/2023",
+    "diego_ana": 10000,
+    "alex_rute": 0
+  },
+  {
+    "id": 242,
+    "activity": "Portão e grade da entrada da casa 2ª parcela",
+    "sector": "Portão",
+    "value": 10000,
+    "date": "31/05/2023",
+    "diego_ana": 10000,
+    "alex_rute": 0
+  },
+  {
+    "id": 243,
+    "activity": "Aumento do portão e grade da entrada da casa ",
+    "sector": "Portão",
+    "value": 400,
+    "date": "21/09/2023",
+    "diego_ana": 400,
+    "alex_rute": 0
+  },
+  {
+    "id": 244,
+    "activity": "Pintura aumento do portão e grade da entrada da casa ",
+    "sector": "Portão",
+    "value": 75,
+    "date": "21/09/2023",
+    "diego_ana": 75,
+    "alex_rute": 0
+  },
+  {
+    "id": 245,
+    "activity": "Pintura aumento do portão e grade da entrada da casa ",
+    "sector": "Portão",
+    "value": 115.74,
+    "date": "09/01/2024",
+    "diego_ana": 115.74,
+    "alex_rute": 0
+  },
+  {
+    "id": 247,
+    "activity": "Cubas Tramontina 2 peças Amazon",
+    "sector": "Metal",
+    "value": 524.7,
+    "date": "01/02/2023",
+    "diego_ana": 524.7,
+    "alex_rute": 0
+  },
+  {
+    "id": 248,
+    "activity": "Tanque inox Amazon",
+    "sector": "Metal",
+    "value": 270,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 270
+  },
+  {
+    "id": 249,
+    "activity": "Torneiras Banheiros = 3 Amazon",
+    "sector": "Metal",
+    "value": 347.97,
+    "date": "17/08/2024",
+    "diego_ana": 347.97,
+    "alex_rute": 0
+  },
+  {
+    "id": 250,
+    "activity": "Torneiras Banheiros = 1 Amazon",
+    "sector": "Metal",
+    "value": 113.88,
+    "date": "21/08/2024",
+    "diego_ana": 113.88,
+    "alex_rute": 0
+  },
+  {
+    "id": 251,
+    "activity": "Torneiras Cozinha = 2 Amazon",
+    "sector": "Metal",
+    "value": 418,
+    "date": "17/08/2024",
+    "diego_ana": 418,
+    "alex_rute": 0
+  },
+  {
+    "id": 252,
+    "activity": "Colocação Torneiras + material M.O. Paulo",
+    "sector": "Metal",
+    "value": 938,
+    "date": "16/09/2024",
+    "diego_ana": 0,
+    "alex_rute": 938
+  },
+  {
+    "id": 254,
+    "activity": "Testeiras e Soleiras",
+    "sector": "Marmoraria",
+    "value": 1300,
+    "date": "16/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 1300
+  },
+  {
+    "id": 255,
+    "activity": "Marmoraria 1ª parcela",
+    "sector": "Marmoraria",
+    "value": 15000,
+    "date": "04/11/2022",
+    "diego_ana": 15000,
+    "alex_rute": 0
+  },
+  {
+    "id": 256,
+    "activity": "Marmoraria 2ª parcela",
+    "sector": "Marmoraria",
+    "value": 15000,
+    "date": "29/03/2023",
+    "diego_ana": 15000,
+    "alex_rute": 0
+  },
+  {
+    "id": 258,
+    "activity": "Guarnições para as portas",
+    "sector": "Marcenaria",
+    "value": 495,
+    "date": "30/03/2023",
+    "diego_ana": 0,
+    "alex_rute": 495
+  },
+  {
+    "id": 259,
+    "activity": "Instalação das guarnições",
+    "sector": "Marcenaria",
+    "value": 300,
+    "date": "30/03/2023",
+    "diego_ana": 0,
+    "alex_rute": 300
+  },
+  {
+    "id": 260,
+    "activity": "Marceneiro 8 portas",
+    "sector": "Marcenaria",
+    "value": 1040,
+    "date": "01/02/2023",
+    "diego_ana": 1040,
+    "alex_rute": 0
+  },
+  {
+    "id": 261,
+    "activity": "Marceneiro M.O.",
+    "sector": "Marcenaria",
+    "value": 100,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 100
+  },
+  {
+    "id": 262,
+    "activity": "Moveis cozinha",
+    "sector": "Marcenaria",
+    "value": 5758.19,
+    "date": "26/02/2025",
+    "diego_ana": 0,
+    "alex_rute": 5758.19
+  },
+  {
+    "id": 263,
+    "activity": "Moveis cozinha",
+    "sector": "Marcenaria",
+    "value": 670,
+    "date": "24/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 670
+  },
+  {
+    "id": 264,
+    "activity": "Moveis cozinha",
+    "sector": "Marcenaria",
+    "value": 2500,
+    "date": "09/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 2500
+  },
+  {
+    "id": 265,
+    "activity": "Moveis cozinha",
+    "sector": "Marcenaria",
+    "value": 6572,
+    "date": "08/05/2025",
+    "diego_ana": 6572,
+    "alex_rute": 0
+  },
+  {
+    "id": 267,
+    "activity": "Desentupimento do Ralo",
+    "sector": "Manutenção",
+    "value": 650,
+    "date": "24/01/2024",
+    "diego_ana": 0,
+    "alex_rute": 650
+  },
+  {
+    "id": 268,
+    "activity": "Sarrafo",
+    "sector": "Manutenção",
+    "value": 453,
+    "date": "25/04/2023",
+    "diego_ana": 0,
+    "alex_rute": 453
+  },
+  {
+    "id": 269,
+    "activity": "Concreto usinado",
+    "sector": "Manutenção",
+    "value": 5250,
+    "date": "05/05/2023",
+    "diego_ana": 0,
+    "alex_rute": 5250
+  },
+  {
+    "id": 270,
+    "activity": "Poste Padrão",
+    "sector": "Manutenção",
+    "value": 2180,
+    "date": "02/06/2023",
+    "diego_ana": 0,
+    "alex_rute": 2180
+  },
+  {
+    "id": 271,
+    "activity": "Tábuas, Guarnições e marceneiro",
+    "sector": "Manutenção",
+    "value": 1029.8,
+    "date": "16/06/2023",
+    "diego_ana": 1029.8,
+    "alex_rute": 0
+  },
+  {
+    "id": 272,
+    "activity": "Material de limpeza + faxineira",
+    "sector": "Manutenção",
+    "value": 338,
+    "date": "16/06/2023",
+    "diego_ana": 338,
+    "alex_rute": 0
+  },
+  {
+    "id": 273,
+    "activity": "Material p/ laje e escada da portaria",
+    "sector": "Manutenção",
+    "value": 992,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 992
+  },
+  {
+    "id": 274,
+    "activity": "Tábua Escada",
+    "sector": "Manutenção",
+    "value": 174,
+    "date": "21/09/2023",
+    "diego_ana": 174,
+    "alex_rute": 0
+  },
+  {
+    "id": 275,
+    "activity": "M.O Tela e Mourão do vizinho",
+    "sector": "Manutenção",
+    "value": 350,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 350
+  },
+  {
+    "id": 276,
+    "activity": "Tábua de 10cm oinus",
+    "sector": "Manutenção",
+    "value": 90,
+    "date": "01/02/2023",
+    "diego_ana": 90,
+    "alex_rute": 0
+  },
+  {
+    "id": 277,
+    "activity": "Tela e Mourão do vizinho",
+    "sector": "Manutenção",
+    "value": 283,
+    "date": "13/01/2023",
+    "diego_ana": 0,
+    "alex_rute": 283
+  },
+  {
+    "id": 278,
+    "activity": "Pintura teto - conserto caixa d'agua",
+    "sector": "Manutenção",
+    "value": 500,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 500
+  },
+  {
+    "id": 279,
+    "activity": "Cloro piscina",
+    "sector": "Manutenção",
+    "value": 100,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 100
+  },
+  {
+    "id": 280,
+    "activity": "Escoras da laje da portaria",
+    "sector": "Manutenção",
+    "value": 110,
+    "date": "20/07/2023",
+    "diego_ana": 0,
+    "alex_rute": 110
+  },
+  {
+    "id": 281,
+    "activity": "Caixas Ar condicionado",
+    "sector": "Manutenção",
+    "value": 55,
+    "date": "28/10/2022",
+    "diego_ana": 0,
+    "alex_rute": 55
+  },
+  {
+    "id": 282,
+    "activity": "Bloco e Canaleta",
+    "sector": "Manutenção",
+    "value": 530,
+    "date": "28/10/2022",
+    "diego_ana": 530,
+    "alex_rute": 0
+  },
+  {
+    "id": 283,
+    "activity": "Batentes de porta",
+    "sector": "Manutenção",
+    "value": 940,
+    "date": "08/12/2022",
+    "diego_ana": 940,
+    "alex_rute": 0
+  },
+  {
+    "id": 284,
+    "activity": "Conserto Esquadrias ",
+    "sector": "Manutenção",
+    "value": 900,
+    "date": "18/02/2023",
+    "diego_ana": 0,
+    "alex_rute": 900
+  },
+  {
+    "id": 285,
+    "activity": "Vidros Janelas",
+    "sector": "Manutenção",
+    "value": 400,
+    "date": "13/04/2023",
+    "diego_ana": 400,
+    "alex_rute": 0
+  },
+  {
+    "id": 286,
+    "activity": "Tinta pintura da parede com mofo da sala (Block Total)",
+    "sector": "Manutenção",
+    "value": 379.9,
+    "date": "16/08/2024",
+    "diego_ana": 0,
+    "alex_rute": 379.9
+  },
+  {
+    "id": 287,
+    "activity": "Tinta e massa corrida para pintura mofo da sala",
+    "sector": "Manutenção",
+    "value": 533.6,
+    "date": "23/08/2024",
+    "diego_ana": 0,
+    "alex_rute": 533.6
+  },
+  {
+    "id": 288,
+    "activity": "Pintura do mofo da sala",
+    "sector": "Manutenção",
+    "value": 400,
+    "date": "25/08/2024",
+    "diego_ana": 0,
+    "alex_rute": 400
+  },
+  {
+    "id": 289,
+    "activity": "Pintura do mofo da sala",
+    "sector": "Manutenção",
+    "value": 380,
+    "date": "23/08/2024",
+    "diego_ana": 0,
+    "alex_rute": 380
+  },
+  {
+    "id": 290,
+    "activity": "Pintura do mofo da sala",
+    "sector": "Manutenção",
+    "value": 250,
+    "date": "18/09/2024",
+    "diego_ana": 0,
+    "alex_rute": 250
+  },
+  {
+    "id": 291,
+    "activity": "Pintura do mofo da sala",
+    "sector": "Manutenção",
+    "value": 150,
+    "date": "20/09/2024",
+    "diego_ana": 0,
+    "alex_rute": 150
+  },
+  {
+    "id": 292,
+    "activity": "Motor da piscina",
+    "sector": "Manutenção",
+    "value": 1080,
+    "date": "03/08/2023",
+    "diego_ana": 1080,
+    "alex_rute": 0
+  },
+  {
+    "id": 293,
+    "activity": "Segunda pintura da piscina",
+    "sector": "Manutenção",
+    "value": 530,
+    "date": "07/08/2023",
+    "diego_ana": 530,
+    "alex_rute": 0
+  },
+  {
+    "id": 294,
+    "activity": "Manutenção e pintura da piscina + aspirador + peneira",
+    "sector": "Manutenção",
+    "value": 1184,
+    "date": "11/08/2023",
+    "diego_ana": 1184,
+    "alex_rute": 0
+  },
+  {
+    "id": 295,
+    "activity": "Manutenção e pintura da piscina",
+    "sector": "Manutenção",
+    "value": 1600,
+    "date": "28/07/2023",
+    "diego_ana": 1600,
+    "alex_rute": 0
+  },
+  {
+    "id": 296,
+    "activity": "Limpeza e produto de limpeza da piscina",
+    "sector": "Manutenção",
+    "value": 393.4,
+    "date": "08/09/2023",
+    "diego_ana": 393.4,
+    "alex_rute": 0
+  },
+  {
+    "id": 297,
+    "activity": "Aspirador e ferramentas para limpeza da piscina",
+    "sector": "Manutenção",
+    "value": 220,
+    "date": "18/01/2024",
+    "diego_ana": 220,
+    "alex_rute": 0
+  },
+  {
+    "id": 298,
+    "activity": "Limpeza e Cloro piscina Janeiro/24",
+    "sector": "Manutenção",
+    "value": 250,
+    "date": "01/02/2024",
+    "diego_ana": 250,
+    "alex_rute": 0
+  },
+  {
+    "id": 299,
+    "activity": "Limpeza piscina Fevereiro/24",
+    "sector": "Manutenção",
+    "value": 150,
+    "date": "04/03/2024",
+    "diego_ana": 150,
+    "alex_rute": 0
+  },
+  {
+    "id": 300,
+    "activity": "Limpeza piscina Março/24",
+    "sector": "Manutenção",
+    "value": 110,
+    "date": "07/04/2024",
+    "diego_ana": 110,
+    "alex_rute": 0
+  },
+  {
+    "id": 303,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 150,
+    "date": "15/12/2023",
+    "diego_ana": 150,
+    "alex_rute": 0
+  },
+  {
+    "id": 304,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 100,
+    "date": "21/12/2023",
+    "diego_ana": 100,
+    "alex_rute": 0
+  },
+  {
+    "id": 305,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 140,
+    "date": "09/01/2024",
+    "diego_ana": 140,
+    "alex_rute": 0
+  },
+  {
+    "id": 306,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 140,
+    "date": "01/02/2024",
+    "diego_ana": 140,
+    "alex_rute": 0
+  },
+  {
+    "id": 307,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 140,
+    "date": "29/02/2024",
+    "diego_ana": 140,
+    "alex_rute": 0
+  },
+  {
+    "id": 308,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 200,
+    "date": "04/04/2024",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 309,
+    "activity": "Jardinagem ",
+    "sector": "Manutenção",
+    "value": 200,
+    "date": "18/05/2024",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 310,
+    "activity": "Jardinagem e limpeza da casa",
+    "sector": "Manutenção",
+    "value": 450,
+    "date": "20/06/2024",
+    "diego_ana": 450,
+    "alex_rute": 0
+  },
+  {
+    "id": 311,
+    "activity": "Material para arrumar o cano do Ralo ",
+    "sector": "Manutenção",
+    "value": 500,
+    "date": "27/06/2024",
+    "diego_ana": 500,
+    "alex_rute": 0
+  },
+  {
+    "id": 312,
+    "activity": "Pedreiro para arrumar o cano do Ralo ",
+    "sector": "Manutenção",
+    "value": 900,
+    "date": "03/07/2024",
+    "diego_ana": 900,
+    "alex_rute": 0
+  },
+  {
+    "id": 313,
+    "activity": "Material para pintura do portão",
+    "sector": "Manutenção",
+    "value": 200,
+    "date": "03/07/2024",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 314,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 300,
+    "date": "27/07/2024",
+    "diego_ana": 300,
+    "alex_rute": 0
+  },
+  {
+    "id": 315,
+    "activity": "Pintura do portão",
+    "sector": "Manutenção",
+    "value": 800,
+    "date": "17/08/2024",
+    "diego_ana": 800,
+    "alex_rute": 0
+  },
+  {
+    "id": 316,
+    "activity": "Limpeza da casa + cadeado",
+    "sector": "Manutenção",
+    "value": 226,
+    "date": "26/08/2024",
+    "diego_ana": 226,
+    "alex_rute": 0
+  },
+  {
+    "id": 317,
+    "activity": "Limpeza da casa + cadeado",
+    "sector": "Manutenção",
+    "value": 70,
+    "date": "28/08/2024",
+    "diego_ana": 70,
+    "alex_rute": 0
+  },
+  {
+    "id": 318,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 265,
+    "date": "06/09/2024",
+    "diego_ana": 265,
+    "alex_rute": 0
+  },
+  {
+    "id": 319,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 200,
+    "date": "30/09/2024",
+    "diego_ana": 200,
+    "alex_rute": 0
+  },
+  {
+    "id": 320,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 320,
+    "date": "04/10/2024",
+    "diego_ana": 320,
+    "alex_rute": 0
+  },
+  {
+    "id": 321,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 250,
+    "date": "23/10/2024",
+    "diego_ana": 250,
+    "alex_rute": 0
+  },
+  {
+    "id": 322,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 900,
+    "date": "09/12/2024",
+    "diego_ana": 900,
+    "alex_rute": 0
+  },
+  {
+    "id": 323,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 350,
+    "date": "25/01/2025",
+    "diego_ana": 350,
+    "alex_rute": 0
+  },
+  {
+    "id": 324,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 450,
+    "date": "10/02/2025",
+    "diego_ana": 450,
+    "alex_rute": 0
+  },
+  {
+    "id": 325,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 860,
+    "date": "19/03/2025",
+    "diego_ana": 860,
+    "alex_rute": 0
+  },
+  {
+    "id": 326,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 170,
+    "date": "25/04/2025",
+    "diego_ana": 170,
+    "alex_rute": 0
+  },
+  {
+    "id": 327,
+    "activity": "Jardinagem e limpeza da Piscina",
+    "sector": "Manutenção",
+    "value": 350,
+    "date": "02/05/2025",
+    "diego_ana": 350,
+    "alex_rute": 0
+  },
+  {
+    "id": 330,
+    "activity": "Conta de Energia 2022 EDP",
+    "sector": "Energia",
+    "value": 349.38,
+    "date": "13/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 349.38
+  },
+  {
+    "id": 331,
+    "activity": "Conta de Energia 2023 EDP",
+    "sector": "Energia",
+    "value": 1047.3,
+    "date": "13/12/2023",
+    "diego_ana": 0,
+    "alex_rute": 1047.3
+  },
+  {
+    "id": 332,
+    "activity": "Conta de Energia 2024 EDP",
+    "sector": "Energia",
+    "value": 1112.23,
+    "date": "13/12/2024",
+    "diego_ana": 0,
+    "alex_rute": 1112.23
+  },
+  {
+    "id": 333,
+    "activity": "Conta de Energia 2025 EDP",
+    "sector": "Energia",
+    "value": 73.49,
+    "date": "06/01/2025",
+    "diego_ana": 0,
+    "alex_rute": 73.49
+  },
+  {
+    "id": 334,
+    "activity": "Conta de Energia 2025 EDP",
+    "sector": "Energia",
+    "value": 137.59,
+    "date": "05/02/2025",
+    "diego_ana": 0,
+    "alex_rute": 137.59
+  },
+  {
+    "id": 335,
+    "activity": "Conta de Energia 2025 EDP",
+    "sector": "Energia",
+    "value": 89.08,
+    "date": "05/03/2025",
+    "diego_ana": 0,
+    "alex_rute": 89.08
+  },
+  {
+    "id": 336,
+    "activity": "Conta de Energia 2025 EDP",
+    "sector": "Energia",
+    "value": 80.65,
+    "date": "04/04/2025",
+    "diego_ana": 0,
+    "alex_rute": 80.65
+  },
+  {
+    "id": 339,
+    "activity": "Conta de Água 2022 SAEG",
+    "sector": "Água",
+    "value": 427.9,
+    "date": "13/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 427.9
+  },
+  {
+    "id": 340,
+    "activity": "Conta de Água 2023 SAEG",
+    "sector": "Água",
+    "value": 639.65,
+    "date": "13/12/2023",
+    "diego_ana": 0,
+    "alex_rute": 639.65
+  },
+  {
+    "id": 341,
+    "activity": "Conta de Água 2024 SAEG",
+    "sector": "Água",
+    "value": 1541.98,
+    "date": "13/12/2024",
+    "diego_ana": 0,
+    "alex_rute": 1541.98
+  },
+  {
+    "id": 342,
+    "activity": "Conta de Água 2025 SAEG",
+    "sector": "Água",
+    "value": 102.72,
+    "date": "10/01/2025",
+    "diego_ana": 0,
+    "alex_rute": 102.72
+  },
+  {
+    "id": 343,
+    "activity": "Conta de Água 2025 SAEG",
+    "sector": "Água",
+    "value": 105.12,
+    "date": "24/04/2025",
+    "diego_ana": 0,
+    "alex_rute": 105.12
+  },
+  {
+    "id": 344,
+    "activity": "Conta de Água 2025 SAEG",
+    "sector": "Água",
+    "value": 102.72,
+    "date": "24/04/2025",
+    "diego_ana": 0,
+    "alex_rute": 102.72
+  },
+  {
+    "id": 348,
+    "activity": "Conta de Condomínio 2022",
+    "sector": "Condomínio",
+    "value": 10225.33,
+    "date": "13/12/2022",
+    "diego_ana": 0,
+    "alex_rute": 10225.33
+  },
+  {
+    "id": 349,
+    "activity": "Conta de Condomínio 2023",
+    "sector": "Condomínio",
+    "value": 13555.22,
+    "date": "13/12/2023",
+    "diego_ana": 0,
+    "alex_rute": 13555.22
+  },
+  {
+    "id": 350,
+    "activity": "Conta de Condomínio 2024",
+    "sector": "Condomínio",
+    "value": 13476,
+    "date": "13/12/2024",
+    "diego_ana": 0,
+    "alex_rute": 13476
+  },
+  {
+    "id": 351,
+    "activity": "Conta de Condomínio 2025",
+    "sector": "Condomínio",
+    "value": 1123,
+    "date": "08/01/2025",
+    "diego_ana": 0,
+    "alex_rute": 1123
+  },
+  {
+    "id": 352,
+    "activity": "Conta de Condomínio 2025",
+    "sector": "Condomínio",
+    "value": 1123,
+    "date": "05/02/2025",
+    "diego_ana": 0,
+    "alex_rute": 1123
+  },
+  {
+    "id": 353,
+    "activity": "Conta de Condomínio 2025",
+    "sector": "Condomínio",
+    "value": 1123,
+    "date": "05/03/2025",
+    "diego_ana": 0,
+    "alex_rute": 1123
+  },
+  {
+    "id": 354,
+    "activity": "Conta de Condomínio 2025",
+    "sector": "Condomínio",
+    "value": 1123,
+    "date": "07/04/2025",
+    "diego_ana": 0,
+    "alex_rute": 1123
+  },
+  {
+    "id": 357,
+    "activity": "IPTU 2025",
+    "sector": "Impostos",
+    "value": 280.4,
+    "date": "17/02/2025",
+    "diego_ana": 0,
+    "alex_rute": 280.4
+  },
+  {
+    "id": 358,
+    "activity": "IPTU 2025",
+    "sector": "Impostos",
+    "value": 286.37,
+    "date": "24/03/2025",
+    "diego_ana": 0,
+    "alex_rute": 286.37
+  },
+  {
+    "id": 359,
+    "activity": "IPTU 2025",
+    "sector": "Impostos",
+    "value": 286.37,
+    "date": "24/03/2025",
+    "diego_ana": 0,
+    "alex_rute": 286.37
+  }
+]

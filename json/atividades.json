@@ -1,7 +1,7 @@
 {
   "activities": [
     {
-      "id": 4,
+      "id": 3,
       "activity": "Taxa Correspondente Caixa",
       "sector": "Documentação",
       "value": 800,
@@ -11,7 +11,7 @@
       "status": "paid"
     },
     {
-      "id": 5,
+      "id": 4,
       "activity": "Contrato Caixa",
       "sector": "Documentação",
       "value": 5892,
@@ -21,7 +21,7 @@
       "status": "paid"
     },
     {
-      "id": 6,
+      "id": 5,
       "activity": "ITBI Casa",
       "sector": "Documentação",
       "value": 3352,
@@ -31,7 +31,7 @@
       "status": "paid"
     },
     {
-      "id": 7,
+      "id": 6,
       "activity": "Cartório",
       "sector": "Documentação",
       "value": 6300,
@@ -41,19 +41,19 @@
       "status": "paid"
     },
     {
-      "id": 8,
+      "id": 7,
       "activity": "Honorários Advogada Leilane - custos de despejo",
       "sector": "Documentação",
       "value": 8455.81,
       "date": "15/09/2021",
-      "diego_ana": 4228.9,
+      "diego_ana": 4227.9,
       "alex_rute": 4227.9,
-      "status": "paid"
+      "status": "pending"
     },
     {
-      "id": 10,
+      "id": 9,
       "activity": "Entrada Imóvel",
-      "sector": "Caixa Economica",
+      "sector": "Financiamento",
       "value": 29150,
       "date": "25/11/2020",
       "diego_ana": 29150,
@@ -61,19 +61,19 @@
       "status": "paid"
     },
     {
-      "id": 11,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 10,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2020",
-      "diego_ana": 6.0,
-      "alex_rute": 3902,
+      "diego_ana": 0,
+      "alex_rute": 3900,
       "status": "paid"
     },
     {
-      "id": 12,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 11,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/12/2020",
       "diego_ana": 0,
@@ -81,9 +81,9 @@
       "status": "paid"
     },
     {
-      "id": 13,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 12,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/01/2021",
       "diego_ana": 0,
@@ -91,9 +91,9 @@
       "status": "paid"
     },
     {
-      "id": 14,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 13,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/02/2021",
       "diego_ana": 1400,
@@ -101,9 +101,9 @@
       "status": "paid"
     },
     {
-      "id": 15,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 14,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/03/2021",
       "diego_ana": 1950,
@@ -111,9 +111,9 @@
       "status": "paid"
     },
     {
-      "id": 16,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 15,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/04/2021",
       "diego_ana": 1950,
@@ -121,9 +121,9 @@
       "status": "paid"
     },
     {
-      "id": 17,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 16,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/05/2021",
       "diego_ana": 1950,
@@ -131,9 +131,9 @@
       "status": "paid"
     },
     {
-      "id": 18,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 17,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/06/2021",
       "diego_ana": 1950,
@@ -141,9 +141,9 @@
       "status": "paid"
     },
     {
-      "id": 19,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 18,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/07/2021",
       "diego_ana": 1950,
@@ -151,9 +151,9 @@
       "status": "paid"
     },
     {
-      "id": 20,
-      "activity": "Parcela de Financiamento Casa - Ultima atualização",
-      "sector": "Caixa Economica",
+      "id": 19,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/08/2021",
       "diego_ana": 1950,
@@ -161,9 +161,9 @@
       "status": "paid"
     },
     {
-      "id": 21,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 20,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/09/2021",
       "diego_ana": 1950,
@@ -171,9 +171,9 @@
       "status": "paid"
     },
     {
-      "id": 22,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 21,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/10/2021",
       "diego_ana": 1950,
@@ -181,9 +181,9 @@
       "status": "paid"
     },
     {
-      "id": 23,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 22,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2021",
       "diego_ana": 1950,
@@ -191,9 +191,9 @@
       "status": "paid"
     },
     {
-      "id": 24,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 23,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/12/2021",
       "diego_ana": 1950,
@@ -201,9 +201,9 @@
       "status": "paid"
     },
     {
-      "id": 25,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 24,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/01/2022",
       "diego_ana": 1950,
@@ -211,9 +211,9 @@
       "status": "paid"
     },
     {
-      "id": 26,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 25,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/02/2022",
       "diego_ana": 1950,
@@ -221,9 +221,9 @@
       "status": "paid"
     },
     {
-      "id": 27,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 26,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/03/2022",
       "diego_ana": 1950,
@@ -231,9 +231,9 @@
       "status": "paid"
     },
     {
-      "id": 28,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 27,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/04/2022",
       "diego_ana": 1950,
@@ -241,9 +241,9 @@
       "status": "paid"
     },
     {
-      "id": 29,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 28,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/05/2022",
       "diego_ana": 1950,
@@ -251,9 +251,9 @@
       "status": "paid"
     },
     {
-      "id": 30,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 29,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/06/2022",
       "diego_ana": 1950,
@@ -261,9 +261,9 @@
       "status": "paid"
     },
     {
-      "id": 31,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 30,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/07/2022",
       "diego_ana": 1950,
@@ -271,9 +271,9 @@
       "status": "paid"
     },
     {
-      "id": 32,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 31,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/08/2022",
       "diego_ana": 1950,
@@ -281,9 +281,9 @@
       "status": "paid"
     },
     {
-      "id": 33,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 32,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/09/2022",
       "diego_ana": 1950,
@@ -291,9 +291,9 @@
       "status": "paid"
     },
     {
-      "id": 34,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 33,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/10/2022",
       "diego_ana": 1950,
@@ -301,9 +301,9 @@
       "status": "paid"
     },
     {
-      "id": 35,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 34,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2022",
       "diego_ana": 1950,
@@ -311,9 +311,9 @@
       "status": "paid"
     },
     {
-      "id": 36,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 35,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/12/2022",
       "diego_ana": 1950,
@@ -321,9 +321,9 @@
       "status": "paid"
     },
     {
-      "id": 37,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 36,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/01/2023",
       "diego_ana": 1950,
@@ -331,9 +331,9 @@
       "status": "paid"
     },
     {
-      "id": 38,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 37,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/02/2023",
       "diego_ana": 1950,
@@ -341,9 +341,9 @@
       "status": "paid"
     },
     {
-      "id": 39,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 38,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/03/2023",
       "diego_ana": 1950,
@@ -351,9 +351,9 @@
       "status": "paid"
     },
     {
-      "id": 40,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 39,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/04/2023",
       "diego_ana": 1950,
@@ -361,9 +361,9 @@
       "status": "paid"
     },
     {
-      "id": 41,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 40,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/05/2023",
       "diego_ana": 1950,
@@ -371,9 +371,9 @@
       "status": "paid"
     },
     {
-      "id": 42,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 41,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/06/2023",
       "diego_ana": 1950,
@@ -381,9 +381,9 @@
       "status": "paid"
     },
     {
-      "id": 43,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 42,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/07/2023",
       "diego_ana": 1950,
@@ -391,9 +391,9 @@
       "status": "paid"
     },
     {
-      "id": 44,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 43,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/08/2023",
       "diego_ana": 1950,
@@ -401,9 +401,9 @@
       "status": "paid"
     },
     {
-      "id": 45,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 44,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/09/2023",
       "diego_ana": 1950,
@@ -411,9 +411,9 @@
       "status": "paid"
     },
     {
-      "id": 46,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 45,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/10/2023",
       "diego_ana": 1950,
@@ -421,9 +421,9 @@
       "status": "paid"
     },
     {
-      "id": 47,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 46,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2023",
       "diego_ana": 1950,
@@ -431,9 +431,9 @@
       "status": "paid"
     },
     {
-      "id": 48,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 47,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/12/2023",
       "diego_ana": 1950,
@@ -441,9 +441,9 @@
       "status": "paid"
     },
     {
-      "id": 49,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 48,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/01/2024",
       "diego_ana": 1950,
@@ -451,9 +451,9 @@
       "status": "paid"
     },
     {
-      "id": 50,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 49,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/02/2024",
       "diego_ana": 1950,
@@ -461,9 +461,9 @@
       "status": "paid"
     },
     {
-      "id": 51,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 50,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/03/2024",
       "diego_ana": 1950,
@@ -471,9 +471,9 @@
       "status": "paid"
     },
     {
-      "id": 52,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 51,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/04/2024",
       "diego_ana": 1950,
@@ -481,9 +481,9 @@
       "status": "paid"
     },
     {
-      "id": 53,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 52,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/05/2024",
       "diego_ana": 1950,
@@ -491,9 +491,9 @@
       "status": "paid"
     },
     {
-      "id": 54,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 53,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/06/2024",
       "diego_ana": 1950,
@@ -501,9 +501,9 @@
       "status": "paid"
     },
     {
-      "id": 55,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 54,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/07/2024",
       "diego_ana": 1950,
@@ -511,9 +511,9 @@
       "status": "paid"
     },
     {
-      "id": 56,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 55,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/08/2024",
       "diego_ana": 1950,
@@ -521,9 +521,9 @@
       "status": "paid"
     },
     {
-      "id": 57,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 56,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/09/2024",
       "diego_ana": 1950,
@@ -531,9 +531,9 @@
       "status": "paid"
     },
     {
-      "id": 58,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 57,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/10/2024",
       "diego_ana": 1950,
@@ -541,9 +541,9 @@
       "status": "paid"
     },
     {
-      "id": 59,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 58,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2024",
       "diego_ana": 1950,
@@ -551,9 +551,9 @@
       "status": "paid"
     },
     {
-      "id": 60,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 59,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/12/2024",
       "diego_ana": 2000,
@@ -561,9 +561,9 @@
       "status": "paid"
     },
     {
-      "id": 61,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 60,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/01/2025",
       "diego_ana": 2000,
@@ -571,39 +571,39 @@
       "status": "paid"
     },
     {
-      "id": 62,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 61,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/02/2025",
-      "diego_ana": 0,
-      "alex_rute": 0,
-      "status": "pending"
+      "diego_ana": 2000,
+      "alex_rute": 2000,
+      "status": "paid"
+    },
+    {
+      "id": 62,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
+      "value": 4000,
+      "date": "25/03/2025",
+      "diego_ana": 2000,
+      "alex_rute": 2000,
+      "status": "paid"
     },
     {
       "id": 63,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
-      "date": "25/03/2025",
-      "diego_ana": 0,
-      "alex_rute": 0,
-      "status": "pending"
+      "date": "25/04/2025",
+      "diego_ana": 2000,
+      "alex_rute": 2000,
+      "status": "paid"
     },
     {
       "id": 64,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
-      "value": 4000,
-      "date": "25/04/2025",
-      "diego_ana": 0,
-      "alex_rute": 0,
-      "status": "pending"
-    },
-    {
-      "id": 65,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/05/2025",
       "diego_ana": 0,
@@ -611,9 +611,9 @@
       "status": "pending"
     },
     {
-      "id": 66,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 65,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/06/2025",
       "diego_ana": 0,
@@ -621,9 +621,9 @@
       "status": "pending"
     },
     {
-      "id": 67,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 66,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/07/2025",
       "diego_ana": 0,
@@ -631,9 +631,9 @@
       "status": "pending"
     },
     {
-      "id": 68,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 67,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/08/2025",
       "diego_ana": 0,
@@ -641,9 +641,9 @@
       "status": "pending"
     },
     {
-      "id": 69,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 68,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/09/2025",
       "diego_ana": 0,
@@ -651,9 +651,9 @@
       "status": "pending"
     },
     {
-      "id": 70,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 69,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/10/2025",
       "diego_ana": 0,
@@ -661,9 +661,9 @@
       "status": "pending"
     },
     {
-      "id": 71,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 70,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/11/2025",
       "diego_ana": 0,
@@ -671,9 +671,9 @@
       "status": "pending"
     },
     {
-      "id": 72,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 71,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 4000,
       "date": "25/12/2025",
       "diego_ana": 0,
@@ -681,9 +681,9 @@
       "status": "pending"
     },
     {
-      "id": 73,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 72,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2026",
       "diego_ana": 0,
@@ -691,9 +691,9 @@
       "status": "pending"
     },
     {
-      "id": 74,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 73,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2027",
       "diego_ana": 0,
@@ -701,9 +701,9 @@
       "status": "pending"
     },
     {
-      "id": 75,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 74,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2028",
       "diego_ana": 0,
@@ -711,9 +711,9 @@
       "status": "pending"
     },
     {
-      "id": 76,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 75,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2029",
       "diego_ana": 0,
@@ -721,9 +721,9 @@
       "status": "pending"
     },
     {
-      "id": 77,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 76,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2030",
       "diego_ana": 0,
@@ -731,9 +731,9 @@
       "status": "pending"
     },
     {
-      "id": 78,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 77,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2031",
       "diego_ana": 0,
@@ -741,9 +741,9 @@
       "status": "pending"
     },
     {
-      "id": 79,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 78,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2032",
       "diego_ana": 0,
@@ -751,9 +751,9 @@
       "status": "pending"
     },
     {
-      "id": 80,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 79,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2033",
       "diego_ana": 0,
@@ -761,9 +761,9 @@
       "status": "pending"
     },
     {
-      "id": 81,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 80,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2034",
       "diego_ana": 0,
@@ -771,9 +771,9 @@
       "status": "pending"
     },
     {
-      "id": 82,
-      "activity": "Parcela de Financiamento Casa",
-      "sector": "Caixa Economica",
+      "id": 81,
+      "activity": "Parcela da Casa - Caixa Economica",
+      "sector": "Financiamento",
       "value": 46800,
       "date": "25/12/2035",
       "diego_ana": 0,
@@ -781,7 +781,7 @@
       "status": "pending"
     },
     {
-      "id": 85,
+      "id": 84,
       "activity": "Projeto Arquit. e Interiores 1° parcela - Carla Rocha",
       "sector": "Projetos",
       "value": 6750,
@@ -791,7 +791,7 @@
       "status": "paid"
     },
     {
-      "id": 86,
+      "id": 85,
       "activity": "Projeto Arquit. e Interiores 2° parcela - Carla Rocha",
       "sector": "Projetos",
       "value": 6750,
@@ -801,7 +801,7 @@
       "status": "paid"
     },
     {
-      "id": 87,
+      "id": 86,
       "activity": "Projeto Arquit. e Interiores 3° parcela - Carla Rocha",
       "sector": "Projetos",
       "value": 4800,
@@ -811,7 +811,7 @@
       "status": "paid"
     },
     {
-      "id": 88,
+      "id": 87,
       "activity": "1ª Parcela Projeto Elétrico - Renato Garcia",
       "sector": "Projetos",
       "value": 900,
@@ -821,7 +821,7 @@
       "status": "paid"
     },
     {
-      "id": 89,
+      "id": 88,
       "activity": "2ª Parcela Projeto Elétrico - Renato Garcia",
       "sector": "Projetos",
       "value": 900,
@@ -831,7 +831,7 @@
       "status": "paid"
     },
     {
-      "id": 90,
+      "id": 89,
       "activity": "1ª ParcelaProjeto Hidráulico - Diego Leonardo",
       "sector": "Projetos",
       "value": 950,
@@ -841,7 +841,7 @@
       "status": "paid"
     },
     {
-      "id": 91,
+      "id": 90,
       "activity": "2ª ParcelaProjeto Hidráulico - Diego Leonardo",
       "sector": "Projetos",
       "value": 950,
@@ -851,9 +851,9 @@
       "status": "paid"
     },
     {
-      "id": 93,
+      "id": 92,
       "activity": "MO Construtora Marcos 1ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 6820,
       "date": "02/09/2022",
       "diego_ana": 6820,
@@ -861,9 +861,9 @@
       "status": "paid"
     },
     {
-      "id": 94,
+      "id": 93,
       "activity": "MO Construtora Marcos 2ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 7150,
       "date": "16/09/2022",
       "diego_ana": 7150,
@@ -871,9 +871,9 @@
       "status": "paid"
     },
     {
-      "id": 95,
+      "id": 94,
       "activity": "MO Construtora Marcos 3ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 10570,
       "date": "30/09/2022",
       "diego_ana": 0,
@@ -881,9 +881,9 @@
       "status": "paid"
     },
     {
-      "id": 96,
+      "id": 95,
       "activity": "MO Construtora Marcos 4ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 10861,
       "date": "14/10/2022",
       "diego_ana": 0,
@@ -891,9 +891,9 @@
       "status": "paid"
     },
     {
-      "id": 97,
+      "id": 96,
       "activity": "MO Construtora Marcos 5ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 10110,
       "date": "28/10/2022",
       "diego_ana": 0,
@@ -901,9 +901,9 @@
       "status": "paid"
     },
     {
-      "id": 98,
+      "id": 97,
       "activity": "MO Construtora Marcos 6ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 15060,
       "date": "16/11/2022",
       "diego_ana": 15060,
@@ -911,9 +911,9 @@
       "status": "paid"
     },
     {
-      "id": 99,
+      "id": 98,
       "activity": "MO Construtora Marcos 7ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 13120,
       "date": "02/12/2022",
       "diego_ana": 0,
@@ -921,9 +921,9 @@
       "status": "paid"
     },
     {
-      "id": 100,
+      "id": 99,
       "activity": "MO Construtora Marcos 8ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 10867.4,
       "date": "15/12/2022",
       "diego_ana": 10867.4,
@@ -931,9 +931,9 @@
       "status": "paid"
     },
     {
-      "id": 101,
+      "id": 100,
       "activity": "MO Construtora Marcos 9ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 8841.6,
       "date": "30/12/2022",
       "diego_ana": 0,
@@ -941,9 +941,9 @@
       "status": "paid"
     },
     {
-      "id": 102,
+      "id": 101,
       "activity": "MO Construtora Marcos 10ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 9000,
       "date": "16/01/2023",
       "diego_ana": 0,
@@ -951,9 +951,9 @@
       "status": "paid"
     },
     {
-      "id": 103,
+      "id": 102,
       "activity": "MO Construtora Marcos 10ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 7000,
       "date": "01/02/2023",
       "diego_ana": 0,
@@ -961,9 +961,9 @@
       "status": "paid"
     },
     {
-      "id": 104,
+      "id": 103,
       "activity": "MO Construtora Marcos 10ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 4500,
       "date": "18/02/2023",
       "diego_ana": 0,
@@ -971,9 +971,9 @@
       "status": "paid"
     },
     {
-      "id": 105,
+      "id": 104,
       "activity": "MO Construtora Marcos 11ª Quinzena",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 4500,
       "date": "14/04/2023",
       "diego_ana": 4500,
@@ -981,9 +981,9 @@
       "status": "paid"
     },
     {
-      "id": 106,
+      "id": 105,
       "activity": "MO Construtora Marcos Área externa 1ª",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 6400,
       "date": "14/04/2023",
       "diego_ana": 6400,
@@ -991,9 +991,9 @@
       "status": "paid"
     },
     {
-      "id": 107,
+      "id": 106,
       "activity": "MO Construtora Marcos Área externa 2ª",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 6400,
       "date": "12/05/2023",
       "diego_ana": 6400,
@@ -1001,9 +1001,9 @@
       "status": "paid"
     },
     {
-      "id": 108,
+      "id": 107,
       "activity": "MO Construtora Marcos Extras esgoto",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 12000,
       "date": "07/07/2023",
       "diego_ana": 12000,
@@ -1011,9 +1011,9 @@
       "status": "paid"
     },
     {
-      "id": 109,
+      "id": 108,
       "activity": "MO Construtora Marcos Escada e Muro de entrada",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 6000,
       "date": "02/06/2023",
       "diego_ana": 0,
@@ -1021,9 +1021,9 @@
       "status": "paid"
     },
     {
-      "id": 110,
+      "id": 109,
       "activity": "MO Construtora Marcos Escada e Muro de entrada",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 6000,
       "date": "24/06/2023",
       "diego_ana": 0,
@@ -1031,9 +1031,9 @@
       "status": "paid"
     },
     {
-      "id": 111,
+      "id": 110,
       "activity": "MO Construtora Marcos Rampa e Calçada",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 4000,
       "date": "21/09/2023",
       "diego_ana": 4000,
@@ -1041,9 +1041,9 @@
       "status": "paid"
     },
     {
-      "id": 112,
+      "id": 111,
       "activity": "MO Construtora Marcos Escada e Muro de entrada",
-      "sector": "Apoio Engenharia",
+      "sector": "Construtor",
       "value": 9000,
       "date": "31/01/2024",
       "diego_ana": 9000,
@@ -1051,9 +1051,9 @@
       "status": "paid"
     },
     {
-      "id": 115,
+      "id": 114,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 5369,
       "date": "07/10/2022",
       "diego_ana": 5369,
@@ -1061,9 +1061,9 @@
       "status": "paid"
     },
     {
-      "id": 116,
+      "id": 115,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 3948.6,
       "date": "04/11/2022",
       "diego_ana": 3948.6,
@@ -1071,9 +1071,9 @@
       "status": "paid"
     },
     {
-      "id": 117,
+      "id": 116,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 4139.85,
       "date": "11/12/2022",
       "diego_ana": 0,
@@ -1081,9 +1081,9 @@
       "status": "paid"
     },
     {
-      "id": 118,
+      "id": 117,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 5848.54,
       "date": "13/01/2023",
       "diego_ana": 0,
@@ -1091,9 +1091,9 @@
       "status": "paid"
     },
     {
-      "id": 119,
+      "id": 118,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 7616.74,
       "date": "18/02/2023",
       "diego_ana": 0,
@@ -1101,9 +1101,9 @@
       "status": "paid"
     },
     {
-      "id": 120,
+      "id": 119,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 4233.79,
       "date": "30/03/2023",
       "diego_ana": 0,
@@ -1111,9 +1111,9 @@
       "status": "paid"
     },
     {
-      "id": 121,
+      "id": 120,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 3475.68,
       "date": "25/04/2023",
       "diego_ana": 0,
@@ -1121,9 +1121,9 @@
       "status": "paid"
     },
     {
-      "id": 122,
+      "id": 121,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 8806.41,
       "date": "24/05/2023",
       "diego_ana": 8806.41,
@@ -1131,9 +1131,9 @@
       "status": "paid"
     },
     {
-      "id": 123,
+      "id": 122,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 3966.4,
       "date": "16/06/2023",
       "diego_ana": 3966.4,
@@ -1141,9 +1141,9 @@
       "status": "paid"
     },
     {
-      "id": 124,
+      "id": 123,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 5462.1,
       "date": "20/07/2023",
       "diego_ana": 0,
@@ -1151,9 +1151,9 @@
       "status": "paid"
     },
     {
-      "id": 125,
+      "id": 124,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 5294.91,
       "date": "22/08/2023",
       "diego_ana": 5294.91,
@@ -1161,9 +1161,9 @@
       "status": "paid"
     },
     {
-      "id": 126,
+      "id": 125,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 2890.46,
       "date": "21/09/2023",
       "diego_ana": 0,
@@ -1171,9 +1171,9 @@
       "status": "paid"
     },
     {
-      "id": 127,
+      "id": 126,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 1053,
       "date": "31/10/2023",
       "diego_ana": 1053,
@@ -1181,9 +1181,9 @@
       "status": "paid"
     },
     {
-      "id": 128,
+      "id": 127,
       "activity": "Zezinho Materiais de construção",
-      "sector": "Depósito Zezinho",
+      "sector": "Depósito",
       "value": 45,
       "date": "23/01/2024",
       "diego_ana": 0,
@@ -1191,9 +1191,9 @@
       "status": "paid"
     },
     {
-      "id": 131,
+      "id": 130,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 1168,
       "date": "07/10/2022",
       "diego_ana": 1168,
@@ -1201,9 +1201,9 @@
       "status": "paid"
     },
     {
-      "id": 132,
+      "id": 131,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 6907.11,
       "date": "04/11/2022",
       "diego_ana": 6907.11,
@@ -1211,9 +1211,9 @@
       "status": "paid"
     },
     {
-      "id": 133,
+      "id": 132,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 13284.39,
       "date": "11/12/2022",
       "diego_ana": 0,
@@ -1221,9 +1221,9 @@
       "status": "paid"
     },
     {
-      "id": 134,
+      "id": 133,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 3316.37,
       "date": "13/01/2023",
       "diego_ana": 0,
@@ -1231,9 +1231,9 @@
       "status": "paid"
     },
     {
-      "id": 135,
+      "id": 134,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 3954.9,
       "date": "18/02/2023",
       "diego_ana": 0,
@@ -1241,9 +1241,9 @@
       "status": "paid"
     },
     {
-      "id": 136,
+      "id": 135,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 3013.76,
       "date": "30/03/2023",
       "diego_ana": 0,
@@ -1251,9 +1251,9 @@
       "status": "paid"
     },
     {
-      "id": 137,
+      "id": 136,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 476.77,
       "date": "25/04/2023",
       "diego_ana": 0,
@@ -1261,9 +1261,9 @@
       "status": "paid"
     },
     {
-      "id": 138,
+      "id": 137,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 50.25,
       "date": "24/05/2023",
       "diego_ana": 50.25,
@@ -1271,9 +1271,9 @@
       "status": "paid"
     },
     {
-      "id": 139,
+      "id": 138,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 1316.44,
       "date": "16/06/2023",
       "diego_ana": 1316.44,
@@ -1281,9 +1281,9 @@
       "status": "paid"
     },
     {
-      "id": 140,
+      "id": 139,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 196.97,
       "date": "22/08/2023",
       "diego_ana": 196.97,
@@ -1291,9 +1291,9 @@
       "status": "paid"
     },
     {
-      "id": 141,
+      "id": 140,
       "activity": "Himaza Materiais de construção",
-      "sector": "Depósito Himaza",
+      "sector": "Depósito",
       "value": 4907.54,
       "date": "21/09/2023",
       "diego_ana": 0,
@@ -1301,7 +1301,7 @@
       "status": "paid"
     },
     {
-      "id": 144,
+      "id": 143,
       "activity": "Frete Piso",
       "sector": "Piso e Revestimento",
       "value": 650,
@@ -1311,7 +1311,7 @@
       "status": "paid"
     },
     {
-      "id": 145,
+      "id": 144,
       "activity": "Revestimento Eliane - Depósito Bandeirantes",
       "sector": "Piso e Revestimento",
       "value": 2700,
@@ -1321,7 +1321,7 @@
       "status": "paid"
     },
     {
-      "id": 146,
+      "id": 145,
       "activity": "Piso Delta + Cimentocola - Depósito Bandeirantes",
       "sector": "Piso e Revestimento",
       "value": 24132.95,
@@ -1331,7 +1331,7 @@
       "status": "paid"
     },
     {
-      "id": 147,
+      "id": 146,
       "activity": "Revestimento Eliane - Leroy",
       "sector": "Piso e Revestimento",
       "value": 838.8,
@@ -1341,7 +1341,7 @@
       "status": "paid"
     },
     {
-      "id": 148,
+      "id": 147,
       "activity": "Piso Delta - Depósito Bandeirantes",
       "sector": "Piso e Revestimento",
       "value": 1774.24,
@@ -1351,7 +1351,7 @@
       "status": "paid"
     },
     {
-      "id": 149,
+      "id": 148,
       "activity": "Piso Delta - Depósito Bandeirantes",
       "sector": "Piso e Revestimento",
       "value": 544.67,
@@ -1361,7 +1361,7 @@
       "status": "paid"
     },
     {
-      "id": 150,
+      "id": 149,
       "activity": "Piso Fuget 43 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 3000,
@@ -1371,7 +1371,7 @@
       "status": "paid"
     },
     {
-      "id": 151,
+      "id": 150,
       "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 4000,
@@ -1381,7 +1381,7 @@
       "status": "paid"
     },
     {
-      "id": 152,
+      "id": 151,
       "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 4000,
@@ -1391,7 +1391,7 @@
       "status": "paid"
     },
     {
-      "id": 153,
+      "id": 152,
       "activity": "Piso Fuget 43 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 3000,
@@ -1401,7 +1401,7 @@
       "status": "paid"
     },
     {
-      "id": 154,
+      "id": 153,
       "activity": "Piso Fuget 57 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 4000,
@@ -1411,7 +1411,7 @@
       "status": "paid"
     },
     {
-      "id": 155,
+      "id": 154,
       "activity": "Piso Fuget 14 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 1000,
@@ -1421,7 +1421,7 @@
       "status": "paid"
     },
     {
-      "id": 156,
+      "id": 155,
       "activity": "Piso Fuget 14 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 1000,
@@ -1431,7 +1431,7 @@
       "status": "paid"
     },
     {
-      "id": 157,
+      "id": 156,
       "activity": "Piso Fuget 68 m² = R$ 70,00 o metro - Wellington",
       "sector": "Piso e Revestimento",
       "value": 4710,
@@ -1441,7 +1441,7 @@
       "status": "paid"
     },
     {
-      "id": 159,
+      "id": 158,
       "activity": "Telhas",
       "sector": "Telhado",
       "value": 12396.5,
@@ -1451,7 +1451,7 @@
       "status": "paid"
     },
     {
-      "id": 160,
+      "id": 159,
       "activity": "Madeiras Tábuas",
       "sector": "Telhado",
       "value": 996,
@@ -1461,7 +1461,7 @@
       "status": "paid"
     },
     {
-      "id": 161,
+      "id": 160,
       "activity": "Caibro, Viga e Tábua",
       "sector": "Telhado",
       "value": 2400,
@@ -1471,7 +1471,7 @@
       "status": "paid"
     },
     {
-      "id": 162,
+      "id": 161,
       "activity": "Ripão e Madeirite",
       "sector": "Telhado",
       "value": 3718.4,
@@ -1481,7 +1481,7 @@
       "status": "paid"
     },
     {
-      "id": 163,
+      "id": 162,
       "activity": "Ripão 400 mts",
       "sector": "Telhado",
       "value": 2000,
@@ -1491,7 +1491,7 @@
       "status": "paid"
     },
     {
-      "id": 164,
+      "id": 163,
       "activity": "Ripão 300 mts",
       "sector": "Telhado",
       "value": 1500,
@@ -1501,7 +1501,7 @@
       "status": "paid"
     },
     {
-      "id": 165,
+      "id": 164,
       "activity": "Maderite",
       "sector": "Telhado",
       "value": 593.6,
@@ -1511,7 +1511,7 @@
       "status": "paid"
     },
     {
-      "id": 166,
+      "id": 165,
       "activity": "Calheiro 1ª parcela",
       "sector": "Telhado",
       "value": 2400,
@@ -1521,7 +1521,7 @@
       "status": "paid"
     },
     {
-      "id": 167,
+      "id": 166,
       "activity": "Calheiro 2ª parcela",
       "sector": "Telhado",
       "value": 2400,
@@ -1531,7 +1531,7 @@
       "status": "paid"
     },
     {
-      "id": 168,
+      "id": 167,
       "activity": "Material Calha",
       "sector": "Telhado",
       "value": 3182,
@@ -1541,7 +1541,7 @@
       "status": "paid"
     },
     {
-      "id": 169,
+      "id": 168,
       "activity": "Testeira + Maderite + Rebite",
       "sector": "Telhado",
       "value": 2901,
@@ -1551,7 +1551,7 @@
       "status": "paid"
     },
     {
-      "id": 170,
+      "id": 169,
       "activity": "Colocação Testeira",
       "sector": "Telhado",
       "value": 1000,
@@ -1561,7 +1561,7 @@
       "status": "paid"
     },
     {
-      "id": 171,
+      "id": 170,
       "activity": "Colocação Testeira",
       "sector": "Telhado",
       "value": 1000,
@@ -1571,7 +1571,7 @@
       "status": "paid"
     },
     {
-      "id": 172,
+      "id": 171,
       "activity": "Colocação Testeira",
       "sector": "Telhado",
       "value": 1000,
@@ -1581,7 +1581,7 @@
       "status": "paid"
     },
     {
-      "id": 173,
+      "id": 172,
       "activity": "Alçapão telhado",
       "sector": "Telhado",
       "value": 982,
@@ -1591,7 +1591,7 @@
       "status": "paid"
     },
     {
-      "id": 174,
+      "id": 173,
       "activity": "Rufos",
       "sector": "Telhado",
       "value": 194,
@@ -1601,7 +1601,7 @@
       "status": "paid"
     },
     {
-      "id": 175,
+      "id": 174,
       "activity": "Calhas",
       "sector": "Telhado",
       "value": 233,
@@ -1611,69 +1611,9 @@
       "status": "paid"
     },
     {
-      "id": 177,
-      "activity": "Tela e Mourão do vizinho",
-      "sector": "Ricardo",
-      "value": 283,
-      "date": "13/01/2023",
-      "diego_ana": 0,
-      "alex_rute": 283,
-      "status": "paid"
-    },
-    {
-      "id": 178,
-      "activity": "M.O Tela e Mourão do vizinho",
-      "sector": "Ricardo",
-      "value": 350,
-      "date": "13/01/2023",
-      "diego_ana": 0,
-      "alex_rute": 350,
-      "status": "paid"
-    },
-    {
-      "id": 179,
-      "activity": "Marceneiro 8 portas",
-      "sector": null,
-      "value": 1040,
-      "date": "01/02/2023",
-      "diego_ana": 1040,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 180,
-      "activity": "Tábua de 10cm oinus",
-      "sector": null,
-      "value": 90,
-      "date": "01/02/2023",
-      "diego_ana": 90,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 181,
-      "activity": "Cubas Tramontina 2 peças",
-      "sector": "Amazon",
-      "value": 524.7,
-      "date": "01/02/2023",
-      "diego_ana": 524.7,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 182,
-      "activity": "Tanque inox",
-      "sector": "Mercado livre ",
-      "value": 270,
-      "date": "18/02/2023",
-      "diego_ana": 0,
-      "alex_rute": 270,
-      "status": "paid"
-    },
-    {
-      "id": 183,
-      "activity": "3 Privadas ",
-      "sector": "Leroy",
+      "id": 176,
+      "activity": "3 Privadas Leroy",
+      "sector": "Louça",
       "value": 1121.94,
       "date": "18/02/2023",
       "diego_ana": 0,
@@ -1681,9 +1621,9 @@
       "status": "paid"
     },
     {
-      "id": 184,
-      "activity": "1 Privada",
-      "sector": "Leroy",
+      "id": 177,
+      "activity": "1 Privada Leroy",
+      "sector": "Louça",
       "value": 594.9,
       "date": "09/06/2023",
       "diego_ana": 0,
@@ -1691,137 +1631,7 @@
       "status": "paid"
     },
     {
-      "id": 185,
-      "activity": "Guarnições para as portas",
-      "sector": null,
-      "value": 495,
-      "date": "30/03/2023",
-      "diego_ana": 0,
-      "alex_rute": 495,
-      "status": "paid"
-    },
-    {
-      "id": 186,
-      "activity": "Instalação das guarnições",
-      "sector": null,
-      "value": 300,
-      "date": "30/03/2023",
-      "diego_ana": 0,
-      "alex_rute": 300,
-      "status": "paid"
-    },
-    {
-      "id": 187,
-      "activity": "Marceneiro",
-      "sector": null,
-      "value": 100,
-      "date": "25/04/2023",
-      "diego_ana": 0,
-      "alex_rute": 100,
-      "status": "paid"
-    },
-    {
-      "id": 188,
-      "activity": "Desentupimento do Ralo",
-      "sector": "FC Cavalca Cunha",
-      "value": 650,
-      "date": "24/01/2024",
-      "diego_ana": 0,
-      "alex_rute": 650,
-      "status": "paid"
-    },
-    {
-      "id": 189,
-      "activity": "Sarrafo",
-      "sector": null,
-      "value": 453,
-      "date": "25/04/2023",
-      "diego_ana": 0,
-      "alex_rute": 453,
-      "status": "paid"
-    },
-    {
-      "id": 190,
-      "activity": "Concreto usinado",
-      "sector": "Zezão",
-      "value": 5250,
-      "date": "05/05/2023",
-      "diego_ana": 0,
-      "alex_rute": 5250,
-      "status": "paid"
-    },
-    {
-      "id": 191,
-      "activity": "Poste Padrão",
-      "sector": "Loren Poste",
-      "value": 2180,
-      "date": "02/06/2023",
-      "diego_ana": 0,
-      "alex_rute": 2180,
-      "status": "paid"
-    },
-    {
-      "id": 192,
-      "activity": "Tábuas, Guarnições e marceneiro",
-      "sector": null,
-      "value": 1029.8,
-      "date": "16/06/2023",
-      "diego_ana": 1029.8,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 193,
-      "activity": "Material de limpeza + faxineira",
-      "sector": null,
-      "value": 338,
-      "date": "16/06/2023",
-      "diego_ana": 338,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 194,
-      "activity": "Material p/ laje e escada da portaria",
-      "sector": null,
-      "value": 992,
-      "date": "20/07/2023",
-      "diego_ana": 0,
-      "alex_rute": 992,
-      "status": "paid"
-    },
-    {
-      "id": 195,
-      "activity": "Tábua Escada",
-      "sector": null,
-      "value": 174,
-      "date": "21/09/2023",
-      "diego_ana": 174,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 196,
-      "activity": "Caminhão de terra Jardim R$ 180 cada",
-      "sector": null,
-      "value": 360,
-      "date": "21/09/2023",
-      "diego_ana": 360,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 197,
-      "activity": "Caminhão de terra Jardim R$ 180 cada",
-      "sector": null,
-      "value": 360,
-      "date": "31/10/2023",
-      "diego_ana": 360,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 199,
+      "id": 179,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 496,
@@ -1831,7 +1641,7 @@
       "status": "paid"
     },
     {
-      "id": 200,
+      "id": 180,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 817,
@@ -1841,7 +1651,7 @@
       "status": "paid"
     },
     {
-      "id": 201,
+      "id": 181,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 250,
@@ -1851,7 +1661,7 @@
       "status": "paid"
     },
     {
-      "id": 202,
+      "id": 182,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 300,
@@ -1861,7 +1671,7 @@
       "status": "paid"
     },
     {
-      "id": 203,
+      "id": 183,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 250,
@@ -1871,7 +1681,7 @@
       "status": "paid"
     },
     {
-      "id": 204,
+      "id": 184,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 579,
@@ -1881,7 +1691,7 @@
       "status": "paid"
     },
     {
-      "id": 205,
+      "id": 185,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 624,
@@ -1891,7 +1701,7 @@
       "status": "paid"
     },
     {
-      "id": 206,
+      "id": 186,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 300,
@@ -1901,7 +1711,7 @@
       "status": "paid"
     },
     {
-      "id": 207,
+      "id": 187,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 470,
@@ -1911,7 +1721,7 @@
       "status": "paid"
     },
     {
-      "id": 208,
+      "id": 188,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 250,
@@ -1921,7 +1731,7 @@
       "status": "paid"
     },
     {
-      "id": 209,
+      "id": 189,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 420,
@@ -1931,7 +1741,7 @@
       "status": "paid"
     },
     {
-      "id": 210,
+      "id": 190,
       "activity": "Aluguel Máquinas e Andaimes Construfácil",
       "sector": "Aluguel Equipamento",
       "value": 200,
@@ -1941,7 +1751,7 @@
       "status": "paid"
     },
     {
-      "id": 212,
+      "id": 192,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 1090,
@@ -1951,7 +1761,7 @@
       "status": "paid"
     },
     {
-      "id": 213,
+      "id": 193,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 490,
@@ -1961,7 +1771,7 @@
       "status": "paid"
     },
     {
-      "id": 214,
+      "id": 194,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 490,
@@ -1971,7 +1781,7 @@
       "status": "paid"
     },
     {
-      "id": 215,
+      "id": 195,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 600,
@@ -1981,7 +1791,7 @@
       "status": "paid"
     },
     {
-      "id": 216,
+      "id": 196,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 650,
@@ -1991,7 +1801,7 @@
       "status": "paid"
     },
     {
-      "id": 217,
+      "id": 197,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 1190,
@@ -2001,7 +1811,7 @@
       "status": "paid"
     },
     {
-      "id": 218,
+      "id": 198,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 490,
@@ -2011,7 +1821,7 @@
       "status": "paid"
     },
     {
-      "id": 219,
+      "id": 199,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 1050,
@@ -2021,7 +1831,7 @@
       "status": "paid"
     },
     {
-      "id": 220,
+      "id": 200,
       "activity": "Brita e areia Helio Bolar",
       "sector": "Areia e Pedra",
       "value": 560,
@@ -2031,7 +1841,7 @@
       "status": "paid"
     },
     {
-      "id": 221,
+      "id": 201,
       "activity": "Areia",
       "sector": "Areia e Pedra",
       "value": 490,
@@ -2041,9 +1851,9 @@
       "status": "paid"
     },
     {
-      "id": 223,
-      "activity": "Esquadrias de Alumínio",
-      "sector": "HZ Esquadrias",
+      "id": 203,
+      "activity": "Esquadrias de Alumínio HZ",
+      "sector": "Esquadrias",
       "value": 20000,
       "date": "28/09/2022",
       "diego_ana": 0,
@@ -2051,9 +1861,9 @@
       "status": "paid"
     },
     {
-      "id": 225,
+      "id": 205,
       "activity": "Rebaixamento de teto Dry Wall 1º parcela",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 5000,
       "date": "21/11/2022",
       "diego_ana": 5000,
@@ -2061,9 +1871,9 @@
       "status": "paid"
     },
     {
-      "id": 226,
+      "id": 206,
       "activity": "Rebaixamento de teto Dry Wall 2º parcela",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 3000,
       "date": "21/11/2022",
       "diego_ana": 3000,
@@ -2071,9 +1881,9 @@
       "status": "paid"
     },
     {
-      "id": 227,
+      "id": 207,
       "activity": "Rebaixamento de teto Dry Wall 3° parcela ",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 10000,
       "date": "16/12/2022",
       "diego_ana": 10000,
@@ -2081,9 +1891,9 @@
       "status": "paid"
     },
     {
-      "id": 228,
+      "id": 208,
       "activity": "Rebaixamento de teto Dry Wall 4° parcela ",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 6000,
       "date": "16/12/2022",
       "diego_ana": 6000,
@@ -2091,9 +1901,9 @@
       "status": "paid"
     },
     {
-      "id": 229,
+      "id": 209,
       "activity": "Rebaixamento de teto Dry Wall 5° parcela ",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 4200,
       "date": "27/02/2023",
       "diego_ana": 4200,
@@ -2101,9 +1911,9 @@
       "status": "paid"
     },
     {
-      "id": 230,
+      "id": 210,
       "activity": "Rebaixamento de teto Dry Wall 5° parcela ",
-      "sector": "MR Instalações",
+      "sector": "Gesso",
       "value": 1552,
       "date": "16/01/2025",
       "diego_ana": 1552,
@@ -2111,7 +1921,7 @@
       "status": "paid"
     },
     {
-      "id": 232,
+      "id": 212,
       "activity": "Tira entulho Jackson",
       "sector": "Limpeza",
       "value": 2000,
@@ -2121,7 +1931,7 @@
       "status": "paid"
     },
     {
-      "id": 233,
+      "id": 213,
       "activity": "Tira entulho Jackson",
       "sector": "Limpeza",
       "value": 1340,
@@ -2131,7 +1941,7 @@
       "status": "paid"
     },
     {
-      "id": 234,
+      "id": 214,
       "activity": "Tira entulho Jackson",
       "sector": "Limpeza",
       "value": 1000,
@@ -2141,7 +1951,7 @@
       "status": "paid"
     },
     {
-      "id": 235,
+      "id": 215,
       "activity": "Tira entulho Jackson",
       "sector": "Limpeza",
       "value": 3500,
@@ -2151,7 +1961,7 @@
       "status": "paid"
     },
     {
-      "id": 236,
+      "id": 216,
       "activity": "So Entulho",
       "sector": "Limpeza",
       "value": 600,
@@ -2161,7 +1971,7 @@
       "status": "paid"
     },
     {
-      "id": 237,
+      "id": 217,
       "activity": "Limpeza da Obra",
       "sector": "Limpeza",
       "value": 300,
@@ -2171,7 +1981,7 @@
       "status": "paid"
     },
     {
-      "id": 238,
+      "id": 218,
       "activity": "Limpeza Final da Obra",
       "sector": "Limpeza",
       "value": 1050.25,
@@ -2181,7 +1991,7 @@
       "status": "paid"
     },
     {
-      "id": 239,
+      "id": 219,
       "activity": "Limpeza Final da Obra",
       "sector": "Limpeza",
       "value": 300.81,
@@ -2191,7 +2001,7 @@
       "status": "paid"
     },
     {
-      "id": 240,
+      "id": 220,
       "activity": "Limpeza Final da Obra",
       "sector": "Limpeza",
       "value": 46,
@@ -2201,7 +2011,7 @@
       "status": "paid"
     },
     {
-      "id": 241,
+      "id": 221,
       "activity": "Limpeza Final da Obra",
       "sector": "Limpeza",
       "value": 475,
@@ -2211,7 +2021,7 @@
       "status": "paid"
     },
     {
-      "id": 242,
+      "id": 222,
       "activity": "Limpeza Final da Obra",
       "sector": "Limpeza",
       "value": 350,
@@ -2221,7 +2031,7 @@
       "status": "paid"
     },
     {
-      "id": 243,
+      "id": 223,
       "activity": "Tira entulho Marcelo",
       "sector": "Limpeza",
       "value": 600,
@@ -2231,7 +2041,7 @@
       "status": "paid"
     },
     {
-      "id": 244,
+      "id": 224,
       "activity": "So Entulho",
       "sector": "Limpeza",
       "value": 400,
@@ -2241,9 +2051,9 @@
       "status": "paid"
     },
     {
-      "id": 246,
-      "activity": "Compra de 400m² de Grama Esmeralda R$ 8,00 M²",
-      "sector": "Natalia (sem entrega)",
+      "id": 226,
+      "activity": "Compra de 400m² - Grama R$ 8,00 M²  Natalia (sem entrega)",
+      "sector": "Paisagismo",
       "value": 3200,
       "date": "22/08/2023",
       "diego_ana": 3200,
@@ -2251,9 +2061,9 @@
       "status": "paid"
     },
     {
-      "id": 247,
+      "id": 227,
       "activity": "Compra de 300m² de Grama Esmeralda R$ 7,00 M²",
-      "sector": "André",
+      "sector": "Paisagismo",
       "value": 2100,
       "date": "19/10/2023",
       "diego_ana": 2100,
@@ -2261,9 +2071,9 @@
       "status": "paid"
     },
     {
-      "id": 248,
+      "id": 228,
       "activity": "Compra de 300m² de Grama Esmeralda R$ 7,00 M²",
-      "sector": "André",
+      "sector": "Paisagismo",
       "value": 2100,
       "date": "09/11/2023",
       "diego_ana": 0,
@@ -2271,9 +2081,9 @@
       "status": "paid"
     },
     {
-      "id": 249,
+      "id": 229,
       "activity": "Compra de 100m² de Grama Esmeralda",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 600,
       "date": "21/09/2023",
       "diego_ana": 600,
@@ -2281,9 +2091,9 @@
       "status": "paid"
     },
     {
-      "id": 250,
+      "id": 230,
       "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 200,
       "date": "19/10/2023",
       "diego_ana": 200,
@@ -2291,9 +2101,9 @@
       "status": "paid"
     },
     {
-      "id": 251,
+      "id": 231,
       "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 200,
       "date": "22/08/2023",
       "diego_ana": 200,
@@ -2301,9 +2111,9 @@
       "status": "paid"
     },
     {
-      "id": 252,
+      "id": 232,
       "activity": "Limpeza, Preparação e Plantio de toda jardinagem",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 800,
       "date": "22/08/2023",
       "diego_ana": 800,
@@ -2311,9 +2121,9 @@
       "status": "paid"
     },
     {
-      "id": 253,
+      "id": 233,
       "activity": "Retirada de corte de grama e árvore",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 200,
       "date": "02/11/2023",
       "diego_ana": 200,
@@ -2321,9 +2131,9 @@
       "status": "paid"
     },
     {
-      "id": 254,
+      "id": 234,
       "activity": "Retirada de corte de grama e árvore",
-      "sector": "Rosalvo",
+      "sector": "Paisagismo",
       "value": 200,
       "date": "01/12/2023",
       "diego_ana": 200,
@@ -2331,69 +2141,9 @@
       "status": "paid"
     },
     {
-      "id": 256,
-      "activity": "Motor da piscina",
-      "sector": "Alexandre",
-      "value": 1080,
-      "date": "03/08/2023",
-      "diego_ana": 1080,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 257,
-      "activity": "Segunda pintura da piscina",
-      "sector": "Alexandre",
-      "value": 530,
-      "date": "07/08/2023",
-      "diego_ana": 530,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 258,
-      "activity": "Manutenção e pintura da piscina + aspirador + peneira",
-      "sector": "Alexandre",
-      "value": 1184,
-      "date": "11/08/2023",
-      "diego_ana": 1184,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 259,
-      "activity": "Manutenção e pintura da piscina",
-      "sector": "Alexandre",
-      "value": 1600,
-      "date": "28/07/2023",
-      "diego_ana": 1600,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 260,
-      "activity": "Limpeza e produto de limpeza da piscina",
-      "sector": "Alexandre",
-      "value": 393.4,
-      "date": "08/09/2023",
-      "diego_ana": 393.4,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 262,
-      "activity": "Pintura teto - conserto caixa d'agua",
-      "sector": "Irmão da Rute",
-      "value": 500,
-      "date": "28/10/2022",
-      "diego_ana": 0,
-      "alex_rute": 500,
-      "status": "paid"
-    },
-    {
-      "id": 263,
+      "id": 235,
       "activity": "Poda das arvores",
-      "sector": "Irmão da Rute",
+      "sector": "Paisagismo",
       "value": 2500,
       "date": "28/10/2022",
       "diego_ana": 0,
@@ -2401,9 +2151,9 @@
       "status": "paid"
     },
     {
-      "id": 264,
+      "id": 236,
       "activity": "Compra das 50 mudas para repor as podas",
-      "sector": "Bom Jardim",
+      "sector": "Paisagismo",
       "value": 1250,
       "date": "28/10/2022",
       "diego_ana": 0,
@@ -2411,9 +2161,9 @@
       "status": "paid"
     },
     {
-      "id": 265,
+      "id": 237,
       "activity": "Retirada das árvores e raizes",
-      "sector": "Jackson",
+      "sector": "Paisagismo",
       "value": 3000,
       "date": "16/06/2023",
       "diego_ana": 3000,
@@ -2421,79 +2171,29 @@
       "status": "paid"
     },
     {
-      "id": 266,
-      "activity": "Cloro piscina",
-      "sector": "Ricardo",
-      "value": 100,
-      "date": "20/07/2023",
-      "diego_ana": 0,
-      "alex_rute": 100,
-      "status": "paid"
-    },
-    {
-      "id": 267,
-      "activity": "Escoras da laje da portaria",
-      "sector": "Ricardo",
-      "value": 110,
-      "date": "20/07/2023",
-      "diego_ana": 0,
-      "alex_rute": 110,
-      "status": "paid"
-    },
-    {
-      "id": 268,
-      "activity": "Caixas Ar condicionado",
-      "sector": "Caixas Ar condicionado",
-      "value": 55,
-      "date": "28/10/2022",
-      "diego_ana": 0,
-      "alex_rute": 55,
-      "status": "paid"
-    },
-    {
-      "id": 269,
-      "activity": "Bloco e Canaleta",
-      "sector": "Maria Inês",
-      "value": 530,
-      "date": "28/10/2022",
-      "diego_ana": 530,
+      "id": 238,
+      "activity": "Caminhão de terra Jardim R$ 180 cada",
+      "sector": "Paisagismo",
+      "value": 360,
+      "date": "21/09/2023",
+      "diego_ana": 360,
       "alex_rute": 0,
       "status": "paid"
     },
     {
-      "id": 270,
-      "activity": "Batentes de porta",
-      "sector": null,
-      "value": 940,
-      "date": "08/12/2022",
-      "diego_ana": 940,
+      "id": 239,
+      "activity": "Caminhão de terra Jardim R$ 180 cada",
+      "sector": "Paisagismo",
+      "value": 360,
+      "date": "31/10/2023",
+      "diego_ana": 360,
       "alex_rute": 0,
       "status": "paid"
     },
     {
-      "id": 271,
-      "activity": "Conserto Esquadrias ",
-      "sector": null,
-      "value": 900,
-      "date": "18/02/2023",
-      "diego_ana": 0,
-      "alex_rute": 900,
-      "status": "paid"
-    },
-    {
-      "id": 272,
-      "activity": "Vidros Janelas",
-      "sector": null,
-      "value": 400,
-      "date": "13/04/2023",
-      "diego_ana": 400,
-      "alex_rute": 0,
-      "status": "paid"
-    },
-    {
-      "id": 273,
+      "id": 241,
       "activity": "Portão e grade da entrada da casa 1ª parcela",
-      "sector": null,
+      "sector": "Portão",
       "value": 10000,
       "date": "31/05/2023",
       "diego_ana": 10000,
@@ -2501,9 +2201,9 @@
       "status": "paid"
     },
     {
-      "id": 274,
+      "id": 242,
       "activity": "Portão e grade da entrada da casa 2ª parcela",
-      "sector": null,
+      "sector": "Portão",
       "value": 10000,
       "date": "31/05/2023",
       "diego_ana": 10000,
@@ -2511,9 +2211,9 @@
       "status": "paid"
     },
     {
-      "id": 275,
+      "id": 243,
       "activity": "Aumento do portão e grade da entrada da casa ",
-      "sector": null,
+      "sector": "Portão",
       "value": 400,
       "date": "21/09/2023",
       "diego_ana": 400,
@@ -2521,9 +2221,9 @@
       "status": "paid"
     },
     {
-      "id": 276,
+      "id": 244,
       "activity": "Pintura aumento do portão e grade da entrada da casa ",
-      "sector": null,
+      "sector": "Portão",
       "value": 75,
       "date": "21/09/2023",
       "diego_ana": 75,
@@ -2531,9 +2231,9 @@
       "status": "paid"
     },
     {
-      "id": 277,
+      "id": 245,
       "activity": "Pintura aumento do portão e grade da entrada da casa ",
-      "sector": null,
+      "sector": "Portão",
       "value": 115.74,
       "date": "09/01/2024",
       "diego_ana": 115.74,
@@ -2541,19 +2241,29 @@
       "status": "paid"
     },
     {
-      "id": 278,
-      "activity": "Tinta pintura da parede com mofo da sala (Block Total)",
-      "sector": "Decor",
-      "value": 379.9,
-      "date": "16/08/2024",
-      "diego_ana": 0,
-      "alex_rute": 379.9,
+      "id": 247,
+      "activity": "Cubas Tramontina 2 peças Amazon",
+      "sector": "Metal",
+      "value": 524.7,
+      "date": "01/02/2023",
+      "diego_ana": 524.7,
+      "alex_rute": 0,
       "status": "paid"
     },
     {
-      "id": 279,
-      "activity": "Torneiras Banheiros = 3",
-      "sector": "Amazon",
+      "id": 248,
+      "activity": "Tanque inox Amazon",
+      "sector": "Metal",
+      "value": 270,
+      "date": "18/02/2023",
+      "diego_ana": 0,
+      "alex_rute": 270,
+      "status": "paid"
+    },
+    {
+      "id": 249,
+      "activity": "Torneiras Banheiros = 3 Amazon",
+      "sector": "Metal",
       "value": 347.97,
       "date": "17/08/2024",
       "diego_ana": 347.97,
@@ -2561,9 +2271,9 @@
       "status": "paid"
     },
     {
-      "id": 280,
-      "activity": "Torneiras Banheiros = 1",
-      "sector": "Amazon",
+      "id": 250,
+      "activity": "Torneiras Banheiros = 1 Amazon",
+      "sector": "Metal",
       "value": 113.88,
       "date": "21/08/2024",
       "diego_ana": 113.88,
@@ -2571,9 +2281,9 @@
       "status": "paid"
     },
     {
-      "id": 281,
-      "activity": "Torneiras Cozinha = 2",
-      "sector": "Amazon",
+      "id": 251,
+      "activity": "Torneiras Cozinha = 2 Amazon",
+      "sector": "Metal",
       "value": 418,
       "date": "17/08/2024",
       "diego_ana": 418,
@@ -2581,59 +2291,9 @@
       "status": "paid"
     },
     {
-      "id": 282,
-      "activity": "Tinta e massa corrida para pintura mofo da sala",
-      "sector": "Top Tintas Grara",
-      "value": 533.6,
-      "date": "23/08/2024",
-      "diego_ana": 0,
-      "alex_rute": 533.6,
-      "status": "paid"
-    },
-    {
-      "id": 283,
-      "activity": "Pintura do mofo da sala",
-      "sector": "Fernando",
-      "value": 400,
-      "date": "25/08/2024",
-      "diego_ana": 0,
-      "alex_rute": 400,
-      "status": "paid"
-    },
-    {
-      "id": 284,
-      "activity": "Pintura do mofo da sala",
-      "sector": "Fernando",
-      "value": 380,
-      "date": "23/08/2024",
-      "diego_ana": 0,
-      "alex_rute": 380,
-      "status": "paid"
-    },
-    {
-      "id": 285,
-      "activity": "Pintura do mofo da sala",
-      "sector": "Fernando",
-      "value": 250,
-      "date": "18/09/2024",
-      "diego_ana": 0,
-      "alex_rute": 250,
-      "status": "paid"
-    },
-    {
-      "id": 286,
-      "activity": "Pintura do mofo da sala",
-      "sector": "Fernando",
-      "value": 150,
-      "date": "20/09/2024",
-      "diego_ana": 0,
-      "alex_rute": 150,
-      "status": "paid"
-    },
-    {
-      "id": 287,
-      "activity": "Colocação Torneiras + material ",
-      "sector": "Paulo",
+      "id": 252,
+      "activity": "Colocação Torneiras + material M.O. Paulo",
+      "sector": "Metal",
       "value": 938,
       "date": "16/09/2024",
       "diego_ana": 0,
@@ -2641,7 +2301,7 @@
       "status": "paid"
     },
     {
-      "id": 289,
+      "id": 254,
       "activity": "Testeiras e Soleiras",
       "sector": "Marmoraria",
       "value": 1300,
@@ -2651,7 +2311,7 @@
       "status": "paid"
     },
     {
-      "id": 290,
+      "id": 255,
       "activity": "Marmoraria 1ª parcela",
       "sector": "Marmoraria",
       "value": 15000,
@@ -2661,7 +2321,7 @@
       "status": "paid"
     },
     {
-      "id": 291,
+      "id": 256,
       "activity": "Marmoraria 2ª parcela",
       "sector": "Marmoraria",
       "value": 15000,
@@ -2671,9 +2331,389 @@
       "status": "paid"
     },
     {
+      "id": 258,
+      "activity": "Guarnições para as portas",
+      "sector": "Marcenaria",
+      "value": 495,
+      "date": "30/03/2023",
+      "diego_ana": 0,
+      "alex_rute": 495,
+      "status": "paid"
+    },
+    {
+      "id": 259,
+      "activity": "Instalação das guarnições",
+      "sector": "Marcenaria",
+      "value": 300,
+      "date": "30/03/2023",
+      "diego_ana": 0,
+      "alex_rute": 300,
+      "status": "paid"
+    },
+    {
+      "id": 260,
+      "activity": "Marceneiro 8 portas",
+      "sector": "Marcenaria",
+      "value": 1040,
+      "date": "01/02/2023",
+      "diego_ana": 1040,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 261,
+      "activity": "Marceneiro M.O.",
+      "sector": "Marcenaria",
+      "value": 100,
+      "date": "25/04/2023",
+      "diego_ana": 0,
+      "alex_rute": 100,
+      "status": "paid"
+    },
+    {
+      "id": 262,
+      "activity": "Moveis cozinha",
+      "sector": "Marcenaria",
+      "value": 5758.19,
+      "date": "26/02/2025",
+      "diego_ana": 0,
+      "alex_rute": 5758.19,
+      "status": "paid"
+    },
+    {
+      "id": 263,
+      "activity": "Moveis cozinha",
+      "sector": "Marcenaria",
+      "value": 670,
+      "date": "24/02/2023",
+      "diego_ana": 0,
+      "alex_rute": 670,
+      "status": "paid"
+    },
+    {
+      "id": 264,
+      "activity": "Moveis cozinha",
+      "sector": "Marcenaria",
+      "value": 2500,
+      "date": "09/04/2023",
+      "diego_ana": 0,
+      "alex_rute": 2500,
+      "status": "paid"
+    },
+    {
+      "id": 265,
+      "activity": "Moveis cozinha",
+      "sector": "Marcenaria",
+      "value": 6572,
+      "date": "08/05/2025",
+      "diego_ana": 6572,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 267,
+      "activity": "Desentupimento do Ralo",
+      "sector": "Manutenção",
+      "value": 650,
+      "date": "24/01/2024",
+      "diego_ana": 0,
+      "alex_rute": 650,
+      "status": "paid"
+    },
+    {
+      "id": 268,
+      "activity": "Sarrafo",
+      "sector": "Manutenção",
+      "value": 453,
+      "date": "25/04/2023",
+      "diego_ana": 0,
+      "alex_rute": 453,
+      "status": "paid"
+    },
+    {
+      "id": 269,
+      "activity": "Concreto usinado",
+      "sector": "Manutenção",
+      "value": 5250,
+      "date": "05/05/2023",
+      "diego_ana": 0,
+      "alex_rute": 5250,
+      "status": "paid"
+    },
+    {
+      "id": 270,
+      "activity": "Poste Padrão",
+      "sector": "Manutenção",
+      "value": 2180,
+      "date": "02/06/2023",
+      "diego_ana": 0,
+      "alex_rute": 2180,
+      "status": "paid"
+    },
+    {
+      "id": 271,
+      "activity": "Tábuas, Guarnições e marceneiro",
+      "sector": "Manutenção",
+      "value": 1029.8,
+      "date": "16/06/2023",
+      "diego_ana": 1029.8,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 272,
+      "activity": "Material de limpeza + faxineira",
+      "sector": "Manutenção",
+      "value": 338,
+      "date": "16/06/2023",
+      "diego_ana": 338,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 273,
+      "activity": "Material p/ laje e escada da portaria",
+      "sector": "Manutenção",
+      "value": 992,
+      "date": "20/07/2023",
+      "diego_ana": 0,
+      "alex_rute": 992,
+      "status": "paid"
+    },
+    {
+      "id": 274,
+      "activity": "Tábua Escada",
+      "sector": "Manutenção",
+      "value": 174,
+      "date": "21/09/2023",
+      "diego_ana": 174,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 275,
+      "activity": "M.O Tela e Mourão do vizinho",
+      "sector": "Manutenção",
+      "value": 350,
+      "date": "13/01/2023",
+      "diego_ana": 0,
+      "alex_rute": 350,
+      "status": "paid"
+    },
+    {
+      "id": 276,
+      "activity": "Tábua de 10cm oinus",
+      "sector": "Manutenção",
+      "value": 90,
+      "date": "01/02/2023",
+      "diego_ana": 90,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 277,
+      "activity": "Tela e Mourão do vizinho",
+      "sector": "Manutenção",
+      "value": 283,
+      "date": "13/01/2023",
+      "diego_ana": 0,
+      "alex_rute": 283,
+      "status": "paid"
+    },
+    {
+      "id": 278,
+      "activity": "Pintura teto - conserto caixa d'agua",
+      "sector": "Manutenção",
+      "value": 500,
+      "date": "28/10/2022",
+      "diego_ana": 0,
+      "alex_rute": 500,
+      "status": "paid"
+    },
+    {
+      "id": 279,
+      "activity": "Cloro piscina",
+      "sector": "Manutenção",
+      "value": 100,
+      "date": "20/07/2023",
+      "diego_ana": 0,
+      "alex_rute": 100,
+      "status": "paid"
+    },
+    {
+      "id": 280,
+      "activity": "Escoras da laje da portaria",
+      "sector": "Manutenção",
+      "value": 110,
+      "date": "20/07/2023",
+      "diego_ana": 0,
+      "alex_rute": 110,
+      "status": "paid"
+    },
+    {
+      "id": 281,
+      "activity": "Caixas Ar condicionado",
+      "sector": "Manutenção",
+      "value": 55,
+      "date": "28/10/2022",
+      "diego_ana": 0,
+      "alex_rute": 55,
+      "status": "paid"
+    },
+    {
+      "id": 282,
+      "activity": "Bloco e Canaleta",
+      "sector": "Manutenção",
+      "value": 530,
+      "date": "28/10/2022",
+      "diego_ana": 530,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 283,
+      "activity": "Batentes de porta",
+      "sector": "Manutenção",
+      "value": 940,
+      "date": "08/12/2022",
+      "diego_ana": 940,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 284,
+      "activity": "Conserto Esquadrias ",
+      "sector": "Manutenção",
+      "value": 900,
+      "date": "18/02/2023",
+      "diego_ana": 0,
+      "alex_rute": 900,
+      "status": "paid"
+    },
+    {
+      "id": 285,
+      "activity": "Vidros Janelas",
+      "sector": "Manutenção",
+      "value": 400,
+      "date": "13/04/2023",
+      "diego_ana": 400,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 286,
+      "activity": "Tinta pintura da parede com mofo da sala (Block Total)",
+      "sector": "Manutenção",
+      "value": 379.9,
+      "date": "16/08/2024",
+      "diego_ana": 0,
+      "alex_rute": 379.9,
+      "status": "paid"
+    },
+    {
+      "id": 287,
+      "activity": "Tinta e massa corrida para pintura mofo da sala",
+      "sector": "Manutenção",
+      "value": 533.6,
+      "date": "23/08/2024",
+      "diego_ana": 0,
+      "alex_rute": 533.6,
+      "status": "paid"
+    },
+    {
+      "id": 288,
+      "activity": "Pintura do mofo da sala",
+      "sector": "Manutenção",
+      "value": 400,
+      "date": "25/08/2024",
+      "diego_ana": 0,
+      "alex_rute": 400,
+      "status": "paid"
+    },
+    {
+      "id": 289,
+      "activity": "Pintura do mofo da sala",
+      "sector": "Manutenção",
+      "value": 380,
+      "date": "23/08/2024",
+      "diego_ana": 0,
+      "alex_rute": 380,
+      "status": "paid"
+    },
+    {
+      "id": 290,
+      "activity": "Pintura do mofo da sala",
+      "sector": "Manutenção",
+      "value": 250,
+      "date": "18/09/2024",
+      "diego_ana": 0,
+      "alex_rute": 250,
+      "status": "paid"
+    },
+    {
+      "id": 291,
+      "activity": "Pintura do mofo da sala",
+      "sector": "Manutenção",
+      "value": 150,
+      "date": "20/09/2024",
+      "diego_ana": 0,
+      "alex_rute": 150,
+      "status": "paid"
+    },
+    {
+      "id": 292,
+      "activity": "Motor da piscina",
+      "sector": "Manutenção",
+      "value": 1080,
+      "date": "03/08/2023",
+      "diego_ana": 1080,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
       "id": 293,
+      "activity": "Segunda pintura da piscina",
+      "sector": "Manutenção",
+      "value": 530,
+      "date": "07/08/2023",
+      "diego_ana": 530,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 294,
+      "activity": "Manutenção e pintura da piscina + aspirador + peneira",
+      "sector": "Manutenção",
+      "value": 1184,
+      "date": "11/08/2023",
+      "diego_ana": 1184,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 295,
+      "activity": "Manutenção e pintura da piscina",
+      "sector": "Manutenção",
+      "value": 1600,
+      "date": "28/07/2023",
+      "diego_ana": 1600,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 296,
+      "activity": "Limpeza e produto de limpeza da piscina",
+      "sector": "Manutenção",
+      "value": 393.4,
+      "date": "08/09/2023",
+      "diego_ana": 393.4,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 297,
       "activity": "Aspirador e ferramentas para limpeza da piscina",
-      "sector": "Toninho",
+      "sector": "Manutenção",
       "value": 220,
       "date": "18/01/2024",
       "diego_ana": 220,
@@ -2681,9 +2721,9 @@
       "status": "paid"
     },
     {
-      "id": 294,
+      "id": 298,
       "activity": "Limpeza e Cloro piscina Janeiro/24",
-      "sector": "Toninho",
+      "sector": "Manutenção",
       "value": 250,
       "date": "01/02/2024",
       "diego_ana": 250,
@@ -2691,9 +2731,9 @@
       "status": "paid"
     },
     {
-      "id": 295,
+      "id": 299,
       "activity": "Limpeza piscina Fevereiro/24",
-      "sector": "Toninho",
+      "sector": "Manutenção",
       "value": 150,
       "date": "04/03/2024",
       "diego_ana": 150,
@@ -2701,9 +2741,9 @@
       "status": "paid"
     },
     {
-      "id": 296,
+      "id": 300,
       "activity": "Limpeza piscina Março/24",
-      "sector": "Toninho",
+      "sector": "Manutenção",
       "value": 110,
       "date": "07/04/2024",
       "diego_ana": 110,
@@ -2711,9 +2751,9 @@
       "status": "paid"
     },
     {
-      "id": 300,
+      "id": 303,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 150,
       "date": "15/12/2023",
       "diego_ana": 150,
@@ -2721,9 +2761,9 @@
       "status": "paid"
     },
     {
-      "id": 301,
+      "id": 304,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 100,
       "date": "21/12/2023",
       "diego_ana": 100,
@@ -2731,9 +2771,9 @@
       "status": "paid"
     },
     {
-      "id": 302,
+      "id": 305,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 140,
       "date": "09/01/2024",
       "diego_ana": 140,
@@ -2741,9 +2781,9 @@
       "status": "paid"
     },
     {
-      "id": 303,
+      "id": 306,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 140,
       "date": "01/02/2024",
       "diego_ana": 140,
@@ -2751,9 +2791,9 @@
       "status": "paid"
     },
     {
-      "id": 304,
+      "id": 307,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 140,
       "date": "29/02/2024",
       "diego_ana": 140,
@@ -2761,9 +2801,9 @@
       "status": "paid"
     },
     {
-      "id": 305,
+      "id": 308,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 200,
       "date": "04/04/2024",
       "diego_ana": 200,
@@ -2771,9 +2811,9 @@
       "status": "paid"
     },
     {
-      "id": 306,
+      "id": 309,
       "activity": "Jardinagem ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 200,
       "date": "18/05/2024",
       "diego_ana": 200,
@@ -2781,9 +2821,9 @@
       "status": "paid"
     },
     {
-      "id": 307,
+      "id": 310,
       "activity": "Jardinagem e limpeza da casa",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 450,
       "date": "20/06/2024",
       "diego_ana": 450,
@@ -2791,9 +2831,9 @@
       "status": "paid"
     },
     {
-      "id": 308,
+      "id": 311,
       "activity": "Material para arrumar o cano do Ralo ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 500,
       "date": "27/06/2024",
       "diego_ana": 500,
@@ -2801,9 +2841,9 @@
       "status": "paid"
     },
     {
-      "id": 309,
+      "id": 312,
       "activity": "Pedreiro para arrumar o cano do Ralo ",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 900,
       "date": "03/07/2024",
       "diego_ana": 900,
@@ -2811,9 +2851,9 @@
       "status": "paid"
     },
     {
-      "id": 310,
+      "id": 313,
       "activity": "Material para pintura do portão",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 200,
       "date": "03/07/2024",
       "diego_ana": 200,
@@ -2821,9 +2861,9 @@
       "status": "paid"
     },
     {
-      "id": 311,
+      "id": 314,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 300,
       "date": "27/07/2024",
       "diego_ana": 300,
@@ -2831,9 +2871,9 @@
       "status": "paid"
     },
     {
-      "id": 312,
+      "id": 315,
       "activity": "Pintura do portão",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 800,
       "date": "17/08/2024",
       "diego_ana": 800,
@@ -2841,9 +2881,9 @@
       "status": "paid"
     },
     {
-      "id": 313,
+      "id": 316,
       "activity": "Limpeza da casa + cadeado",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 226,
       "date": "26/08/2024",
       "diego_ana": 226,
@@ -2851,9 +2891,9 @@
       "status": "paid"
     },
     {
-      "id": 314,
+      "id": 317,
       "activity": "Limpeza da casa + cadeado",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 70,
       "date": "28/08/2024",
       "diego_ana": 70,
@@ -2861,9 +2901,9 @@
       "status": "paid"
     },
     {
-      "id": 315,
+      "id": 318,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 265,
       "date": "06/09/2024",
       "diego_ana": 265,
@@ -2871,9 +2911,9 @@
       "status": "paid"
     },
     {
-      "id": 316,
+      "id": 319,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 200,
       "date": "30/09/2024",
       "diego_ana": 200,
@@ -2881,9 +2921,9 @@
       "status": "paid"
     },
     {
-      "id": 317,
+      "id": 320,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 320,
       "date": "04/10/2024",
       "diego_ana": 320,
@@ -2891,9 +2931,9 @@
       "status": "paid"
     },
     {
-      "id": 318,
+      "id": 321,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 250,
       "date": "23/10/2024",
       "diego_ana": 250,
@@ -2901,9 +2941,9 @@
       "status": "paid"
     },
     {
-      "id": 319,
+      "id": 322,
       "activity": "Jardinagem e limpeza da Piscina",
-      "sector": "Lucas",
+      "sector": "Manutenção",
       "value": 900,
       "date": "09/12/2024",
       "diego_ana": 900,
@@ -2911,9 +2951,59 @@
       "status": "paid"
     },
     {
-      "id": 322,
-      "activity": "Conta de Energia 2022",
-      "sector": "EDP",
+      "id": 323,
+      "activity": "Jardinagem e limpeza da Piscina",
+      "sector": "Manutenção",
+      "value": 350,
+      "date": "25/01/2025",
+      "diego_ana": 350,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 324,
+      "activity": "Jardinagem e limpeza da Piscina",
+      "sector": "Manutenção",
+      "value": 450,
+      "date": "10/02/2025",
+      "diego_ana": 450,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 325,
+      "activity": "Jardinagem e limpeza da Piscina",
+      "sector": "Manutenção",
+      "value": 860,
+      "date": "19/03/2025",
+      "diego_ana": 860,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 326,
+      "activity": "Jardinagem e limpeza da Piscina",
+      "sector": "Manutenção",
+      "value": 170,
+      "date": "25/04/2025",
+      "diego_ana": 170,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 327,
+      "activity": "Jardinagem e limpeza da Piscina",
+      "sector": "Manutenção",
+      "value": 350,
+      "date": "02/05/2025",
+      "diego_ana": 350,
+      "alex_rute": 0,
+      "status": "paid"
+    },
+    {
+      "id": 330,
+      "activity": "Conta de Energia 2022 EDP",
+      "sector": "Energia",
       "value": 349.38,
       "date": "13/12/2022",
       "diego_ana": 0,
@@ -2921,9 +3011,9 @@
       "status": "paid"
     },
     {
-      "id": 323,
-      "activity": "Conta de Energia 2023",
-      "sector": "EDP",
+      "id": 331,
+      "activity": "Conta de Energia 2023 EDP",
+      "sector": "Energia",
       "value": 1047.3,
       "date": "13/12/2023",
       "diego_ana": 0,
@@ -2931,9 +3021,9 @@
       "status": "paid"
     },
     {
-      "id": 324,
-      "activity": "Conta de Energia 2024",
-      "sector": "EDP",
+      "id": 332,
+      "activity": "Conta de Energia 2024 EDP",
+      "sector": "Energia",
       "value": 1112.23,
       "date": "13/12/2024",
       "diego_ana": 0,
@@ -2941,19 +3031,49 @@
       "status": "paid"
     },
     {
-      "id": 325,
-      "activity": "Conta de Energia 2025",
-      "sector": "EDP",
-      "value": 1000,
-      "date": null,
-      "diego_ana": 40.0,
-      "alex_rute": 5,
-      "status": "pending"
+      "id": 333,
+      "activity": "Conta de Energia 2025 EDP",
+      "sector": "Energia",
+      "value": 73.49,
+      "date": "06/01/2025",
+      "diego_ana": 0,
+      "alex_rute": 73.49,
+      "status": "paid"
     },
     {
-      "id": 327,
-      "activity": "Conta de Água 2022",
-      "sector": "SAEG",
+      "id": 334,
+      "activity": "Conta de Energia 2025 EDP",
+      "sector": "Energia",
+      "value": 137.59,
+      "date": "05/02/2025",
+      "diego_ana": 0,
+      "alex_rute": 137.59,
+      "status": "paid"
+    },
+    {
+      "id": 335,
+      "activity": "Conta de Energia 2025 EDP",
+      "sector": "Energia",
+      "value": 89.08,
+      "date": "05/03/2025",
+      "diego_ana": 0,
+      "alex_rute": 89.08,
+      "status": "paid"
+    },
+    {
+      "id": 336,
+      "activity": "Conta de Energia 2025 EDP",
+      "sector": "Energia",
+      "value": 80.65,
+      "date": "04/04/2025",
+      "diego_ana": 0,
+      "alex_rute": 80.65,
+      "status": "paid"
+    },
+    {
+      "id": 339,
+      "activity": "Conta de Água 2022 SAEG",
+      "sector": "Água",
       "value": 427.9,
       "date": "13/12/2022",
       "diego_ana": 0,
@@ -2961,9 +3081,9 @@
       "status": "paid"
     },
     {
-      "id": 328,
-      "activity": "Conta de Água 2023",
-      "sector": "SAEG",
+      "id": 340,
+      "activity": "Conta de Água 2023 SAEG",
+      "sector": "Água",
       "value": 639.65,
       "date": "13/12/2023",
       "diego_ana": 0,
@@ -2971,9 +3091,9 @@
       "status": "paid"
     },
     {
-      "id": 329,
-      "activity": "Conta de Água 2024",
-      "sector": "SAEG",
+      "id": 341,
+      "activity": "Conta de Água 2024 SAEG",
+      "sector": "Água",
       "value": 1541.98,
       "date": "13/12/2024",
       "diego_ana": 0,
@@ -2981,17 +3101,37 @@
       "status": "paid"
     },
     {
-      "id": 330,
-      "activity": "Conta de Água 2025",
-      "sector": "SAEG",
-      "value": 1000,
-      "date": null,
-      "diego_ana": 2.0,
-      "alex_rute": 0,
-      "status": "pending"
+      "id": 342,
+      "activity": "Conta de Água 2025 SAEG",
+      "sector": "Água",
+      "value": 102.72,
+      "date": "10/01/2025",
+      "diego_ana": 0,
+      "alex_rute": 102.72,
+      "status": "paid"
     },
     {
-      "id": 333,
+      "id": 343,
+      "activity": "Conta de Água 2025 SAEG",
+      "sector": "Água",
+      "value": 105.12,
+      "date": "24/04/2025",
+      "diego_ana": 0,
+      "alex_rute": 105.12,
+      "status": "paid"
+    },
+    {
+      "id": 344,
+      "activity": "Conta de Água 2025 SAEG",
+      "sector": "Água",
+      "value": 102.72,
+      "date": "24/04/2025",
+      "diego_ana": 0,
+      "alex_rute": 102.72,
+      "status": "paid"
+    },
+    {
+      "id": 348,
       "activity": "Conta de Condomínio 2022",
       "sector": "Condomínio",
       "value": 10225.33,
@@ -3001,7 +3141,7 @@
       "status": "paid"
     },
     {
-      "id": 334,
+      "id": 349,
       "activity": "Conta de Condomínio 2023",
       "sector": "Condomínio",
       "value": 13555.22,
@@ -3011,7 +3151,7 @@
       "status": "paid"
     },
     {
-      "id": 335,
+      "id": 350,
       "activity": "Conta de Condomínio 2024",
       "sector": "Condomínio",
       "value": 13476,
@@ -3021,21 +3161,73 @@
       "status": "paid"
     },
     {
-      "activity": "Parcela de financiamento 3",
-      "sector": "Teste de geladeira",
-      "value": 2.0,
-      "date": "23/12/0001",
-      "alex_rute": 0,
-      "diego_ana": 2.0,
+      "id": 351,
+      "activity": "Conta de Condomínio 2025",
+      "sector": "Condomínio",
+      "value": 1123,
+      "date": "08/01/2025",
+      "diego_ana": 0,
+      "alex_rute": 1123,
       "status": "paid"
     },
     {
-      "activity": "Parcela",
-      "sector": "teste",
-      "value": 1.0,
-      "date": "21/09/2332",
-      "alex_rute": 0,
-      "diego_ana": 1.0,
+      "id": 352,
+      "activity": "Conta de Condomínio 2025",
+      "sector": "Condomínio",
+      "value": 1123,
+      "date": "05/02/2025",
+      "diego_ana": 0,
+      "alex_rute": 1123,
+      "status": "paid"
+    },
+    {
+      "id": 353,
+      "activity": "Conta de Condomínio 2025",
+      "sector": "Condomínio",
+      "value": 1123,
+      "date": "05/03/2025",
+      "diego_ana": 0,
+      "alex_rute": 1123,
+      "status": "paid"
+    },
+    {
+      "id": 354,
+      "activity": "Conta de Condomínio 2025",
+      "sector": "Condomínio",
+      "value": 1123,
+      "date": "07/04/2025",
+      "diego_ana": 0,
+      "alex_rute": 1123,
+      "status": "paid"
+    },
+    {
+      "id": 357,
+      "activity": "IPTU 2025",
+      "sector": "Impostos",
+      "value": 280.4,
+      "date": "17/02/2025",
+      "diego_ana": 0,
+      "alex_rute": 280.4,
+      "status": "paid"
+    },
+    {
+      "id": 358,
+      "activity": "IPTU 2025",
+      "sector": "Impostos",
+      "value": 286.37,
+      "date": "24/03/2025",
+      "diego_ana": 0,
+      "alex_rute": 286.37,
+      "status": "paid"
+    },
+    {
+      "id": 359,
+      "activity": "IPTU 2025",
+      "sector": "Impostos",
+      "value": 286.37,
+      "date": "24/03/2025",
+      "diego_ana": 0,
+      "alex_rute": 286.37,
       "status": "paid"
     }
   ],
