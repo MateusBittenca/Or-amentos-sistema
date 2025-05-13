@@ -2,7 +2,7 @@ const URL_api = "https://or-amentos-sistema.onrender.com"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {
-    console.log("Abrindo modal de pagamento...");
+   
     const infoModal = document.getElementById("infoModal");
     infoModal.classList.add("hidden");
     infoModal.style.display = "none";
@@ -20,7 +20,6 @@ document.getElementById("pagamento").addEventListener("click", () => {
     const sector = document.getElementById("modalSector").innerText;
     const pendingValue = document.getElementById("modalRemainingValue").innerText;
 
-    console.log("Atividade:", activity, "Setor:", sector, "Valor pendente:", pendingValue);
 
     document.getElementById("paymentModalActivity").innerText = activity;
     document.getElementById("paymentModalSector").innerText = sector;
@@ -28,7 +27,6 @@ document.getElementById("pagamento").addEventListener("click", () => {
 });
 
 document.getElementById("closePaymentModal").addEventListener("click", () => {
-    console.log("Fechando modal de pagamento...");
     const paymentModal = document.getElementById("paymentModal");
     paymentModal.classList.add("hidden");
     paymentModal.style.display = "none";
@@ -89,7 +87,6 @@ async function registrarPagamento(dadosComprovante) {
 
     if (!pagador) {
         alert("Por favor, selecione um pagador.");
-        console.error("Nenhum pagador selecionado.");
         return false;
     }
 

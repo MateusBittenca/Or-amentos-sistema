@@ -19,9 +19,6 @@ logger = logging.getLogger(__name__)
 # Constants
 JSON_PATH = "./json/atividades.json"
 
-    
-
-
 # Pydantic models for request/response data
 class Activity(BaseModel):
     id: int
