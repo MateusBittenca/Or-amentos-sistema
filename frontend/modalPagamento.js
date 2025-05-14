@@ -1,4 +1,4 @@
-const URL_api = "https://or-amentos-sistema.onrender.com"; // URL do seu backend
+const URL_api = "http://localhost:8000"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {
@@ -31,6 +31,18 @@ document.getElementById("closePaymentModal").addEventListener("click", () => {
     paymentModal.classList.add("hidden");
     paymentModal.style.display = "none";
 });
+
+// Função para mostrar mensagem de sucesso
+function showSuccessMessage(message) {
+    const messageContainer = document.createElement("div");
+    messageContainer.innerText = message;
+    messageContainer.className = "success-message";
+    document.body.appendChild(messageContainer);
+
+    setTimeout(() => {
+        messageContainer.remove();
+    }, 5000);
+}
 
 async function extrairDadosComprovante() {
     const comprovante = document.getElementById("receiptImage").files[0];
@@ -109,12 +121,24 @@ async function registrarPagamento(dadosComprovante) {
             body: JSON.stringify(paymentData),
         });
 
-        console.log("Resposta do registro de pagamento:", response);
-
+      
         if (response.ok) {
             const result = await response.json();
             console.log("Pagamento registrado com sucesso:", result);
-            alert("Pagamento registrado com sucesso!");
+            
+            // Exibir mensagem de sucesso
+            showSuccessMessage("Pagamento registrado com sucesso!");
+            
+            // Fechar o modal de pagamento
+            const paymentModal = document.getElementById("paymentModal");
+            paymentModal.classList.add("hidden");
+            paymentModal.style.display = "none";
+            
+            // Recarregar a página para atualizar os dados
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            
             return true;
         } else {
             const errorBody = await response.json();
