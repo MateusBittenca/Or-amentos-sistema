@@ -1,4 +1,4 @@
-const URL_api = "https://or-amentos-sistema.onrender.com"; // URL do seu backend
+const URL_api = "https://sistema-de-orcamentos.onrender.com"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {

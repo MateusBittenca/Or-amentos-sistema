@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "https://sistema-de-orcamentos.onrender.com";
 
 
 const api = {
