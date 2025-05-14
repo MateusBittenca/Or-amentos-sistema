@@ -46,9 +46,9 @@
       "sector": "Documentação",
       "value": 8455.81,
       "date": "15/09/2021",
-      "diego_ana": 4227.9,
+      "diego_ana": 4228.9,
       "alex_rute": 4227.9,
-      "status": "pending"
+      "status": "paid"
     },
     {
       "id": 9,
@@ -66,7 +66,7 @@
       "sector": "Financiamento",
       "value": 3900,
       "date": "25/11/2020",
-      "diego_ana": 0,
+      "diego_ana": 2.0,
       "alex_rute": 3900,
       "status": "paid"
     },
@@ -3238,6 +3238,15 @@
       "alex_rute": 0,
       "diego_ana": 1.0,
       "status": "paid"
+    },
+    {
+      "activity": "Parcela",
+      "sector": "teste",
+      "value": 1000.0,
+      "date": "21321-12-31",
+      "alex_rute": 0,
+      "diego_ana": 1.0,
+      "status": "pending"
     }
   ],
   "setores": [

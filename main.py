@@ -115,7 +115,50 @@ class ComprovanteReader:
             logger.error(f"Error processing image: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
+    
 
+
+def processar_via_api_ocr(contents, filetype="jpg"):
+    """
+    Process an image using the OCR.space API
+    
+    Args:
+        contents: The binary contents of the image file
+        filetype: The file type extension (jpg, png, pdf, etc.)
+    """
+    import requests
+    import json
+    
+    api_key = "helloworld"  # Replace with your actual API key
+    
+    payload = {
+        'apikey': api_key,
+        'language': 'por',  # Assuming Portuguese language for OCR
+        'isOverlayRequired': False,
+        'filetype': filetype,  # Explicitly define the file type
+    }
+    
+    files = {
+        'file': contents  # Just send the binary contents
+    }
+    
+    try:
+        response = requests.post(
+            'https://api.ocr.space/parse/image',
+            files=files,
+            data=payload
+        )
+        
+        result = response.json()
+        
+        if result.get('OCRExitCode') == 1:  # Success
+            extracted_text = result.get('ParsedResults')[0].get('ParsedText', '')
+            return extracted_text
+        else:
+            raise Exception(f"OCR API error: {result.get('ErrorMessage', 'Unknown error')}")
+    
+    except Exception as e:
+        raise Exception(f"Error processing OCR: {str(e)}")
 class ComprovantesManager:
     """Class to manage construction expenses in a JSON file"""
     
@@ -570,20 +613,30 @@ def get_valor_pago_alex():
 @app.post("/process-receipt", response_model=ExtractedData)
 async def process_receipt(file: UploadFile = File(...)):
     try:
-        logger.debug(f"Arquivo recebido: {file.filename}, tipo: {file.content_type}")
-        # Read uploaded file
+        # Get file extension from filename
+        extension = file.filename.split('.')[-1].lower() if '.' in file.filename else 'jpg'
+        
+        # Read file contents
         contents = await file.read()
-        # Process receipt image
-        result = ComprovanteReader.ler_comprovante(contents)
+        
+        # Process with OCR API
+        texto_extraido = processar_via_api_ocr(contents, filetype=extension)
+        
+        # Extract data from the text
+        reader = ComprovanteReader()
+        valor = reader.extrair_valor(texto_extraido)
+        data = reader.extrair_data(texto_extraido)
+        nome = reader.extrair_nome(texto_extraido)
+        
         # Return extracted data
         return ExtractedData(
-            value=result['valor'],
-            date=result['data'],
-            name=result['nome'],
-            full_text=result['texto_completo']
+            value=valor,
+            date=data,
+            name=nome,
+            full_text=texto_extraido
         )
     except Exception as e:
-        logger.error(f"Erro ao processar o comprovante {e}", exc_info=True)
+        logger.error(f"Erro ao processar o comprovante: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register-payment")
