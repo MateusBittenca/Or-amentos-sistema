@@ -3238,15 +3238,6 @@
       "alex_rute": 0,
       "diego_ana": 1.0,
       "status": "paid"
-    },
-    {
-      "activity": "Parcela",
-      "sector": "teste",
-      "value": 1000.0,
-      "date": "21321-12-31",
-      "alex_rute": 0,
-      "diego_ana": 1.0,
-      "status": "pending"
     }
   ],
   "setores": [

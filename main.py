@@ -97,23 +97,6 @@ class ComprovanteReader:
 
         return None
 
-    @classmethod
-    def ler_comprovante(cls, imagem_bytes: bytes) -> Dict[str, Any]:
-        """Read a receipt from image bytes and extract relevant information"""
-        try:
-            with Image.open(io.BytesIO(imagem_bytes)) as imagem:
-                texto = pytesseract.image_to_string(imagem, lang='eng')
-                
-                return {
-                    'texto_completo': texto,
-                    'valor': cls.extrair_valor(texto),
-                    'data': cls.extrair_data(texto),
-                    'nome': cls.extrair_nome(texto)
-                }
-            
-        except Exception as e:
-            logger.error(f"Error processing image: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
     
 
