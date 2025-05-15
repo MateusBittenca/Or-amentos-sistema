@@ -177,7 +177,7 @@ def initialize_database():
             nome VARCHAR(255) NOT NULL,
             setor VARCHAR(100),
             valor DECIMAL(10, 2) NOT NULL,
-            data DATE,
+            data VARCHAR(20),
             alex_rute DECIMAL(10, 2) DEFAULT 0,
             diego_ana DECIMAL(10, 2) DEFAULT 0,
             status VARCHAR(20) DEFAULT 'pending'
@@ -225,24 +225,25 @@ class ComprovantesManager:
             raise HTTPException(status_code=400, detail=f"Invalid value format: {value_str}")
     
     def _format_date(self, date_str: str) -> str:
-        """Format date to MySQL format (YYYY-MM-DD)"""
+        """Format date to display format (DD/MM/YYYY)"""
         if not date_str:
             return None
             
         try:
             # Check if format is YYYY-MM-DD (from HTML type="date" input)
             if re.match(r'\d{4}-\d{2}-\d{2}', date_str):
-                return date_str  # Already in correct format for MySQL
+                # Convert to DD/MM/YYYY for storing
+                year, month, day = date_str.split('-')
+                return f"{day}/{month}/{year}"
             elif re.match(r'\d{2}/\d{2}/\d{4}', date_str):
-                # Convert DD/MM/YYYY to YYYY-MM-DD
-                day, month, year = date_str.split('/')
-                return f"{year}-{month}-{day}"
+                # Already in DD/MM/YYYY format
+                return date_str
             else:
                 logger.warning(f"Unknown date format: {date_str}")
-                return None
+                return date_str  # Return as is if format unknown
         except Exception as e:
             logger.error(f"Error formatting date {date_str}: {e}")
-            return None
+            return date_str  # Return as is if there's an error
     
     def preencher_pagamento(self, valor_str: str, atividade: str, pagador: str, 
                             setor: Optional[str] = None, data: Optional[str] = None) -> Dict[str, Any]:
@@ -381,10 +382,8 @@ class ComprovantesManager:
                 # Calculate remaining amount to be paid
                 valor_restante = valor_custo - (alex_rute + diego_ana)
                 
-                # Format date to DD/MM/YYYY for display
-                date_str = None
-                if activity['data']:
-                    date_str = activity['data'].strftime("%d/%m/%Y")
+                # Get date string directly from database
+                date_str = activity['data']
                 
                 # Check if there's still a pending amount
                 if valor_restante > 0:
@@ -419,10 +418,8 @@ class ComprovantesManager:
             activities_list = []
             
             for activity in db_activities:
-                # Format date to DD/MM/YYYY for display
-                date_str = None
-                if activity['data']:
-                    date_str = activity['data'].strftime("%d/%m/%Y")
+                # Date is already stored as string
+                date_str = activity['data']
                     
                 activities_list.append(Activity(
                     id=activity['idAtividades'],
@@ -439,18 +436,14 @@ class ComprovantesManager:
             logger.error(f"Error listing activities: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error listing activities: {str(e)}")
     
-    def adicionar_atividade(self, data: Union[str, datetime], valor: float, 
+    def adicionar_atividade(self, data: str, valor: float, 
                            setor: str, atividade: str) -> Dict[str, Any]:
         """Add a new activity to the database"""
         try:
             logger.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
             
-            # Format date for MySQL (YYYY-MM-DD)
-            date_str = None
-            if isinstance(data, str):
-                date_str = self._format_date(data)
-            elif isinstance(data, datetime):
-                date_str = data.strftime("%Y-%m-%d")
+            # Format date string for storage
+            date_str = self._format_date(data) if data else None
             
             connection = get_db_connection()
             cursor = connection.cursor()
@@ -470,12 +463,6 @@ class ComprovantesManager:
             cursor.close()
             connection.close()
             
-            # Format date for display (DD/MM/YYYY)
-            display_date = None
-            if date_str:
-                year, month, day = date_str.split('-')
-                display_date = f"{day}/{month}/{year}"
-            
             return {
                 "success": True,
                 "mensagem": f"Atividade: '{atividade}' adicionada com sucesso",
@@ -483,7 +470,7 @@ class ComprovantesManager:
                 "atividade": atividade,
                 "setor": setor,
                 "valor": float(valor),
-                "data": display_date
+                "data": date_str
             }
         except HTTPException as he:
             # Re-raise HTTP exceptions
@@ -673,10 +660,8 @@ def get_paid_activities():
         atividades_pagas = []
         
         for activity in db_activities:
-            # Format date for display
-            date_str = None
-            if activity['data']:
-                date_str = activity['data'].strftime("%d/%m/%Y")
+            # Date is already stored as string
+            date_str = activity['data']
                 
             atividades_pagas.append(PaidActivity(
                 id=activity['idAtividades'],

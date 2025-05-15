@@ -131,7 +131,6 @@ async function registrarPagamento(dadosComprovante) {
 
 const btnPagar = document.getElementById("confirmPayment");
 btnPagar.addEventListener("click", async () => {
-    console.log("Botão de pagamento clicado.");
     await extrairDadosComprovante();
 });
 
