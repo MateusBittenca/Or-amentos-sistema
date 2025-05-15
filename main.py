@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
@@ -11,13 +11,26 @@ import json
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any, Union
 import logging
+import mysql.connector
+from mysql.connector import Error
+import os
+from dotenv import load_dotenv
+
+# Carrega variáveis de ambiente
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Constants
-JSON_PATH = "./json/atividades.json"
+# Database configuration
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "turntable.proxy.rlwy.net"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD", "SpDrzzWjYjYcvQDrlOldHkKLKMmmJRbt"),
+    "database": os.getenv("DB_NAME", "railway"),
+    "port": int(os.getenv("DB_PORT", "10713")),
+}
 
 # Pydantic models for request/response data
 class Activity(BaseModel):
@@ -47,7 +60,7 @@ class PaidActivity(BaseModel):
     date: Optional[str] = None
     diego_ana: float
     alex_rute: float
-    status : str
+    status: str
     
 class PaymentData(BaseModel):
     activity: str
@@ -98,9 +111,6 @@ class ComprovanteReader:
         return None
 
 
-    
-
-
 def processar_via_api_ocr(contents, filetype="jpg"):
     """
     Process an image using the OCR.space API
@@ -142,43 +152,52 @@ def processar_via_api_ocr(contents, filetype="jpg"):
     
     except Exception as e:
         raise Exception(f"Error processing OCR: {str(e)}")
+
+# Database connection
+def get_db_connection():
+    """Create and return a database connection"""
+    try:
+        connection = mysql.connector.connect(**DB_CONFIG)
+        return connection
+    except Error as e:
+        logger.error(f"Error connecting to MySQL database: {e}")
+        raise HTTPException(status_code=500, detail=f"Database connection error: {str(e)}")
+
+# Function to initialize the database tables
+def initialize_database():
+    """Initialize database tables if they don't exist"""
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        # Create table for activities
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS atividades (
+            idAtividades INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            setor VARCHAR(100),
+            valor DECIMAL(10, 2) NOT NULL,
+            data DATE,
+            alex_rute DECIMAL(10, 2) DEFAULT 0,
+            diego_ana DECIMAL(10, 2) DEFAULT 0,
+            status VARCHAR(20) DEFAULT 'pending'
+        )
+        """)
+        
+        connection.commit()
+        cursor.close()
+        connection.close()
+        logger.info("Database initialized successfully")
+    except Error as e:
+        logger.error(f"Error initializing database: {e}")
+        raise HTTPException(status_code=500, detail=f"Database initialization error: {str(e)}")
+
 class ComprovantesManager:
-    """Class to manage construction expenses in a JSON file"""
+    """Class to manage construction expenses in MySQL database"""
     
-    def __init__(self, json_path: str):
-        self.json_path = json_path
-        
-        # Initialize data structure
-        self.data = {
-            "activities": []
-        }
-        
-        # Ensure the file exists
-        if not os.path.exists(json_path):
-            self._create_json_template()
-        else:
-            try:
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    self.data = json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading JSON file: {e}", exc_info=True)
-                # Create a new file if there's an error
-                self._create_json_template()
-    
-    def _create_json_template(self) -> None:
-        """Create a new JSON file with the expected structure"""
-        self.data = {
-            "activities": []
-        }
-        self._save_data()
-    
-    def _find_activity_index(self, activity: str, sector: Optional[str] = None) -> Optional[int]:
-        """Find the index of an activity in the data list"""
-        for idx, item in enumerate(self.data["activities"]):
-            if item["activity"].strip().lower() == activity.strip().lower():
-                if sector is None or (item.get("sector", "").strip().lower() == sector.strip().lower()):
-                    return idx
-        return None
+    def __init__(self):
+        # This will be empty as we'll use DB connections as needed
+        pass
     
     def _parse_value(self, value_str: str) -> float:
         """Convert string value to float, handling different formats"""
@@ -205,184 +224,266 @@ class ComprovantesManager:
             logger.error(f"Value parsing error for '{value_str}': {str(e)}")
             raise HTTPException(status_code=400, detail=f"Invalid value format: {value_str}")
     
-    def _save_data(self) -> None:
-        """Save data to JSON file with error handling"""
+    def _format_date(self, date_str: str) -> str:
+        """Format date to MySQL format (YYYY-MM-DD)"""
+        if not date_str:
+            return None
+            
         try:
-            with open(self.json_path, 'w', encoding='utf-8') as f:
-                json.dump(self.data, f, ensure_ascii=False, indent=2)
-        except PermissionError:
-            logger.error(f"Permission error while saving JSON file: {self.json_path}")
-            raise HTTPException(
-                status_code=500, 
-                detail="Could not save JSON file. It may be open in another program."
-            )
+            # Check if format is YYYY-MM-DD (from HTML type="date" input)
+            if re.match(r'\d{4}-\d{2}-\d{2}', date_str):
+                return date_str  # Already in correct format for MySQL
+            elif re.match(r'\d{2}/\d{2}/\d{4}', date_str):
+                # Convert DD/MM/YYYY to YYYY-MM-DD
+                day, month, year = date_str.split('/')
+                return f"{year}-{month}-{day}"
+            else:
+                logger.warning(f"Unknown date format: {date_str}")
+                return None
         except Exception as e:
-            logger.error(f"Error saving JSON file: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Error saving JSON file: {str(e)}")
+            logger.error(f"Error formatting date {date_str}: {e}")
+            return None
     
     def preencher_pagamento(self, valor_str: str, atividade: str, pagador: str, 
                             setor: Optional[str] = None, data: Optional[str] = None) -> Dict[str, Any]:
-        """Register a payment in the JSON data"""
+        """Register a payment in the database"""
         # Convert value to float
         valor = self._parse_value(valor_str)
         
-        # Find matching activity
-        idx = self._find_activity_index(atividade, setor)
-        
-        if idx is None:
-            raise HTTPException(status_code=404, detail=f"Activity '{atividade}' not found")
-        
-        # Determine which field to update based on payer
-        if pagador.lower() in ['alex-rute', 'alex rute', 'alex', 'rute']:
-            self.data["activities"][idx]["alex_rute"] = (self.data["activities"][idx].get("alex_rute", 0) or 0) + valor
-        elif pagador.lower() in ['diego-ana', 'diego ana', 'diego', 'ana']:
-            self.data["activities"][idx]["diego_ana"] = (self.data["activities"][idx].get("diego_ana", 0) or 0) + valor
-        else:
-            # Try to infer based on name extracted from receipt
-            if 'alex' in pagador.lower() or 'rute' in pagador.lower():
-                self.data["activities"][idx]["alex_rute"] = (self.data["activities"][idx].get("alex_rute", 0) or 0) + valor
-            elif 'diego' in pagador.lower() or 'ana' in pagador.lower():
-                self.data["activities"][idx]["diego_ana"] = (self.data["activities"][idx].get("diego_ana", 0) or 0) + valor
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            # Find matching activity
+            query = "SELECT * FROM atividades WHERE nome = %s"
+            params = (atividade,)
+            
+            if setor:
+                query += " AND setor = %s"
+                params = (atividade, setor)
+                
+            cursor.execute(query, params)
+            activity = cursor.fetchone()
+            
+            if not activity:
+                cursor.close()
+                connection.close()
+                raise HTTPException(status_code=404, detail=f"Activity '{atividade}' not found")
+            
+            # Determine which field to update based on payer
+            field_to_update = ""
+            if pagador.lower() in ['alex-rute', 'alex rute', 'alex', 'rute']:
+                field_to_update = "alex_rute"
+                new_value = (activity['alex_rute'] or 0) + valor
+            elif pagador.lower() in ['diego-ana', 'diego ana', 'diego', 'ana']:
+                field_to_update = "diego_ana"
+                new_value = (activity['diego_ana'] or 0) + valor
             else:
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Payer '{pagador}' not recognized. Use 'Alex-Rute' or 'Diego-Ana'"
-                )
-        
-        # Update payment status
-        self.data["activities"][idx]["status"] = self._calculate_status(idx)
-        
-        # Save changes
-        self._save_data()
-        
-        return {
-            "sucesso": True,
-            "mensagem": f"Pagamento no valor de R$ {valor:.2f} Registrado na atividade : '{atividade}' por {pagador}",
-            "data": data
-        }
-    
-    def _calculate_status(self, idx: int) -> str:
-        """Calculate if an activity is fully paid or not"""
-        activity = self.data["activities"][idx]
-        value = activity.get("value", 0)
-        alex_rute = activity.get("alex_rute", 0) or 0
-        diego_ana = activity.get("diego_ana", 0) or 0
-        
-        return "paid" if (alex_rute + diego_ana) >= value else "pending"
-        
+                # Try to infer based on name extracted from receipt
+                if 'alex' in pagador.lower() or 'rute' in pagador.lower():
+                    field_to_update = "alex_rute"
+                    new_value = (activity['alex_rute'] or 0) + valor
+                elif 'diego' in pagador.lower() or 'ana' in pagador.lower():
+                    field_to_update = "diego_ana"
+                    new_value = (activity['diego_ana'] or 0) + valor
+                else:
+                    cursor.close()
+                    connection.close()
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Payer '{pagador}' not recognized. Use 'Alex-Rute' or 'Diego-Ana'"
+                    )
+            
+            # Update the field
+            update_query = f"UPDATE atividades SET {field_to_update} = %s WHERE idAtividades = %s"
+            cursor.execute(update_query, (new_value, activity['idAtividades']))
+            
+            # Update payment status
+            total_paid = (activity['alex_rute'] or 0) + (activity['diego_ana'] or 0) + valor
+            status = "paid" if total_paid >= activity['valor'] else "pending"
+            
+            cursor.execute("UPDATE atividades SET status = %s WHERE idAtividades = %s", 
+                          (status, activity['idAtividades']))
+            
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            return {
+                "sucesso": True,
+                "mensagem": f"Pagamento no valor de R$ {valor:.2f} Registrado na atividade : '{atividade}' por {pagador}",
+                "data": data
+            }
+        except HTTPException as he:
+            # Re-raise HTTP exceptions
+            raise he
+        except Exception as e:
+            logger.error(f"Error registering payment: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error registering payment: {str(e)}")
+            
     def atualizar_status(self) -> Dict[str, Any]:
         """Update payment status for all activities based on filled values"""
-        updated_count = 0
-        
-        for idx, activity in enumerate(self.data["activities"]):
-            value = activity.get("value", 0)
-            alex_rute = activity.get("alex_rute", 0) or 0
-            diego_ana = activity.get("diego_ana", 0) or 0
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
             
-            # Calculate status
-            status = "paid" if (alex_rute + diego_ana) >= value else "pending"
+            # Get all activities
+            cursor.execute("SELECT * FROM atividades")
+            activities = cursor.fetchall()
             
-            # Update status
-            self.data["activities"][idx]["status"] = status
-            updated_count += 1
-        
-        # Save changes
-        self._save_data()
-        
-        return {
-            "sucesso": True,
-            "mensagem": "Status do pagamento atualizado com sucesso",
-            "atividades_atualizadas": updated_count
-        }
+            updated_count = 0
+            
+            for activity in activities:
+                value = activity['valor'] or 0
+                alex_rute = activity['alex_rute'] or 0
+                diego_ana = activity['diego_ana'] or 0
+                
+                # Calculate status
+                status = "paid" if (alex_rute + diego_ana) >= value else "pending"
+                
+                # Update status
+                cursor.execute("UPDATE atividades SET status = %s WHERE idAtividades = %s",
+                               (status, activity['idAtividades']))
+                updated_count += 1
+            
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            return {
+                "sucesso": True,
+                "mensagem": "Status do pagamento atualizado com sucesso",
+                "atividades_atualizadas": updated_count
+            }
+        except Exception as e:
+            logger.error(f"Error updating status: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error updating status: {str(e)}")
     
     def listar_atividades_pendentes(self) -> List[PendingActivity]:
         """List all activities with pending payments"""
-        atividades_pendentes = []
-
-        for idx, activity in enumerate(self.data["activities"]):
-            valor_custo = activity.get("value", 0)
-            alex_rute = activity.get("alex_rute", 0) or 0
-            diego_ana = activity.get("diego_ana", 0) or 0
-
-            # Calculate remaining amount to be paid
-            valor_restante = valor_custo - (alex_rute + diego_ana)
-
-            # Check if there's still a pending amount
-            if valor_restante > 0:
-                atividades_pendentes.append(PendingActivity(
-                    id=idx,
-                    activity=activity.get("activity", ""),
-                    sector=activity.get("sector", ""),
-                    total_value=valor_custo,
-                    valor_restante=valor_restante,
-                    date=activity.get("date", None),
-                    alex_rute=alex_rute,
-                    diego_ana=diego_ana
-                ))
-
-        return atividades_pendentes
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            cursor.execute("SELECT * FROM atividades WHERE status = 'pending'")
+            activities = cursor.fetchall()
+            
+            cursor.close()
+            connection.close()
+            
+            atividades_pendentes = []
+            
+            for activity in activities:
+                valor_custo = activity['valor'] or 0
+                alex_rute = activity['alex_rute'] or 0
+                diego_ana = activity['diego_ana'] or 0
+                
+                # Calculate remaining amount to be paid
+                valor_restante = valor_custo - (alex_rute + diego_ana)
+                
+                # Format date to DD/MM/YYYY for display
+                date_str = None
+                if activity['data']:
+                    date_str = activity['data'].strftime("%d/%m/%Y")
+                
+                # Check if there's still a pending amount
+                if valor_restante > 0:
+                    atividades_pendentes.append(PendingActivity(
+                        id=activity['idAtividades'],
+                        activity=activity['nome'],
+                        sector=activity['setor'],
+                        total_value=valor_custo,
+                        valor_restante=valor_restante,
+                        date=date_str,
+                        alex_rute=alex_rute,
+                        diego_ana=diego_ana
+                    ))
+                    
+            return atividades_pendentes
+        except Exception as e:
+            logger.error(f"Error listing pending activities: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error listing pending activities: {str(e)}")
     
     def listar_atividades(self) -> List[Activity]:
-        """List all activities in the data"""
-        activities_list = []
-        
-        for idx, activity in enumerate(self.data["activities"]):
-            activities_list.append(Activity(
-                id=idx,
-                activity=activity.get("activity", ""),
-                sector=activity.get("sector", ""),
-                value=activity.get("value", 0),
-                date=activity.get("date", None),
-                diego_ana=activity.get("diego_ana", 0) or 0,
-                alex_rute=activity.get("alex_rute", 0) or 0
-            ))
-        
-        return activities_list
+        """List all activities in the database"""
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            cursor.execute("SELECT * FROM atividades")
+            db_activities = cursor.fetchall()
+            
+            cursor.close()
+            connection.close()
+            
+            activities_list = []
+            
+            for activity in db_activities:
+                # Format date to DD/MM/YYYY for display
+                date_str = None
+                if activity['data']:
+                    date_str = activity['data'].strftime("%d/%m/%Y")
+                    
+                activities_list.append(Activity(
+                    id=activity['idAtividades'],
+                    activity=activity['nome'],
+                    sector=activity['setor'],
+                    value=activity['valor'],
+                    date=date_str,
+                    diego_ana=activity['diego_ana'] or 0,
+                    alex_rute=activity['alex_rute'] or 0
+                ))
+            
+            return activities_list
+        except Exception as e:
+            logger.error(f"Error listing activities: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error listing activities: {str(e)}")
     
     def adicionar_atividade(self, data: Union[str, datetime], valor: float, 
                            setor: str, atividade: str) -> Dict[str, Any]:
-        """Add a new activity to the data"""
+        """Add a new activity to the database"""
         try:
             logger.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
             
-            # Format date if it's a string
+            # Format date for MySQL (YYYY-MM-DD)
             date_str = None
             if isinstance(data, str):
-                # Check if format is YYYY-MM-DD (from HTML type="date" input)
-                if re.match(r'\d{4}-\d{2}-\d{2}', data):
-                    date_obj = datetime.strptime(data, "%Y-%m-%d")
-                    date_str = date_obj.strftime("%d/%m/%Y")
-                else:
-                    # Assume it's already in DD/MM/YYYY format
-                    date_str = data
+                date_str = self._format_date(data)
             elif isinstance(data, datetime):
-                date_str = data.strftime("%d/%m/%Y")
+                date_str = data.strftime("%Y-%m-%d")
             
-            # Create new activity object
-            new_activity = {
-                "activity": atividade,
-                "sector": setor,
-                "value": float(valor),
-                "date": date_str,
-                "alex_rute": 0,
-                "diego_ana": 0,
-                "status": "pending"
-            }
+            connection = get_db_connection()
+            cursor = connection.cursor()
             
-            # Add to list
-            self.data["activities"].append(new_activity)
+            # Insert new activity
+            query = """
+            INSERT INTO atividades (nome, setor, valor, data, alex_rute, diego_ana, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
             
-            # Save changes
-            self._save_data()
+            cursor.execute(query, (atividade, setor, float(valor), date_str, 0, 0, "pending"))
+            
+            # Get the ID of the inserted row
+            activity_id = cursor.lastrowid
+            
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            # Format date for display (DD/MM/YYYY)
+            display_date = None
+            if date_str:
+                year, month, day = date_str.split('-')
+                display_date = f"{day}/{month}/{year}"
             
             return {
                 "success": True,
                 "mensagem": f"Atividade: '{atividade}' adicionada com sucesso",
-                "id": len(self.data["activities"]) - 1,
+                "id": activity_id,
                 "atividade": atividade,
                 "setor": setor,
                 "valor": float(valor),
-                "data": date_str
+                "data": display_date
             }
         except HTTPException as he:
             # Re-raise HTTP exceptions
@@ -394,18 +495,28 @@ class ComprovantesManager:
     def excluir_atividade(self, id: int) -> Dict[str, Any]:
         """Delete an activity by its ID"""
         try:
-            if id < 0 or id >= len(self.data["activities"]):
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            # Check if activity exists
+            cursor.execute("SELECT nome FROM atividades WHERE idAtividades = %s", (id,))
+            activity = cursor.fetchone()
+            
+            if not activity:
+                cursor.close()
+                connection.close()
                 raise HTTPException(status_code=404, detail="Activity not found")
             
-            # Remove activity
-            removed_activity = self.data["activities"].pop(id)
+            # Delete activity
+            cursor.execute("DELETE FROM atividades WHERE idAtividades = %s", (id,))
             
-            # Save changes
-            self._save_data()
+            connection.commit()
+            cursor.close()
+            connection.close()
             
             return {
                 "success": True,
-                "message": f"Atividade: '{removed_activity['activity']}' removida com sucesso!"
+                "message": f"Atividade: '{activity['nome']}' removida com sucesso!"
             }
         except HTTPException as he:
             # Re-raise HTTP exceptions
@@ -413,26 +524,74 @@ class ComprovantesManager:
         except Exception as e:
             logger.error(f"Error deleting activity: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error deleting activity: {str(e)}")
-
             
     def calcular_valor_total(self) -> float:
         """Calculate total value of construction by summing activity values"""
-        return sum(activity.get("value", 0) or 0 for activity in self.data["activities"])
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            
+            cursor.execute("SELECT SUM(valor) FROM atividades")
+            total = cursor.fetchone()[0]
+            
+            cursor.close()
+            connection.close()
+            
+            return float(total) if total else 0
+        except Exception as e:
+            logger.error(f"Error calculating total value: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error calculating total value: {str(e)}")
     
     def calcular_valor_total_pago(self) -> float:
         """Calculate total amount paid by summing values in Alex-Rute and Diego-Ana columns"""
-        total = 0
-        for activity in self.data["activities"]:
-            total += (activity.get("alex_rute", 0) or 0) + (activity.get("diego_ana", 0) or 0)
-        return total
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            
+            cursor.execute("SELECT SUM(alex_rute) + SUM(diego_ana) FROM atividades")
+            total = cursor.fetchone()[0]
+            
+            cursor.close()
+            connection.close()
+            
+            return float(total) if total else 0
+        except Exception as e:
+            logger.error(f"Error calculating total paid: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error calculating total paid: {str(e)}")
     
     def calcular_valor_pago_diego(self) -> float:
         """Calculate total amount paid by Diego-Ana"""
-        return sum(activity.get("diego_ana", 0) or 0 for activity in self.data["activities"])
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            
+            cursor.execute("SELECT SUM(diego_ana) FROM atividades")
+            total = cursor.fetchone()[0]
+            
+            cursor.close()
+            connection.close()
+            
+            return float(total) if total else 0
+        except Exception as e:
+            logger.error(f"Error calculating total paid by Diego-Ana: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error calculating total paid by Diego-Ana: {str(e)}")
 
     def calcular_valor_pago_alex(self) -> float:
         """Calculate total amount paid by Alex-Rute"""
-        return sum(activity.get("alex_rute", 0) or 0 for activity in self.data["activities"])
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            
+            cursor.execute("SELECT SUM(alex_rute) FROM atividades")
+            total = cursor.fetchone()[0]
+            
+            cursor.close()
+            connection.close()
+            
+            return float(total) if total else 0
+        except Exception as e:
+            logger.error(f"Error calculating total paid by Alex-Rute: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error calculating total paid by Alex-Rute: {str(e)}")
 
 
 # Initialize FastAPI app
@@ -447,8 +606,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize the database on startup
+@app.on_event("startup")
+async def startup_event():
+    initialize_database()
+
 # Initialize the manager
-manager = ComprovantesManager(JSON_PATH)
+manager = ComprovantesManager()
 
 @app.get("/")
 def read_root():
@@ -462,7 +626,16 @@ def head_root():
 @app.get("/health")
 def health_check():
     """Health check endpoint for service monitoring"""
-    return {"status": "healthy"}
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT 1")
+        cursor.close()
+        connection.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 @app.head("/health")
 def head_health_check():
@@ -485,22 +658,37 @@ def get_pending_activities():
         logger.error(f"Error fetching pending activities: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error fetching pending activities: {str(e)}")
 
-@app.get("/atividades-pagas" , response_model=List[PaidActivity])
+@app.get("/atividades-pagas", response_model=List[PaidActivity])
 def get_paid_activities():
     try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        cursor.execute("SELECT * FROM atividades WHERE status = 'paid'")
+        db_activities = cursor.fetchall()
+        
+        cursor.close()
+        connection.close()
+        
         atividades_pagas = []
-        for idx, activity in enumerate(manager.data["activities"]):
-            if activity.get("status") == "paid":
-                atividades_pagas.append(PaidActivity(
-                    id=idx,
-                    activity=activity.get("activity", ""),
-                    sector=activity.get("sector", ""),
-                    total_value=activity.get("value", 0),
-                    date=activity.get("date", None),
-                    diego_ana=activity.get("diego_ana", 0) or 0,
-                    alex_rute=activity.get("alex_rute", 0) or 0,
-                    status = activity.get("status")
-                ))
+        
+        for activity in db_activities:
+            # Format date for display
+            date_str = None
+            if activity['data']:
+                date_str = activity['data'].strftime("%d/%m/%Y")
+                
+            atividades_pagas.append(PaidActivity(
+                id=activity['idAtividades'],
+                activity=activity['nome'],
+                sector=activity['setor'],
+                total_value=activity['valor'],
+                date=date_str,
+                diego_ana=activity['diego_ana'] or 0,
+                alex_rute=activity['alex_rute'] or 0,
+                status=activity['status']
+            ))
+        
         return atividades_pagas
     except Exception as e:
         logger.error(f"Error fetching paid activities: {e}", exc_info=True)
@@ -672,4 +860,4 @@ def register_payment(payment: PaymentData):
 # Run the app
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
