@@ -15,6 +15,7 @@ from models import Activity, PendingActivity, PaidActivity, PaymentData, Extract
 from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_via_api_ocr
 from managers.comprovante import ComprovantesManager
+from auth import get_current_active_user
 
 # Inicializar app FastAPI
 app = FastAPI(title="API de Gerenciamento de Despesas de Construção")
