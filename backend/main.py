@@ -1,21 +1,23 @@
 from datetime import datetime
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse , HTMLResponse
 import os
 from PIL import Image
 import io
 import json
 from typing import List
+from fastapi.security import OAuth2PasswordRequestForm
 import logging
 
 # Importar de nossos módulos
 from config import logger
-from models import Activity, PendingActivity, PaidActivity, PaymentData, ExtractedData
+from models import Activity, PendingActivity, PaidActivity, PaymentData, ExtractedData,User
 from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_via_api_ocr
 from managers.comprovante import ComprovantesManager
-from auth import get_current_active_user
+from auth.auth_user import login_for_access_token,get_current_user
+
 
 # Inicializar app FastAPI
 app = FastAPI(title="API de Gerenciamento de Despesas de Construção")
@@ -276,6 +278,12 @@ def register_payment(payment: PaymentData):
     except Exception as e:
         logger.error(f"Unhandled exception in register_payment: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error registering payment: {str(e)}")
+
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    return await login_for_access_token(form_data)
+
 
 # Run the app
 if __name__ == "__main__":

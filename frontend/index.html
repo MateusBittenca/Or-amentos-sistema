@@ -4,418 +4,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Gastos de Obra</title>
-    <link rel="stylesheet" href="styles/tabs.css">
-    <link rel="stylesheet" href="styles/modal.css">
-    <link rel="stylesheet" href="styles/modalInfoPaid.css">
-    <link rel="stylesheet" href="styles/modalPayement.css">
-    <link rel="stylesheet" href="styles/loader.css">
-    <link rel="stylesheet" href="styles/message.css">
+    <title>Login - Sistema de Gestão de Gastos de Obra</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="styles/login.css">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Header -->
     <nav class="bg-blue-800 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto">
             <h1 class="text-2xl font-bold">Gestão de Gastos de Obra</h1>
-            <div>
-                <span id="currentDate" class="mr-4"></span>
-                <button id="refreshBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
-                    <i class="fas fa-sync-alt mr-1"></i> Atualizar
-                </button>
-            </div>
         </div>
     </nav>
 
-    <div class="container mx-auto p-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-tasks mr-2"></i>Total de Atividades
-                </h2>
-                <p class="text-3xl font-bold" id="totalActivities">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-clock mr-2"></i>Pendentes
-                </h2>
-                <p class="text-3xl font-bold" id="pendingActivities">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill-wave mr-2"></i>Valor Total da obra
-                </h2>
-                <p class="text-3xl font-bold" id="totalValue">R$ 0,00</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill-wave"></i> Valor total pago da obra
-                </h2>
-                <p class="text-3xl font-bold" id="valorPagoObra">R$ 0,00</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill mr-2"></i>Valor Pago por Diego-Ana
-                </h2>
-                <p class="text-3xl font-bold" id="valorPagoDiego">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill mr-2"></i>Valor pago por Alex-Rute
-                </h2>
-                <p class="text-3xl font-bold" id="valorPagoAlex">0</p>
-            </div>
+    <!-- Main Content -->
+    <div class="flex-grow flex items-center justify-center px-4 py-10 relative overflow-hidden">
+        <div class="login-bg absolute inset-0 z-0"></div>
+        <div class="wave-animation z-0"></div>
 
-        </div>
+        <!-- Login Card -->
+        <div
+            class="bg-white rounded-xl shadow-xl card-shadow z-10 overflow-hidden w-full max-w-md transform transition-all">
+            <div class="p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
+                        <i class="fas fa-hard-hat text-blue-600 text-3xl pulse"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Bem-vindo(a) de volta</h2>
+                    <p class="text-gray-600 mt-1">Acesse sua conta para continuar</p>
+                </div>
 
-        <div class="flex flex-col md:flex-row gap-4 mb-8">
-            <div class="w-full md:w-2/3">
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <!-- Abas de navegação -->
-                    <div class="tabs-container">
-                        <div class="tabs-header">
-                            <div class="tab active" data-tab="pending">
-                                <i class="fas fa-exclamation-circle mr-2"></i> Atividades Pendentes
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
                             </div>
-                            <div class="tab" data-tab="paid">
-                                <i class="fas fa-check-circle mr-2"></i> Atividades Pagas
-                            </div>
-                        </div>
-
-                        <!-- Conteúdo da aba Atividades Pendentes -->
-                        <div class="tab-content active" id="pending-tab">
-                            <div class="buscar">
-                                <input type="text" id="searchInput" placeholder="Buscar atividade pendente..."
-                                    class="w-full px-3 py-2 border rounded mb-4">
-                                <button id="searchBtn"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                                    <i class="fas fa-search mr-2"></i>Buscar
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <div class="divider"></div>
-                                <table class="min-w-full bg-white">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th class="py-2 px-4 border-b text-left">Atividade</th>
-                                            <th class="py-2 px-4 border-b text-left">Setor</th>
-                                            <th class="py-2 px-4 border-b text-left">Valor pendente</th>
-                                            <th class="py-2 px-4 border-b text-left">Valor total</th>
-                                            <th class="py-2 px-4 border-b text-left">Data Vencimento</th>
-                                            <th class="py-2 px-4 border-b text-left">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="activitiesList">
-                                        <!-- Atividades pendentes serão carregadas aqui -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Conteúdo da aba Atividades Pagas -->
-                        <div class="tab-content" id="paid-tab">
-                            <div class="buscar">
-                                <input type="text" id="searchPaidInput" placeholder="Buscar atividade paga..."
-                                    class="w-full px-3 py-2 border rounded mb-4">
-                                <button id="searchPaidBtn"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                                    <i class="fas fa-search mr-2"></i>Buscar
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <div class="divider"></div>
-                                <table class="min-w-full bg-white">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th class="py-2 px-4 border-b text-left">Atividade</th>
-                                            <th class="py-2 px-4 border-b text-left">Setor</th>
-                                            <th class="py-2 px-4 border-b text-left">Valor pago</th>
-                                            <th class="py-2 px-4 border-b text-left">Data Pagamento</th>
-                                            <th class="py-2 px-4 border-b text-left">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="paidActivitiesList">
-                                        <!-- Atividades pagas serão carregadas aqui -->
-                                    </tbody>
-                                </table>
-                            </div>
+                            <input type="text" id="nome" name="nome"
+                                class="pl-10 input-focus block w-full px-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                placeholder="Nome do Usuario" required>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="w-full md:w-1/3">
-                <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Adicionar Nova Atividade</h2>
-                    <form id="addActivityForm">
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Atividade</label>
-                            <input type="text" name="atividade" class="w-full px-3 py-2 border rounded" required>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+                            <a href="#"
+                                class="text-sm text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
+                                Esqueceu a senha?
+                            </a>
                         </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Valor (R$)</label>
-                            <input type="number" name="valor" step="0.01" class="w-full px-3 py-2 border rounded"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Setor</label>
-                            <select name="setor" id="setor" class="setor-select w-full px-3 py-2 border rounded">
-                                <option value="" disabled selected>Escolha uma opção</option>
-                                <option value="Documentação">Documentação</option>
-                                <option value="Obra">Financiamento</option>
-                                <option value="Financeiro">Advocacia</option>
-                                <option value="Compras">Projeto</option>
-                                <option value="Mão de obra  ">Mão de obra</option>
-                                <option value="Materiais">Materiais</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Data para pagar</label>
-                            <input type="date" name="data" class="w-full px-3 py-2 border rounded" required>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                            <i class="fas fa-plus mr-2"></i>Adicionar
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-
-
-    </div>
-
-    <!-- Notification -->
-    <div id="notification"
-        class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 hidden">
-        <span id="notificationMessage"></span>
-    </div>
-
-    <div id="infoModal" class="hidden">
-        <div class="modal-content">
-            <div class="modal-head">
-                <h2>Detalhes da Atividade </h2>
-                <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2"></i>
-            </div>
-
-
-            <!-- Seção de identificação -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações Gerais</div>
-                <div class="info-row">
-                    <div class="info-label">ID:</div>
-                    <div class="info-value" id="modalId"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="modalActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="modalSector">Documentação</div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Seção de valores -->
-            <div class="modal-section">
-                <div class="modal-section-title">Valores</div>
-                <div class="financial-section">
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Diego-Ana</div>
-                        <div class="financial-value" id="modalValue"></div>
-                    </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Alex-Rute</div>
-                        <div class="financial-value" id="modalValue2"></div>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pendente:</div>
-                        <div class="financial-value financial-pending" id="modalRemainingValue"></div>
-                    </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor Total:</div>
-                        <div class="financial-value financial-total" id="modalTotalValue"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Data de vencimento -->
-            <div class="modal-section">
-                <div class="info-row">
-                    <div class="info-label">Data de vencimento:</div>
-                    <div class="info-value" id="modalDate">15/09/2021</div>
-                </div>
-            </div>
-
-            <!-- Botão de fechar -->
-            <div class="modal-footer">
-                <button id="pagamento" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
-                    Pagar
-                    <button id="closeModal">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="infoModalPaid" class="hidden">
-        <div class="modal-content">
-            <div class="modal-head">
-                <h2>Detalhes da Atividade </h2>
-
-            </div>
-
-
-            <!-- Seção de identificação -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações Gerais</div>
-                <div class="info-row">
-                    <div class="info-label">ID:</div>
-                    <div class="info-value" id="modalPaidID"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="modalPaidActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="modalPaidSector">Documentação</div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Seção de valores -->
-            <div class="modal-section">
-                <div class="modal-section-title">Valores</div>
-                <div class="financial-section">
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Diego-Ana</div>
-                        <div class="financial-value" id="modalPaidValue"></div>
-                    </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Alex-Rute</div>
-                        <div class="financial-value" id="modalPaidValue2"></div>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor Total:</div>
-                        <div class="financial-value financial-total" id="modalPaidTotalValue"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Data de vencimento -->
-            <div class="modal-section">
-                <div class="info-row">
-                    <div class="info-label">Data de vencimento:</div>
-                    <div class="info-value" id="modalPaidDate">15/09/2021</div>
-                </div>
-            </div>
-
-            <!-- Botão de fechar -->
-            <div class="modal-footer">
-
-                <button id="closeModalPaid">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="paymentModal" class="hidden">
-        <div class="modal-content payment-modal">
-            <h2>Registrar Pagamento</h2>
-
-            <!-- Seção de identificação da atividade -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações da Atividade</div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="paymentModalActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="paymentModalSector"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Valor Pendente:</div>
-                    <div class="info-value" id="paymentModalPending"></div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Formulário de pagamento -->
-            <div class="modal-section">
-                <div class="modal-section-title">Detalhes do Pagamento</div>
-                <form id="modalPaymentForm">
-
-
-                    <div class="form-group">
-                        <label>Quem está pagando?</label>
-                        <div class="payment-options">
-                            <div class="payment-option">
-                                <input type="radio" id="diegoAna" name="payer" value="Diego-Ana" checked>
-                                <label for="diegoAna" class="payment-option-label">
-                                    <i class="fas fa-user-friends"></i>
-                                    <span>Diego-Ana</span>
-                                </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
                             </div>
-                            <div class="payment-option">
-                                <input type="radio" id="alexRute" name="payer" value="Alex-Rute">
-                                <label for="alexRute" class="payment-option-label">
-                                    <i class="fas fa-user-friends"></i>
-                                    <span>Alex-Rute</span>
-                                </label>
+                            <input type="password" id="password" name="password"
+                                class="pl-10 input-focus block w-full px-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                placeholder="••••••••" required>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 cursor-pointer toggle-password"></i>
                             </div>
                         </div>
                     </div>
 
-
-
-                    <!-- Nova seção para upload de imagem/comprovante -->
-                    <div class="form-group">
-                        <label>Comprovante de Pagamento</label>
-                        <div class="image-upload-container">
-                            <div class="image-upload-preview">
-                                <div class="image-upload-placeholder">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span>Clique para adicionar comprovante</span>
-                                </div>
-                                <img id="receiptPreview" alt="Comprovante de pagamento">
-                                <input type="file" id="receiptImage" class="image-upload-input" accept="image/*">
-                            </div>
-                        </div>
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox"
+                            class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring focus:ring-blue-200">
+                        <label for="remember_me" class="ml-2 block text-sm text-gray-700">
+                            Lembrar de mim
+                        </label>
                     </div>
 
-
+                    <button type="submit"
+                        class="btn-hover w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition duration-300">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Acessar Sistema
+                    </button>
                 </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Ainda não tem uma conta?
+                        <a href="#"
+                            class="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">
+                            Solicitar acesso
+                        </a>
+                    </p>
+                </div>
             </div>
 
-            <!-- Botões do modal -->
-            <div class="modal-footer">
-                <button id="confirmPayment" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
-                    <i class="fas fa-check-circle"></i> Confirmar Pagamento
-                </button>
-                <button id="closePaymentModal" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
-                    <i class="fas fa-times-circle"></i> Cancelar
-                </button>
+            <!-- Footer card -->
+            <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                <div class="text-xs text-gray-500">
+                    <i class="fas fa-shield-alt mr-1"></i> Conexão segura
+                </div>
+                <div class="text-xs text-gray-500">
+                    © 2025 Sistema de Gestão
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        const API_URL = "http://localhost:8000";
 
-    <!-- Loader -->
-    <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50 hidden">
-        <div class="loader-spinner border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 animate-spin">
-        </div>
-    </div>
+        // Form submission
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>Entrando...';
+            submitButton.disabled = true;
+
+            const nome = document.getElementById('nome').value;
+            const password = document.getElementById('password').value;
+
+            const formData = new URLSearchParams();
+            formData.append('username', nome);  // <-- O FastAPI espera 'username'
+            formData.append('password', password);
+
+            try {
+                const response = await fetch(`${API_URL}/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Usuário ou senha inválidos');
+
+                }
+
+                const data = await response.json();
+                localStorage.setItem('access_token', data.access_token);
+
+                // Redirecionar para index.html
+                
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                alert(error.message);
+                console.error(error);
+            } finally {
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        });
 
 
 
-    <script src="index.js"></script>
-    <script src="modalPagamento.js"></script>
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle password visibility
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Toggle icon
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+
+            // Form submission
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Show loading state
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.innerHTML;
+                submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>Entrando...';
+                submitButton.disabled = true;
+
+                // Simulate API call
+               
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

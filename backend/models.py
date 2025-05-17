@@ -12,14 +12,10 @@ class Activity(BaseModel):
 
 class User(BaseModel):
     id: int
-    name: str
+    nome: str
     password: str
     status: str
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    user: User
     
 class PendingActivity(BaseModel):
     id: int  
