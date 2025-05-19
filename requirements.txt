@@ -6,3 +6,4 @@ python-multipart
 mysql-connector-python
 requests
 python-dotenv
+python-jose
