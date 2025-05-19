@@ -45,7 +45,7 @@ def processar_via_api_ocr(contents, filetype="jpg"):
         filetype: A extensão do tipo de arquivo (jpg, png, pdf, etc.)
     """
     import requests
-    import json
+  
     
     api_key = "helloworld"  # Substitua pela sua chave de API real
     

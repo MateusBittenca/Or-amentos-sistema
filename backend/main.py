@@ -16,7 +16,7 @@ from models import Activity, PendingActivity, PaidActivity, PaymentData, Extract
 from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_via_api_ocr
 from managers.comprovante import ComprovantesManager
-from auth.auth_user import login_for_access_token,get_current_user
+from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme
 
 
 # Inicializar app FastAPI
@@ -30,11 +30,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Inicializar o banco de dados na inicialização
-@app.on_event("startup")
-async def startup_event():
-    initialize_database()
 
 # Inicializar o gerenciador
 manager = ComprovantesManager()
@@ -130,7 +125,8 @@ def add_activity(
     atividade: str = Form(...),
     valor: str = Form(...),
     setor: str = Form(...), 
-    data: str = Form(...)
+    data: str = Form(...),
+
 ):
     logger.debug(f"Dados recebidos: atividade={atividade}, valor={valor}, setor={setor}, data={data}")
     
