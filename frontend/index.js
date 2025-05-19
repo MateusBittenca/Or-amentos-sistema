@@ -1,5 +1,26 @@
 const API_URL = "https://sistema-de-orcamentos.onrender.com";
 
+function checkAuthentication() {
+    // Verificar se existe um token de autenticação no localStorage
+    const authToken = localStorage.getItem('access_token');
+    
+    // Se não existir token, redirecionar para a página de login
+    if (!authToken) {
+        window.location.href = 'index.html';
+        return false;
+    }
+    
+    return true;
+}
+
+// Executar a verificação de autenticação quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar autenticação antes de carregar o resto do conteúdo
+    if (!checkAuthentication()) {
+        // Se não estiver autenticado, a função já redirecionou para login.html
+        return;
+    }
+});
 
 const api = {
   async fetchData(endpoint) {
