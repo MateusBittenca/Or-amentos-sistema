@@ -108,16 +108,18 @@ class ComprovantesManager:
                         detail=f"Pagador '{pagador}' não reconhecido. Use 'Alex-Rute' ou 'Diego-Ana'"
                     )
             
-            # Atualizar o campo
-            update_query = f"UPDATE atividades SET {field_to_update} = %s WHERE idAtividades = %s"
-            cursor.execute(update_query, (new_value, activity['idAtividades']))
-            
-            # Atualizar status de pagamento
-            total_paid = (activity['alex_rute'] or 0) + (activity['diego_ana'] or 0) + valor
+            # Calcular novo status no mesmo passo
+            total_paid = 0
+            if field_to_update == "alex_rute":
+                total_paid = new_value + (activity['diego_ana'] or 0)
+            else:
+                total_paid = (activity['alex_rute'] or 0) + new_value
+                
             status = "paid" if total_paid >= activity['valor'] else "pending"
             
-            cursor.execute("UPDATE atividades SET status = %s WHERE idAtividades = %s", 
-                          (status, activity['idAtividades']))
+            # Atualizar o campo e status em uma única operação
+            update_query = f"UPDATE atividades SET {field_to_update} = %s, status = %s WHERE idAtividades = %s"
+            cursor.execute(update_query, (new_value, status, activity['idAtividades']))
             
             connection.commit()
             cursor.close()
@@ -132,9 +134,9 @@ class ComprovantesManager:
             # Relançar exceções HTTP
             raise he
         except Exception as e:
-            logger.error(f"Erro ao registrar pagamento: {e}", exc_info=True)
+            logger.error(f"Erro ao registrar pagamento: {e}")
             raise HTTPException(status_code=500, detail=f"Erro ao registrar pagamento: {str(e)}")
-            
+                
     def atualizar_status(self) -> Dict[str, Any]:
         """Atualizar status de pagamento para todas as atividades com base nos valores preenchidos"""
         try:

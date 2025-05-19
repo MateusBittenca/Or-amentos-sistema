@@ -229,51 +229,34 @@ async def process_receipt(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register-payment")
-def register_payment(payment: PaymentData):
+async def register_payment(payment: PaymentData):
     try:
-        # Log details for diagnosis
-        logger.debug(f"Received payment data: {payment.model_dump()}")
-        
-        # Validate received data
-        if not payment.activity:
-            raise HTTPException(status_code=400, detail="Activity name is required")
-        if not payment.payer:
-            raise HTTPException(status_code=400, detail="Payer is required")
-        if not payment.value:
-            raise HTTPException(status_code=400, detail="Payment value is required")
+        # Validação básica dos dados
+        if not payment.activity or not payment.payer or not payment.value:
+            missing = []
+            if not payment.activity: missing.append("atividade")
+            if not payment.payer: missing.append("pagador")
+            if not payment.value: missing.append("valor")
+            raise HTTPException(status_code=400, detail=f"Campos obrigatórios faltando: {', '.join(missing)}")
             
-        # Log the value before conversion
-        logger.debug(f"Payment value before processing: '{payment.value}'")
+        # Registrar pagamento diretamente (sem logs excessivos)
+        result = manager.preencher_pagamento(
+            payment.value,
+            payment.activity,
+            payment.payer,
+            payment.sector,
+            payment.date
+        )
         
-        # Register payment in JSON data (this might raise exceptions)
-        try:
-            result = manager.preencher_pagamento(
-                payment.value,
-                payment.activity,
-                payment.payer,
-                payment.sector,
-                payment.date
-            )
-        except Exception as e:
-            logger.error(f"Error in preencher_pagamento: {str(e)}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Error processing payment: {str(e)}")
-        
-        # Update status after registering payment
-        try:
-            status_result = manager.atualizar_status()
-            logger.debug(f"Status update result: {status_result}")
-        except Exception as e:
-            logger.error(f"Error updating status: {str(e)}", exc_info=True)
-            # Continue anyway since the payment was registered
+        # Não chamar atualizar_status() aqui, pois o status já foi atualizado
+        # na função preencher_pagamento para a atividade específica
         
         return {"message": "Payment registered successfully!", "result": result}
     except HTTPException as he:
-        # Re-raise HTTP exceptions
-        logger.error(f"HTTP Exception: {he.detail}")
         raise he
     except Exception as e:
-        logger.error(f"Unhandled exception in register_payment: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error registering payment: {str(e)}")
+        logger.error(f"Erro no registro de pagamento: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao registrar pagamento: {str(e)}")
 
 
 @app.post("/token")
