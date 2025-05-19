@@ -5,3 +5,4 @@ pytesseract
 python-multipart
 mysql-connector-python
 requests
+python-dotenv
