@@ -14,7 +14,7 @@ import logging
 from config import logger
 from models import Activity, PendingActivity, PaidActivity, PaymentData, ExtractedData,User
 from database import get_db_connection, initialize_database
-from utils.ocr import ComprovanteReader, processar_via_api_ocr
+from utils.ocr import ComprovanteReader, processar_comprovante_ocr
 from managers.comprovante import ComprovantesManager
 from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme
 
@@ -209,7 +209,7 @@ async def process_receipt(file: UploadFile = File(...)):
         contents = await file.read()
         
         # Process with OCR API
-        texto_extraido = processar_via_api_ocr(contents, filetype=extension)
+        texto_extraido = processar_comprovante_ocr(contents, filetype=extension)
         
         # Extract data from the text
         reader = ComprovanteReader()
