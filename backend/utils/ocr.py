@@ -1,8 +1,9 @@
 import re
+import requests
+import base64
+import json
 from fastapi import HTTPException
 from config import logger
-from PIL import Image
-import pytesseract
 import io
 
 class ComprovanteReader:
@@ -36,16 +37,56 @@ class ComprovanteReader:
 
 def processar_comprovante_ocr(contents, filetype="jpg"):
     """
-    Processa uma imagem com Tesseract OCR local
+    Processa uma imagem com API OCR
     Args:
         contents: conteúdo binário da imagem (ex: file.read())
-        filetype: tipo do arquivo, ignorado neste caso
+        filetype: tipo do arquivo (jpg, png, pdf, etc)
     Returns:
         Texto extraído da imagem
     """
     try:
-        image = Image.open(io.BytesIO(contents))
-        texto = pytesseract.image_to_string(image, lang='eng')
-        return texto
+        # Configurações da API OCR
+        API_KEY = "helloworld"  # Substitua pela sua chave de API
+        API_URL = "https://api.ocr.space/parse/image"
+        
+        # Codifica a imagem em base64
+        encoded_image = base64.b64encode(contents).decode('utf-8')
+        
+        # Prepara os dados para envio
+        payload = {
+            'apikey': API_KEY,
+            'base64Image': f"data:image/{filetype};base64,{encoded_image}",
+            'language': 'por',  # Português, use 'eng' para inglês
+            'isOverlayRequired': False,
+            'filetype': filetype,
+            'detectOrientation': True,
+            'scale': True,
+        }
+        
+        # Faz a requisição para a API
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(API_URL, json=payload, headers=headers)
+        
+        # Verifica o status da resposta
+        if response.status_code != 200:
+            logger.error(f"Erro na API OCR: Status {response.status_code}")
+            raise HTTPException(status_code=500, detail="Erro ao processar imagem com API OCR")
+        
+        # Extrai o texto da resposta JSON
+        result = response.json()
+        
+        if result.get("IsErroredOnProcessing", False):
+            error_message = result.get("ErrorMessage", "Erro desconhecido na API OCR")
+            logger.error(f"Erro no processamento OCR: {error_message}")
+            raise HTTPException(status_code=500, detail=error_message)
+        
+        parsed_results = result.get("ParsedResults", [])
+        if not parsed_results:
+            return ""
+        
+        extracted_text = parsed_results[0].get("ParsedText", "")
+        return extracted_text
+    
     except Exception as e:
-        raise Exception(f"Erro ao processar OCR com Tesseract: {str(e)}")
+        logger.error(f"Erro ao processar OCR com API: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao processar OCR: {str(e)}")
