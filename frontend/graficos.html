@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos - Sistema de Gestão de Gastos de Obra</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .tabs-container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #2563eb;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+            }
+        }
+
+        /* Animação de carregamento */
+        .loading {
+            position: relative;
+        }
+
+        .loading:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .loading:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 11;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Gestão de Gastos de Obra</h1>
+            <div class="space-x-4">
+                <button id="homeBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button id="graphicBtn" class="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded">
+                    <i class="fas fa-chart-line"></i> Gráficos
+                </button>
+                <button id="docsBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">
+                <i class="fas fa-chart-line mr-2"></i>Dashboard de Gráficos
+            </h2>
+
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <div class="tab active" data-tab="overview">
+                        <i class="fas fa-chart-pie mr-2"></i>Visão Geral
+                    </div>
+                    <div class="tab" data-tab="sector">
+                        <i class="fas fa-sitemap mr-2"></i>Por Setor
+                    </div>
+                    <div class="tab" data-tab="timeline">
+                        <i class="fas fa-calendar-alt mr-2"></i>Linha do Tempo
+                    </div>
+                    <div class="tab" data-tab="payment">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Pagamentos
+                    </div>
+                </div>
+
+                <!-- Visão Geral -->
+                <div class="tab-content active" id="overview-tab">
+                    <div class="filter-bar">
+                        <select id="overviewPeriodFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todo o período</option>
+                            <option value="month">Último mês</option>
+                            <option value="quarter">Último trimestre</option>
+                            <option value="year">Último ano</option>
+                        </select>
+                        <button id="overviewUpdateBtn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Status das Atividades</h3>
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Distribuição de Gastos</h3>
+                            <div class="chart-container">
+                                <canvas id="expenseDistributionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Evolução de Gastos</h3>
+                            <div class="chart-container">
+                                <canvas id="expenseEvolutionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Comparativo de Pagamentos</h3>
+                            <div class="chart-container">
+                                <canvas id="paymentComparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Por Setor -->
+                <div class="tab-content" id="sector-tab">
+                    <div class="filter-bar">
+                        <select id="sectorFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todos os setores</option>
+                            <option value="Documentação">Documentação</option>
+                            <option value="Financiamento">Financiamento</option>
+                            <option value="Advocacia">Advocacia</option>
+                            <option value="Projeto">Projeto</option>
+                            <option value="Mão de obra">Mão de obra</option>
+                            <option value="Materiais">Materiais</option>
+                            <option value="Serviços">Serviços</option>
+                            <option value="Projetos">Projetos</option>
+                        </select>
+                        <select id="sectorPeriodFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todo o período</option>
+                            <option value="month">Último mês</option>
+                            <option value="quarter">Último trimestre</option>
+                            <option value="year">Último ano</option>
+                        </select>
+                        <button id="sectorUpdateBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Gastos por Setor</h3>
+                            <div class="chart-container">
+                                <canvas id="sectorExpenseChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Atividades por Setor</h3>
+                            <div class="chart-container">
+                                <canvas id="sectorActivityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 md:col-span-2">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Detalhamento do Setor</h3>
+                            <div class="chart-container" style="height: 400px;">
+                                <canvas id="sectorDetailChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linha do Tempo -->
+                <div class="tab-content" id="timeline-tab">
+                    <div class="filter-bar">
+                        <select id="timelineViewFilter" class="px-3 py-2 border rounded">
+                            <option value="month">Visão mensal</option>
+                            <option value="quarter">Visão trimestral</option>
+                            <option value="year">Visão anual</option>
+                        </select>
+                        <select id="timelineTypeFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todos os tipos</option>
+                            <option value="pending">Atividades pendentes</option>
+                            <option value="paid">Atividades pagas</option>
+                        </select>
+                        <button id="timelineUpdateBtn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-700">Evolução Temporal dos Gastos</h3>
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Atividades por Período</h3>
+                            <div class="chart-container">
+                                <canvas id="activityTimelineChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Pagamentos por Período</h3>
+                            <div class="chart-container">
+                                <canvas id="paymentTimelineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagamentos -->
+                <div class="tab-content" id="payment-tab">
+                    <div class="filter-bar">
+                        <select id="paymentPersonFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todos os pagadores</option>
+                            <option value="Diego-Ana">Diego-Ana</option>
+                            <option value="Alex-Rute">Alex-Rute</option>
+                        </select>
+                        <select id="paymentPeriodFilter" class="px-3 py-2 border rounded">
+                            <option value="all">Todo o período</option>
+                            <option value="month">Último mês</option>
+                            <option value="quarter">Último trimestre</option>
+                            <option value="year">Último ano</option>
+                        </select>
+                        <button id="paymentUpdateBtn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Distribuição de Pagamentos</h3>
+                            <div class="chart-container">
+                                <canvas id="paymentDistributionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Comparativo de Contribuições</h3>
+                            <div class="chart-container">
+                                <canvas id="contributionComparisonChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 md:col-span-2">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-700">Histórico de Pagamentos por Setor</h3>
+                            <div class="chart-container" style="height: 400px;">
+                                <canvas id="sectorPaymentHistoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Resumo Rápido -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                    <i class="fas fa-percentage mr-2"></i>Progresso Financeiro
+                </h2>
+                <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+                    <div id="progressBar" class="bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span class="text-sm text-gray-600">0%</span>
+                    <span id="progressPercentage" class="text-sm font-medium text-blue-800">0%</span>
+                    <span class="text-sm text-gray-600">100%</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                    <i class="fas fa-balance-scale mr-2"></i>Balanceamento de Pagamentos
+                </h2>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-sm font-medium">Diego-Ana</span>
+                    <div class="w-full mx-2 bg-gray-200 rounded-full h-4">
+                        <div id="balanceBar" class="bg-green-500 h-4 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <span class="text-sm font-medium">Alex-Rute</span>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span id="diegoPercentage" class="text-sm text-gray-600">50%</span>
+                    <span id="alexPercentage" class="text-sm text-gray-600">50%</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                    <i class="fas fa-tasks mr-2"></i>Status das Atividades
+                </h2>
+                <div class="flex justify-between items-center mt-3">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="completedActivities">0</div>
+                        <div class="text-sm text-gray-600">Concluídas</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-600" id="pendingActivities">0</div>
+                        <div class="text-sm text-gray-600">Pendentes</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="totalActivities">0</div>
+                        <div class="text-sm text-gray-600">Total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Exportação -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-blue-800">
+                <i class="fas fa-file-export mr-2"></i>Exportar Relatórios
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button id="exportPdfBtn"
+                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center justify-center">
+                    <i class="fas fa-file-pdf mr-2"></i>Exportar como PDF
+                </button>
+                <button id="exportExcelBtn"
+                    class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded flex items-center justify-center">
+                    <i class="fas fa-file-excel mr-2"></i>Exportar como Excel
+                </button>
+                <button id="exportImagesBtn"
+                    class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded flex items-center justify-center">
+                    <i class="fas fa-file-image mr-2"></i>Exportar Gráficos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração da API
+        const API_URL = 'http://localhost:10000'; // Ajuste para seu endereço de API
+
+        // Inicialização de gráficos
+        let charts = {};
+
+        // Referências para todos os elementos do DOM
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Elementos de resumo
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const balanceBar = document.getElementById('balanceBar');
+        const diegoPercentage = document.getElementById('diegoPercentage');
+        const alexPercentage = document.getElementById('alexPercentage');
+        const completedActivities = document.getElementById('completedActivities');
+        const pendingActivities = document.getElementById('pendingActivities');
+        const totalActivities = document.getElementById('totalActivities');
+
+        // Botões de navegação
+        const homeBtn = document.getElementById('homeBtn');
+        const graphicBtn = document.getElementById('graphicBtn');
+        const docsBtn = document.getElementById('docsBtn');
+
+        // Botões de update
+        const overviewUpdateBtn = document.getElementById('overviewUpdateBtn');
+        const sectorUpdateBtn = document.getElementById('sectorUpdateBtn');
+        const timelineUpdateBtn = document.getElementById('timelineUpdateBtn');
+        const paymentUpdateBtn = document.getElementById('paymentUpdateBtn');
+
+        // Botões de exportação
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        const exportImagesBtn = document.getElementById('exportImagesBtn');
+
+        // ===== Funções Utilitárias =====
+
+        // Função para formatação de valores monetários
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        // Função para converter data do formato DD/MM/YYYY para objeto Date
+        function parseDate(dateString) {
+            if (!dateString) return null;
+            const parts = dateString.split('/');
+            if (parts.length !== 3) return null;
+            // Formato DD/MM/YYYY para Date (mês é baseado em zero)
+            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+
+        // Função para filtrar atividades por período
+        function filterActivitiesByPeriod(activities, periodFilter) {
+            if (periodFilter === 'all') return activities;
+
+            const now = new Date();
+            let cutoffDate;
+
+            switch (periodFilter) {
+                case 'month':
+                    cutoffDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                    break;
+                case 'quarter':
+                    cutoffDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                    break;
+                case 'year':
+                    cutoffDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                    break;
+                default:
+                    return activities;
+            }
+
+            return activities.filter(activity => {
+                const activityDate = parseDate(activity.date);
+                return activityDate && activityDate >= cutoffDate;
+            });
+        }
+
+        // Função para mostrar loading em um elemento
+        function showLoading(element) {
+            element.classList.add('loading');
+        }
+
+        // Função para esconder loading em um elemento
+        function hideLoading(element) {
+            element.classList.remove('loading');
+        }
+
+        // Destruir gráfico se existir
+        function destroyChart(chartId) {
+            if (charts[chartId]) {
+                charts[chartId].destroy();
+                charts[chartId] = null;
+            }
+        }
+
+        // ===== Funções de API =====
+
+        // Função para buscar todas as atividades
+        async function fetchAllActivities() {
+            try {
+                const response = await fetch(`${API_URL}/atividades`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar atividades');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Erro:', error);
+                return [];
+            }
+        }
+
+        // Função para buscar atividades pendentes
+        async function fetchPendingActivities() {
+            try {
+                const response = await fetch(`${API_URL}/atividades-pendentes`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar atividades pendentes');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Erro:', error);
+                return [];
+            }
+        }
+
+        // Função para buscar atividades pagas
+        async function fetchPaidActivities() {
+            try {
+                const response = await fetch(`${API_URL}/atividades-pagas`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar atividades pagas');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Erro:', error);
+                return [];
+            }
+        }
+
+        // Função para buscar valor total
+        async function fetchTotalValue() {
+            try {
+                const response = await fetch(`${API_URL}/valor-total`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar valor total');
+                }
+                const data = await response.json();
+                return data.total;
+            } catch (error) {
+                console.error('Erro:', error);
+                return 0;
+            }
+        }
+
+        // Função para buscar valor total pago
+        async function fetchTotalPaidValue() {
+            try {
+                const response = await fetch(`${API_URL}/valor-total-pago`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar valor total pago');
+                }
+                const data = await response.json();
+                return data.total_pago;
+            } catch (error) {
+                console.error('Erro:', error);
+                return 0;
+            }
+        }
+
+        // Função para buscar valor pago por Diego-Ana
+        async function fetchDiegoPaidValue() {
+            try {
+                const response = await fetch(`${API_URL}/valor-pago-diego`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar valor pago por Diego-Ana');
+                }
+                const data = await response.json();
+                return data.total_pago_diego;
+            } catch (error) {
+                console.error('Erro:', error);
+                return 0;
+            }
+        }
+
+        // Função para buscar valor pago por Alex-Rute
+        async function fetchAlexPaidValue() {
+            try {
+                const response = await fetch(`${API_URL}/valor-pago-alex`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar valor pago por Alex-Rute');
+                }
+                const data = await response.json();
+                return data.total_pago_alex;
+            } catch (error) {
+                console.error('Erro:', error);
+                return 0;
+            }
+        }
+
+        // ===== Funções para criar gráficos =====
+
+        // Gráfico de Status das Atividades
+        function createStatusChart(activities) {
+            const pendingCount = activities.filter(a => a.diego_ana + a.alex_rute < a.value).length;
+            const completedCount = activities.length - pendingCount;
+
+            destroyChart('statusChart');
+
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            charts.statusChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Concluídas', 'Pendentes'],
+                    datasets: [{
+                        data: [completedCount, pendingCount],
+                        backgroundColor: ['#10B981', '#FBBF24'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Distribuição de Gastos
+        function createExpenseDistributionChart(activities) {
+            const labels = activities.map(a => a.activity);
+            const data = activities.map(a => a.value);
+
+            destroyChart('expenseDistributionChart');
+
+            const ctx = document.getElementById('expenseDistributionChart').getContext('2d');
+            charts.expenseDistributionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Distribuição de Gastos',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Evolução de Gastos
+        function createExpenseEvolutionChart(activities) {
+            const labels = activities.map(a => a.date);
+            const data = activities.map(a => a.value);
+
+            destroyChart('expenseEvolutionChart');
+
+            const ctx = document.getElementById('expenseEvolutionChart').getContext('2d');
+            charts.expenseEvolutionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Evolução de Gastos',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#3B82F6',
+                        fill: false,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        // Gráfico de Comparativo de Pagamentos
+        function createPaymentComparisonChart(activities) {
+            const labels = activities.map(a => a.activity);
+            const dataDiego = activities.map(a => a.diego_ana);
+            const dataAlex = activities.map(a => a.alex_rute);
+
+            destroyChart('paymentComparisonChart');
+
+            const ctx = document.getElementById('paymentComparisonChart').getContext('2d');
+            charts.paymentComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Diego-Ana',
+                            data: dataDiego,
+                            backgroundColor: '#3B82F6',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Alex-Rute',
+                            data: dataAlex,
+                            backgroundColor: '#FBBF24',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+        // Gráfico de Gastos por Setor
+        // Gráfico de Gastos por Setor
+        function createSectorExpenseChart(activities) {
+            // Soma os valores por setor
+            const sectorSums = {};
+            activities.forEach(a => {
+                if (!sectorSums[a.sector]) sectorSums[a.sector] = 0;
+                sectorSums[a.sector] += a.value;
+            });
+            const labels = Object.keys(sectorSums);
+            const data = Object.values(sectorSums);
+
+            destroyChart('sectorExpenseChart');
+
+            const ctx = document.getElementById('sectorExpenseChart').getContext('2d');
+            charts.sectorExpenseChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Gastos por Setor',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Atividades por Setor (já está correto)
+        function createSectorActivityChart(activities) {
+            const sectorCounts = {};
+            activities.forEach(a => {
+                if (!sectorCounts[a.sector]) sectorCounts[a.sector] = 0;
+                sectorCounts[a.sector]++;
+            });
+            const labels = Object.keys(sectorCounts);
+            const data = Object.values(sectorCounts);
+
+            destroyChart('sectorActivityChart');
+
+            const ctx = document.getElementById('sectorActivityChart').getContext('2d');
+            charts.sectorActivityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Atividades por Setor',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Detalhamento do Setor
+        function createSectorDetailChart(activities) {
+            const labels = activities.map(a => a.activity);
+            const data = activities.map(a => a.value);
+
+            destroyChart('sectorDetailChart');
+
+            const ctx = document.getElementById('sectorDetailChart').getContext('2d');
+            charts.sectorDetailChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Detalhamento do Setor',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Atividades por Período (REMOVER activity_count)
+        function createActivityTimelineChart(activities) {
+            // Agrupa por data e conta atividades
+            const dateCounts = {};
+            activities.forEach(a => {
+                if (!dateCounts[a.date]) dateCounts[a.date] = 0;
+                dateCounts[a.date]++;
+            });
+            const labels = Object.keys(dateCounts);
+            const data = Object.values(dateCounts);
+
+            destroyChart('activityTimelineChart');
+
+            const ctx = document.getElementById('activityTimelineChart').getContext('2d');
+            charts.activityTimelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Atividades por Período',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Pagamentos por Período (REMOVER payment_count)
+        function createPaymentTimelineChart(activities) {
+            // Soma pagamentos por data
+            const dateSums = {};
+            activities.forEach(a => {
+                if (!dateSums[a.date]) dateSums[a.date] = 0;
+                dateSums[a.date] += (a.diego_ana || 0) + (a.alex_rute || 0);
+            });
+            const labels = Object.keys(dateSums);
+            const data = Object.values(dateSums);
+
+            destroyChart('paymentTimelineChart');
+
+            const ctx = document.getElementById('paymentTimelineChart').getContext('2d');
+            charts.paymentTimelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pagamentos por Período',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Histórico de Pagamentos por Setor (REMOVER payment_count)
+        function createSectorPaymentHistoryChart(activities) {
+            // Soma pagamentos por setor
+            const sectorSums = {};
+            activities.forEach(a => {
+                if (!sectorSums[a.sector]) sectorSums[a.sector] = 0;
+                sectorSums[a.sector] += (a.diego_ana || 0) + (a.alex_rute || 0);
+            });
+            const labels = Object.keys(sectorSums);
+            const data = Object.values(sectorSums);
+
+            destroyChart('sectorPaymentHistoryChart');
+
+            const ctx = document.getElementById('sectorPaymentHistoryChart').getContext('2d');
+            charts.sectorPaymentHistoryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Histórico de Pagamentos por Setor',
+                        data: data,
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== Funções de Inicialização =====
+        async function init() {
+            // Carregar atividades
+            const activities = await fetchAllActivities();
+
+            // Atualizar gráficos iniciais
+            createStatusChart(activities);
+            createExpenseDistributionChart(activities);
+            createExpenseEvolutionChart(activities);
+            createPaymentComparisonChart(activities);
+            createSectorExpenseChart(activities);
+            createSectorActivityChart(activities);
+            createSectorDetailChart(activities);
+
+            // Atualizar resumo financeiro
+            const totalValue = await fetchTotalValue();
+            const totalPaidValue = await fetchTotalPaidValue();
+            const diegoPaidValue = await fetchDiegoPaidValue();
+            const alexPaidValue = await fetchAlexPaidValue();
+
+            progressBar.style.width = `${(totalPaidValue / totalValue) * 100}%`;
+            progressPercentage.textContent = `${((totalPaidValue / totalValue) * 100).toFixed(2)}%`;
+
+            balanceBar.style.width = `${(diegoPaidValue / (diegoPaidValue + alexPaidValue)) * 100}%`;
+            diegoPercentage.textContent = `${((diegoPaidValue / (diegoPaidValue + alexPaidValue)) * 100).toFixed(2)}%`;
+            alexPercentage.textContent = `${((alexPaidValue / (diegoPaidValue + alexPaidValue)) * 100).toFixed(2)}%`;
+
+            completedActivities.textContent = activities.filter(a => a.diego_ana + a.alex_rute >= a.value).length;
+            pendingActivities.textContent = activities.filter(a => a.diego_ana + a.alex_rute < a.value).length;
+            totalActivities.textContent = activities.length;
+        }
+        // ===== Eventos de Clique =====
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+        graphicBtn.addEventListener('click', () => {
+            window.location.href = 'graficos.html';
+        });
+        docsBtn.addEventListener('click', () => {
+            window.location.href = 'documentos.html';
+        });
+        overviewUpdateBtn.addEventListener('click', async () => {
+            showLoading(overviewUpdateBtn);
+            const activities = await fetchAllActivities();
+            createStatusChart(activities);
+            hideLoading(overviewUpdateBtn);
+        });
+        sectorUpdateBtn.addEventListener('click', async () => {
+            showLoading(sectorUpdateBtn);
+            const activities = await fetchAllActivities();
+            createSectorExpenseChart(activities);
+            hideLoading(sectorUpdateBtn);
+        });
+        timelineUpdateBtn.addEventListener('click', async () => {
+            showLoading(timelineUpdateBtn);
+            const activities = await fetchAllActivities();
+            createTimelineChart(activities);
+            hideLoading(timelineUpdateBtn);
+        });
+        paymentUpdateBtn.addEventListener('click', async () => {
+            showLoading(paymentUpdateBtn);
+            const activities = await fetchAllActivities();
+            createPaymentComparisonChart(activities);
+            hideLoading(paymentUpdateBtn);
+        });
+        exportPdfBtn.addEventListener('click', () => {
+            // Lógica para exportar como PDF
+            alert('Exportando como PDF...');
+        });
+        exportExcelBtn.addEventListener('click', () => {
+            // Lógica para exportar como Excel
+            alert('Exportando como Excel...');
+        });
+        exportImagesBtn.addEventListener('click', () => {
+            // Lógica para exportar gráficos como imagens
+            alert('Exportando gráficos como imagens...');
+        });
+
+        // Adicione este código no seu arquivo JavaScript existente, antes do final do script
+
+        // ===== Gerenciamento de Abas =====
+
+        // Adiciona eventos de clique às abas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove a classe 'active' de todas as abas
+                tabs.forEach(t => t.classList.remove('active'));
+
+                // Adiciona a classe 'active' à aba clicada
+                tab.classList.add('active');
+
+                // Oculta todos os conteúdos de abas
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Exibe o conteúdo correspondente à aba clicada
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+
+                // Atualiza os gráficos correspondentes à aba selecionada
+                updateChartsForTab(tabId);
+            });
+        });
+
+        // Função para atualizar os gráficos com base na aba selecionada
+        async function updateChartsForTab(tabId) {
+            const activities = await fetchAllActivities();
+
+            switch (tabId) {
+                case 'overview':
+                    // Atualizar gráficos da visão geral
+                    createStatusChart(activities);
+                    createExpenseDistributionChart(activities);
+                    createExpenseEvolutionChart(activities);
+                    createPaymentComparisonChart(activities);
+                    break;
+
+                case 'sector':
+                    // Atualizar gráficos da aba de setor
+                    const sectorFilter = document.getElementById('sectorFilter').value;
+                    const filteredBySector = sectorFilter === 'all'
+                        ? activities
+                        : activities.filter(a => a.sector === sectorFilter);
+
+                    createSectorExpenseChart(filteredBySector);
+                    createSectorActivityChart(filteredBySector);
+                    createSectorDetailChart(filteredBySector);
+                    break;
+
+                case 'timeline':
+                    // Atualizar gráficos da linha do tempo
+                    createActivityTimelineChart(activities);
+                    createPaymentTimelineChart(activities);
+
+                    // Implementar timeline chart que estava faltando
+                    createTimelineChart(activities);
+                    break;
+
+                case 'payment':
+                    // Atualizar gráficos de pagamentos
+                    createPaymentComparisonChart(activities);
+                    createSectorPaymentHistoryChart(activities);
+                    createPaymentDistributionChart(activities);
+                    createContributionComparisonChart(activities);
+                    break;
+            }
+        }
+
+        // Função para criar o gráfico de timeline que estava faltando
+        function createTimelineChart(activities) {
+            // Organizar dados por data
+            const sortedActivities = [...activities].sort((a, b) => {
+                return parseDate(a.date) - parseDate(b.date);
+            });
+
+            const labels = sortedActivities.map(a => a.date);
+            const values = sortedActivities.map(a => a.value);
+            const cumulativeValues = [];
+            let sum = 0;
+
+            values.forEach(value => {
+                sum += value;
+                cumulativeValues.push(sum);
+            });
+
+            destroyChart('timelineChart');
+
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            charts.timelineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Valor por Período',
+                            data: values,
+                            backgroundColor: '#3B82F6',
+                            borderColor: '#3B82F6',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                        {
+                            label: 'Valor Acumulado',
+                            data: cumulativeValues,
+                            backgroundColor: '#10B981',
+                            borderColor: '#10B981',
+                            borderWidth: 2,
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Funções que estavam faltando para a aba de pagamentos
+        function createPaymentDistributionChart(activities) {
+            // Somar totais de pagamentos por pagador
+            let diegoTotal = 0;
+            let alexTotal = 0;
+
+            activities.forEach(a => {
+                diegoTotal += a.diego_ana || 0;
+                alexTotal += a.alex_rute || 0;
+            });
+
+            destroyChart('paymentDistributionChart');
+
+            const ctx = document.getElementById('paymentDistributionChart').getContext('2d');
+            charts.paymentDistributionChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Diego-Ana', 'Alex-Rute'],
+                    datasets: [{
+                        data: [diegoTotal, alexTotal],
+                        backgroundColor: ['#3B82F6', '#FBBF24'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createContributionComparisonChart(activities) {
+            // Agrupar por setor e calcular contribuições de cada pagador
+            const sectorData = {};
+
+            activities.forEach(a => {
+                if (!sectorData[a.sector]) {
+                    sectorData[a.sector] = {
+                        diego: 0,
+                        alex: 0
+                    };
+                }
+
+                sectorData[a.sector].diego += a.diego_ana || 0;
+                sectorData[a.sector].alex += a.alex_rute || 0;
+            });
+
+            const labels = Object.keys(sectorData);
+            const diegoData = labels.map(sector => sectorData[sector].diego);
+            const alexData = labels.map(sector => sectorData[sector].alex);
+
+            destroyChart('contributionComparisonChart');
+
+            const ctx = document.getElementById('contributionComparisonChart').getContext('2d');
+            charts.contributionComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Diego-Ana',
+                            data: diegoData,
+                            backgroundColor: '#3B82F6',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Alex-Rute',
+                            data: alexData,
+                            backgroundColor: '#FBBF24',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: false
+                        },
+                        y: {
+                            stacked: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Implementar os event listeners para os filtros
+        document.getElementById('sectorFilter').addEventListener('change', () => {
+            const tabId = 'sector';
+            updateChartsForTab(tabId);
+        });
+
+        document.getElementById('sectorPeriodFilter').addEventListener('change', () => {
+            const tabId = 'sector';
+            updateChartsForTab(tabId);
+        });
+
+        document.getElementById('timelineViewFilter').addEventListener('change', () => {
+            const tabId = 'timeline';
+            updateChartsForTab(tabId);
+        });
+
+        document.getElementById('timelineTypeFilter').addEventListener('change', () => {
+            const tabId = 'timeline';
+            updateChartsForTab(tabId);
+        });
+
+        document.getElementById('paymentPersonFilter').addEventListener('change', () => {
+            const tabId = 'payment';
+            updateChartsForTab(tabId);
+        });
+
+        document.getElementById('paymentPeriodFilter').addEventListener('change', () => {
+            const tabId = 'payment';
+            updateChartsForTab(tabId);
+        });
+        // Inicializar gráficos e resumo financeiro
+        init();
+    </script>
