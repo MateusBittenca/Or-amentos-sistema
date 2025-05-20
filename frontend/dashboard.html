@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -13,23 +14,49 @@
     <link rel="stylesheet" href="styles/message.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    
+    <style>
+        /* Estilos para navegação responsiva */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-title {
+                margin-bottom: 0.75rem;
+                text-align: center;
+            }
+            
+            .nav-buttons {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .nav-button {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
     <nav class="bg-blue-800 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Gestão de Gastos de Obra</h1>
-            <div class="space-x-4">
-                <button id="homeBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
-                    <i class="fas fa-home"></i> Home
+        <div class="container mx-auto flex justify-between items-center nav-container">
+            <h1 class="text-2xl font-bold nav-title">Gestão de Gastos de Obra</h1>
+            <div class="nav-buttons space-x-2 md:space-x-4">
+                <button id="homeBtn" class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
+                    <i class="fas fa-home"></i> <span class="hidden sm:inline">Home</span>
                 </button>
-                <a href="graficos.html" id="graphicBtn"
-                    class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded inline-block text-white">
-                    <i class="fas fa-chart-line"></i> Gráficos
+                <a href="graficos.html" id="graphicBtn" class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded inline-block text-white transition-colors">
+                    <i class="fas fa-chart-line"></i> <span class="hidden sm:inline">Gráficos</span>
                 </a>
-                <button id="docsBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
-                    <i class="fas fa-print"></i> Imprimir
+                <button id="docsBtn" class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
+                    <i class="fas fa-print"></i> <span class="hidden sm:inline">Imprimir</span>
                 </button>
             </div>
         </div>
