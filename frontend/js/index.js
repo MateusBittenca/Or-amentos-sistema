@@ -208,8 +208,8 @@ const activityManager = {
   createPaidActivityRow(activity) {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td class="py-2 px-4 border-b">${activity.activity}</td>
       <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b">${activity.activity}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
       <td class="py-2 px-4 border-b">${activity.date}</td>
       <td class="py-2 px-4 border-b">
@@ -230,8 +230,8 @@ const activityManager = {
   createActivityRow(activity) {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td class="py-2 px-4 border-b">${activity.activity}</td>
-      <td class="py-2 px-4 border-b">${activity.sector || "-"}</td>
+      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.valor_restante)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
       <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
