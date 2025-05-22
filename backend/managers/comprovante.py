@@ -3,7 +3,8 @@ from fastapi import HTTPException
 from typing import List, Dict, Any, Optional
 from config import logger
 from database import get_db_connection
-from models import PendingActivity, Activity
+from models import PendingActivity, Activity, PaidActivity
+from utils.cache import cached, clear_cache
 
 class ComprovantesManager:
     """Classe para gerenciar despesas de construção no banco de dados MySQL"""
@@ -125,6 +126,9 @@ class ComprovantesManager:
             cursor.close()
             connection.close()
             
+            # Limpar o cache após alterar os dados
+            clear_cache("activities")
+            
             return {
                 "sucesso": True,
                 "mensagem": f"Pagamento no valor de R$ {valor:.2f} Registrado na atividade : '{atividade}' por {pagador}",
@@ -143,28 +147,23 @@ class ComprovantesManager:
             connection = get_db_connection()
             cursor = connection.cursor(dictionary=True)
             
-            # Obter todas as atividades
-            cursor.execute("SELECT * FROM atividades")
-            activities = cursor.fetchall()
-            
-            updated_count = 0
-            
-            for activity in activities:
-                value = activity['valor'] or 0
-                alex_rute = activity['alex_rute'] or 0
-                diego_ana = activity['diego_ana'] or 0
-                
-                # Calcular status
-                status = "paid" if (alex_rute + diego_ana) >= value else "pending"
-                
-                # Atualizar status
-                cursor.execute("UPDATE atividades SET status = %s WHERE idAtividades = %s",
-                               (status, activity['idAtividades']))
-                updated_count += 1
+            # Atualizar status em uma única operação SQL para melhor performance
+            update_query = """
+                UPDATE atividades 
+                SET status = CASE 
+                    WHEN (COALESCE(alex_rute, 0) + COALESCE(diego_ana, 0)) >= valor THEN 'paid' 
+                    ELSE 'pending' 
+                END
+            """
+            cursor.execute(update_query)
+            updated_count = cursor.rowcount
             
             connection.commit()
             cursor.close()
             connection.close()
+            
+            # Limpar cache após atualização
+            clear_cache("activities")
             
             return {
                 "sucesso": True,
@@ -175,13 +174,24 @@ class ComprovantesManager:
             logger.error(f"Erro ao atualizar status: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao atualizar status: {str(e)}")
     
+    @cached(expiry=30, key_prefix="activities")
     def listar_atividades_pendentes(self) -> List[PendingActivity]:
         """Listar todas as atividades com pagamentos pendentes"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor(dictionary=True)
             
-            cursor.execute("SELECT * FROM atividades WHERE status = 'pending'")
+            # Otimizar a consulta para retornar apenas atividades pendentes em uma única operação
+            query = """
+                SELECT idAtividades, nome, setor, valor, data, 
+                       COALESCE(alex_rute, 0) as alex_rute, 
+                       COALESCE(diego_ana, 0) as diego_ana,
+                       (valor - COALESCE(alex_rute, 0) - COALESCE(diego_ana, 0)) as valor_restante
+                FROM atividades 
+                WHERE status = 'pending' AND 
+                      (valor - COALESCE(alex_rute, 0) - COALESCE(diego_ana, 0)) > 0
+            """
+            cursor.execute(query)
             activities = cursor.fetchall()
             
             cursor.close()
@@ -190,34 +200,23 @@ class ComprovantesManager:
             atividades_pendentes = []
             
             for activity in activities:
-                valor_custo = activity['valor'] or 0
-                alex_rute = activity['alex_rute'] or 0
-                diego_ana = activity['diego_ana'] or 0
-                
-                # Calcular valor restante a ser pago
-                valor_restante = valor_custo - (alex_rute + diego_ana)
-                
-                # Obter string de data diretamente do banco de dados
-                date_str = activity['data']
-                
-                # Verificar se ainda há valor pendente
-                if valor_restante > 0:
-                    atividades_pendentes.append(PendingActivity(
-                        id=activity['idAtividades'],
-                        activity=activity['nome'],
-                        sector=activity['setor'],
-                        total_value=valor_custo,
-                        valor_restante=valor_restante,
-                        date=date_str,
-                        alex_rute=alex_rute,
-                        diego_ana=diego_ana
-                    ))
+                atividades_pendentes.append(PendingActivity(
+                    id=activity['idAtividades'],
+                    activity=activity['nome'],
+                    sector=activity['setor'],
+                    total_value=activity['valor'],
+                    valor_restante=activity['valor_restante'],
+                    date=activity['data'],
+                    alex_rute=activity['alex_rute'],
+                    diego_ana=activity['diego_ana']
+                ))
                     
             return atividades_pendentes
         except Exception as e:
             logger.error(f"Erro ao listar atividades pendentes: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao listar atividades pendentes: {str(e)}")
     
+    @cached(expiry=30, key_prefix="activities") 
     def listar_atividades(self) -> List[Activity]:
         """Listar todas as atividades no banco de dados"""
         try:
@@ -251,51 +250,90 @@ class ComprovantesManager:
             logger.error(f"Erro ao listar atividades: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao listar atividades: {str(e)}")
     
+    @cached(expiry=30, key_prefix="activities")    
+    def listar_atividades_pagas(self) -> List[PaidActivity]:
+        """Listar todas as atividades pagas"""
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            cursor.execute("SELECT * FROM atividades WHERE status = 'paid'")
+            db_activities = cursor.fetchall()
+            
+            cursor.close()
+            connection.close()
+            
+            atividades_pagas = []
+            
+            for activity in db_activities:
+                # Data já está armazenada como string
+                date_str = activity['data']
+                    
+                atividades_pagas.append(PaidActivity(
+                    id=activity['idAtividades'],
+                    activity=activity['nome'],
+                    sector=activity['setor'],
+                    total_value=activity['valor'],
+                    date=date_str,
+                    diego_ana=activity['diego_ana'] or 0,
+                    alex_rute=activity['alex_rute'] or 0,
+                    status=activity['status']
+                ))
+            
+            return atividades_pagas
+        except Exception as e:
+            logger.error(f"Erro ao listar atividades pagas: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao listar atividades pagas: {str(e)}")
+            
     def adicionar_atividade(self, data: str, valor: float, 
                            setor: str, atividade: str) -> Dict[str, Any]:
         """Adicionar uma nova atividade ao banco de dados"""
         try:
-            logger.debug(f"Adicionando atividade: data={data}, valor={valor}, setor={setor}, atividade={atividade}")
+            logger.debug(f"Adicionando atividade: {atividade}, setor: {setor}, valor: {valor}, data: {data}")
             
-            # Formatar string de data para armazenamento
-            date_str = self._format_date(data) if data else None
+            # Verificar valores
+            if not atividade or not setor:
+                raise HTTPException(status_code=400, detail="Atividade e setor são obrigatórios")
+                
+            if valor <= 0:
+                raise HTTPException(status_code=400, detail="Valor deve ser maior que zero")
+                
+            # Formatar data
+            data_formatada = self._format_date(data)
             
+            # Inserir atividade
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            # Inserir nova atividade
-            query = """
-            INSERT INTO atividades (nome, setor, valor, data, alex_rute, diego_ana, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            insert_query = """
+                INSERT INTO atividades (nome, valor, data, setor, status) 
+                VALUES (%s, %s, %s, %s, %s)
             """
+            cursor.execute(insert_query, (atividade, valor, data_formatada, setor, "pending"))
             
-            cursor.execute(query, (atividade, setor, float(valor), date_str, 0, 0, "pending"))
-            
-            # Obter o ID da linha inserida
             activity_id = cursor.lastrowid
             
             connection.commit()
             cursor.close()
             connection.close()
             
+            # Limpar cache após adicionar
+            clear_cache("activities")
+            
             return {
-                "success": True,
-                "mensagem": f"Atividade: '{atividade}' adicionada com sucesso",
-                "id": activity_id,
-                "atividade": atividade,
-                "setor": setor,
-                "valor": float(valor),
-                "data": date_str
+                "sucesso": True, 
+                "mensagem": f"Atividade '{atividade}' adicionada com sucesso",
+                "id": activity_id
             }
         except HTTPException as he:
             # Relançar exceções HTTP
             raise he
         except Exception as e:
-            logger.error(f"Erro inesperado ao adicionar a atividade: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Erro ao adcionar a atividade: {str(e)}")
-        
+            logger.error(f"Erro ao adicionar atividade: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao adicionar atividade: {str(e)}")
+    
     def excluir_atividade(self, id: int) -> Dict[str, Any]:
-        """Excluir uma atividade pelo seu ID"""
+        """Excluir uma atividade pelo ID"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor(dictionary=True)
@@ -307,18 +345,23 @@ class ComprovantesManager:
             if not activity:
                 cursor.close()
                 connection.close()
-                raise HTTPException(status_code=404, detail="Atividade não encontrada")
+                raise HTTPException(status_code=404, detail=f"Atividade com ID {id} não encontrada")
             
-            # Excluir atividade
+            activity_name = activity['nome']
+                
+            # Excluir a atividade
             cursor.execute("DELETE FROM atividades WHERE idAtividades = %s", (id,))
-            
             connection.commit()
+            
             cursor.close()
             connection.close()
             
+            # Limpar cache após excluir
+            clear_cache("activities")
+            
             return {
-                "success": True,
-                "message": f"Atividade: '{activity['nome']}' removida com sucesso!"
+                "sucesso": True,
+                "mensagem": f"Atividade '{activity_name}' excluída com sucesso"
             }
         except HTTPException as he:
             # Relançar exceções HTTP
@@ -326,71 +369,83 @@ class ComprovantesManager:
         except Exception as e:
             logger.error(f"Erro ao excluir atividade: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao excluir atividade: {str(e)}")
-            
+    
+    @cached(expiry=30, key_prefix="valor_total")
     def calcular_valor_total(self) -> float:
-        """Calcular valor total da construção somando os valores das atividades"""
+        """Calcular o valor total das atividades"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            cursor.execute("SELECT SUM(valor) FROM atividades")
-            total = cursor.fetchone()[0]
+            # Usar SQL para calcular a soma diretamente
+            cursor.execute("SELECT SUM(valor) as total FROM atividades")
+            result = cursor.fetchone()
             
             cursor.close()
             connection.close()
             
-            return float(total) if total else 0
+            # Retornar o valor total ou 0 se for NULL
+            return result[0] or 0
         except Exception as e:
             logger.error(f"Erro ao calcular valor total: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao calcular valor total: {str(e)}")
     
+    @cached(expiry=30, key_prefix="valor_total_pago")
     def calcular_valor_total_pago(self) -> float:
-        """Calcular valor total pago somando valores nas colunas Alex-Rute e Diego-Ana"""
+        """Calcular o valor total pago"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            cursor.execute("SELECT SUM(alex_rute) + SUM(diego_ana) FROM atividades")
-            total = cursor.fetchone()[0]
+            # Usar SQL para calcular a soma diretamente
+            cursor.execute("SELECT SUM(COALESCE(alex_rute, 0) + COALESCE(diego_ana, 0)) as total_pago FROM atividades")
+            result = cursor.fetchone()
             
             cursor.close()
             connection.close()
             
-            return float(total) if total else 0
+            # Retornar o valor total pago ou 0 se for NULL
+            return result[0] or 0
         except Exception as e:
-            logger.error(f"Erro ao calcular total pago: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Erro ao calcular total pago: {str(e)}")
+            logger.error(f"Erro ao calcular valor total pago: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao calcular valor total pago: {str(e)}")
     
+    @cached(expiry=30, key_prefix="valor_pago_diego")
     def calcular_valor_pago_diego(self) -> float:
-        """Calcular valor total pago por Diego-Ana"""
+        """Calcular o valor total pago por Diego-Ana"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            cursor.execute("SELECT SUM(diego_ana) FROM atividades")
-            total = cursor.fetchone()[0]
+            # Usar SQL para calcular a soma diretamente
+            cursor.execute("SELECT SUM(COALESCE(diego_ana, 0)) as total_diego FROM atividades")
+            result = cursor.fetchone()
             
             cursor.close()
             connection.close()
             
-            return float(total) if total else 0
+            # Retornar o valor total pago por Diego-Ana ou 0 se for NULL
+            return result[0] or 0
         except Exception as e:
-            logger.error(f"Erro ao calcular total pago por Diego-Ana: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Erro ao calcular total pago por Diego-Ana: {str(e)}")
-
+            logger.error(f"Erro ao calcular valor pago por Diego-Ana: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao calcular valor pago por Diego-Ana: {str(e)}")
+    
+    @cached(expiry=30, key_prefix="valor_pago_alex")
     def calcular_valor_pago_alex(self) -> float:
-        """Calcular valor total pago por Alex-Rute"""
+        """Calcular o valor total pago por Alex-Rute"""
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            cursor.execute("SELECT SUM(alex_rute) FROM atividades")
-            total = cursor.fetchone()[0]
+            # Usar SQL para calcular a soma diretamente
+            cursor.execute("SELECT SUM(COALESCE(alex_rute, 0)) as total_alex FROM atividades")
+            result = cursor.fetchone()
             
             cursor.close()
             connection.close()
             
-            return float(total) if total else 0
+            # Retornar o valor total pago por Alex-Rute ou 0 se for NULL
+            return result[0] or 0
         except Exception as e:
-            logger.error(f"Erro ao calcular total pago por Alex-Rute: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Erro ao calcular total pago por Alex-Rute: {str(e)}")
+            logger.error(f"Erro ao calcular valor pago por Alex-Rute: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao calcular valor pago por Alex-Rute: {str(e)}")

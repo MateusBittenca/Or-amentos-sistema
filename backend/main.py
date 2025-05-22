@@ -17,6 +17,7 @@ from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_comprovante_ocr
 from managers.comprovante import ComprovantesManager
 from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme, require_auth
+from utils.cache import clear_cache
 
 
 # Inicializar app FastAPI
@@ -33,6 +34,14 @@ app.add_middleware(
 
 # Inicializar o gerenciador
 manager = ComprovantesManager()
+
+# Inicializar o banco de dados na inicialização da aplicação
+@app.on_event("startup")
+async def startup_event():
+    """Inicializar recursos na inicialização da aplicação"""
+    logger.info("Inicializando recursos da aplicação...")
+    initialize_database()
+    logger.info("Aplicação iniciada com sucesso")
 
 @app.get("/")
 def read_root():
@@ -73,6 +82,7 @@ def get_activities(_: bool = Depends(require_auth)):
 @app.get("/atividades-pendentes", response_model=List[PendingActivity])
 def get_pending_activities(_: bool = Depends(require_auth)):
     try:
+        # Usar método otimizado do manager com cache
         return manager.listar_atividades_pendentes()
     except Exception as e:
         logger.error(f"Erro ao buscar atividades pendentes: {e}", exc_info=True)
@@ -81,33 +91,8 @@ def get_pending_activities(_: bool = Depends(require_auth)):
 @app.get("/atividades-pagas", response_model=List[PaidActivity])
 def get_paid_activities(_: bool = Depends(require_auth)):
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-        
-        cursor.execute("SELECT * FROM atividades WHERE status = 'paid'")
-        db_activities = cursor.fetchall()
-        
-        cursor.close()
-        connection.close()
-        
-        atividades_pagas = []
-        
-        for activity in db_activities:
-            # Data já está armazenada como string
-            date_str = activity['data']
-                
-            atividades_pagas.append(PaidActivity(
-                id=activity['idAtividades'],
-                activity=activity['nome'],
-                sector=activity['setor'],
-                total_value=activity['valor'],
-                date=date_str,
-                diego_ana=activity['diego_ana'] or 0,
-                alex_rute=activity['alex_rute'] or 0,
-                status=activity['status']
-            ))
-        
-        return atividades_pagas
+        # Usar método otimizado do manager
+        return manager.listar_atividades_pagas()
     except Exception as e:
         logger.error(f"Erro ao buscar atividades pagas: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro ao buscar atividades pagas: {str(e)}")
@@ -115,6 +100,8 @@ def get_paid_activities(_: bool = Depends(require_auth)):
 @app.post("/update-status")
 def update_status(_: bool = Depends(require_auth)):
     try:
+        # Limpar cache após atualização
+        clear_cache("activities")
         return manager.atualizar_status()
     except Exception as e:
         logger.error(f"Erro ao atualizar status: {e}", exc_info=True)
@@ -138,6 +125,8 @@ def add_activity(
             raise HTTPException(status_code=400, detail="O valor deve ser um número")
         
         result = manager.adicionar_atividade(data, valor_float, setor, atividade)
+        # Limpar cache após adicionar atividade
+        clear_cache("activities")
         logger.debug(f"Resultado da adição: {result}")
         return result
     except HTTPException as he:
@@ -153,6 +142,8 @@ def delete_activity(id: int, _: bool = Depends(require_auth)):
     """Excluir uma atividade pelo seu ID"""
     try:
         result = manager.excluir_atividade(id)
+        # Limpar cache após exclusão
+        clear_cache("activities")
         return result
     except HTTPException as he:
         # Relançar exceções HTTP
@@ -239,7 +230,7 @@ async def register_payment(payment: PaymentData, _: bool = Depends(require_auth)
             if not payment.value: missing.append("valor")
             raise HTTPException(status_code=400, detail=f"Campos obrigatórios faltando: {', '.join(missing)}")
             
-        # Registrar pagamento diretamente (sem logs excessivos)
+        # Registrar pagamento
         result = manager.preencher_pagamento(
             payment.value,
             payment.activity,
@@ -248,19 +239,19 @@ async def register_payment(payment: PaymentData, _: bool = Depends(require_auth)
             payment.date
         )
         
-        # Não chamar atualizar_status() aqui, pois o status já foi atualizado
-        # na função preencher_pagamento para a atividade específica
+        # Limpar cache após pagamento
+        clear_cache("activities")
         
-        return {"message": "Payment registered successfully!", "result": result}
+        return result
     except HTTPException as he:
         raise he
     except Exception as e:
-        logger.error(f"Erro no registro de pagamento: {str(e)}")
+        logger.error(f"Erro ao registrar pagamento: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro ao registrar pagamento: {str(e)}")
-
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """Endpoint de autenticação para gerar token JWT"""
     return await login_for_access_token(form_data)
 
 
