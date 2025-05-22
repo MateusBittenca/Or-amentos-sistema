@@ -232,11 +232,12 @@ const activityManager = {
     row.innerHTML = `
       <td class="py-2 px-4 border-b">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
-      <td class="py-2 px-4 border-b">${formatter.currency(activity.valor_restante)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Informação</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Comprovante</button>
       </td>
     `;
 

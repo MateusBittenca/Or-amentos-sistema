@@ -41,6 +41,36 @@
                 min-width: 100px;
                 text-align: center;
             }
+
+            /* Responsividade para o grid superior */
+            .top-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Estilos para a seção superior */
+        .top-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .top-section {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -67,35 +97,79 @@
     </nav>
 
     <div class="container mx-auto p-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill-wave mr-2"></i>Valor Total da obra
-                </h2>
-                <p class="text-3xl font-bold" id="totalValue">R$ 0,00</p>
+        <!-- Seção superior com valores e formulário -->
+        <div class="top-section">
+            <!-- Grid com os valores -->
+            <div class="values-grid">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Valor Total da obra
+                    </h2>
+                    <p class="text-3xl font-bold" id="totalValue">R$ 0,00</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                        <i class="fas fa-money-bill-wave"></i> Valor total pago da obra
+                    </h2>
+                    <p class="text-3xl font-bold" id="valorPagoObra">R$ 0,00</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                        <i class="fas fa-money-bill mr-2"></i>Valor Pago por Diego-Ana
+                    </h2>
+                    <p class="text-3xl font-bold" id="valorPagoDiego">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-800">
+                        <i class="fas fa-money-bill mr-2"></i>Valor pago por Alex-Rute
+                    </h2>
+                    <p class="text-3xl font-bold" id="valorPagoAlex">0</p>
+                </div>
             </div>
+
+            <!-- Formulário de adicionar atividade -->
             <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill-wave"></i> Valor total pago da obra
+                <h2 class="text-xl font-semibold mb-4 text-blue-800">
+                    <i class="fas fa-plus-circle mr-2"></i>Adicionar Nova Atividade
                 </h2>
-                <p class="text-3xl font-bold" id="valorPagoObra">R$ 0,00</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill mr-2"></i>Valor Pago por Diego-Ana
-                </h2>
-                <p class="text-3xl font-bold" id="valorPagoDiego">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h2 class="text-xl font-semibold mb-2 text-blue-800">
-                    <i class="fas fa-money-bill mr-2"></i>Valor pago por Alex-Rute
-                </h2>
-                <p class="text-3xl font-bold" id="valorPagoAlex">0</p>
+                <form id="addActivityForm">
+                    <div class="mb-3">
+                        <label class="block text-gray-700 mb-1">Atividade</label>
+                        <input type="text" name="atividade" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 mb-1">Valor (R$)</label>
+                        <input type="number" name="valor" step="0.01" class="w-full px-3 py-2 border rounded"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 mb-1">Setor</label>
+                        <select name="setor" id="setor" class="setor-select w-full px-3 py-2 border rounded">
+                            <option value="" disabled selected>Escolha uma opção</option>
+                            <option value="Documentação">Documentação</option>
+                            <option value="Financiamento">Financiamento</option>
+                            <option value="Advocacia">Advocacia</option>
+                            <option value="Projeto">Projeto</option>
+                            <option value="Mão de obra">Mão de obra</option>
+                            <option value="Materiais">Materiais</option>
+                            <option value="Serviços">Serviços</option>
+                            <option value="Projetos">Projetos</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 mb-1">Data para pagar</label>
+                        <input type="date" name="data" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i>Adicionar
+                    </button>
+                </form>
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-4 mb-8">
-            <div class="w-full md:w-2/3">
+        <!-- Seção das tabelas -->
+        <div class="flex flex-col gap-4 mb-8">
+            <div class="w-full">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <!-- Abas de navegação -->
                     <div class="tabs-container">
@@ -110,11 +184,11 @@
 
                         <!-- Conteúdo da aba Atividades Pendentes -->
                         <div class="tab-content active" id="pending-tab">
-                            <div class="buscar">
+                            <div class="buscar flex items-center gap-2 mb-4">
                                 <input type="text" id="searchInput" placeholder="Buscar atividade pendente..."
-                                    class="w-full px-3 py-2 border rounded mb-4">
+                                    class="w-full px-3 py-2 border rounded">
                                 <button id="searchBtn"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded whitespace-nowrap">
                                     <i class="fas fa-search mr-2"></i>Buscar
                                 </button>
                             </div>
@@ -125,8 +199,9 @@
                                         <tr>
                                             <th class="py-2 px-4 border-b text-left">Setor</th>
                                             <th class="py-2 px-4 border-b text-left">Atividade</th>
-                                            <th class="py-2 px-4 border-b text-left">Valor pendente</th>
                                             <th class="py-2 px-4 border-b text-left">Valor total</th>
+                                            <th class="py-2 px-4 border-b text-left">Valor pago Diego-Ana</th>
+                                            <th class="py-2 px-4 border-b text-left">Valor pago Alex-Rute</th>
                                             <th class="py-2 px-4 border-b text-left">Data Vencimento</th>
                                             <th class="py-2 px-4 border-b text-left">Ações</th>
                                         </tr>
@@ -140,11 +215,11 @@
 
                         <!-- Conteúdo da aba Atividades Pagas -->
                         <div class="tab-content" id="paid-tab">
-                            <div class="buscar">
+                            <div class="buscar flex items-center gap-2 mb-4">
                                 <input type="text" id="searchPaidInput" placeholder="Buscar atividade paga..."
-                                    class="w-full px-3 py-2 border rounded mb-4">
+                                    class="w-full px-3 py-2 border rounded">
                                 <button id="searchPaidBtn"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded whitespace-nowrap">
                                     <i class="fas fa-search mr-2"></i>Buscar
                                 </button>
                             </div>
@@ -169,7 +244,7 @@
                     </div>
                 </div>
 
-                <!-- Seção de exportação de relatórios movida para dentro do layout principal -->
+                <!-- Seção de exportação de relatórios -->
                 <div class="bg-white rounded-lg shadow-md p-3 mt-4">
                     <h2 class="text-lg sm:text-xl font-semibold mb-3 text-blue-800">
                         <i class="fas fa-file-export mr-2"></i>Exportar Relatórios
@@ -192,276 +267,238 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
-                <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Adicionar Nova Atividade</h2>
-                    <form id="addActivityForm">
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Atividade</label>
-                            <input type="text" name="atividade" class="w-full px-3 py-2 border rounded" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Valor (R$)</label>
-                            <input type="number" name="valor" step="0.01" class="w-full px-3 py-2 border rounded"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Setor</label>
-                            <select name="setor" id="setor" class="setor-select w-full px-3 py-2 border rounded">
-                                <option value="" disabled selected>Escolha uma opção</option>
-                                <option value="Documentação">Documentação</option>
-                                <option value="Obra">Financiamento</option>
-                                <option value="Financeiro">Advocacia</option>
-                                <option value="Compras">Projeto</option>
-                                <option value="Mão de obra  ">Mão de obra</option>
-                                <option value="Materiais">Materiais</option>
-                                <option value="Serviços">Serviços</option>
-                                <option value="Projetos">Projetos</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-gray-700 mb-1">Data para pagar</label>
-                            <input type="date" name="data" class="w-full px-3 py-2 border rounded" required>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                            <i class="fas fa-plus mr-2"></i>Adicionar
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 
-    <footer class="bg-blue-800 text-white p-4">
+    <footer class="bg-blue-800 text-white p-4 mt-8">
         <div class="container mx-auto text-center">
             <p>&copy; 2025 Sistema de Gestão de Gastos de Obra. Todos os direitos reservados.</p>
         </div>
-    </footer>
 
-    <!-- Notification -->
-    <div id="notification"
-        class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 hidden">
-        <span id="notificationMessage"></span>
-    </div>
-
-    <div id="infoModal" class="hidden">
-        <div class="modal-content">
-            <div class="modal-head">
-                <h2>Detalhes da Atividade </h2>
-                <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2"></i>
-            </div>
-
-
-            <!-- Seção de identificação -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações Gerais</div>
-                <div class="info-row">
-                    <div class="info-label">ID:</div>
-                    <div class="info-value" id="modalId"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="modalActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="modalSector">Documentação</div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Seção de valores -->
-            <div class="modal-section">
-                <div class="modal-section-title">Valores</div>
-                <div class="financial-section">
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Diego-Ana</div>
-                        <div class="financial-value" id="modalValue"></div>
-                    </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Alex-Rute</div>
-                        <div class="financial-value" id="modalValue2"></div>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pendente:</div>
-                        <div class="financial-value financial-pending" id="modalRemainingValue"></div>
-                    </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor Total:</div>
-                        <div class="financial-value financial-total" id="modalTotalValue"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Data de vencimento -->
-            <div class="modal-section">
-                <div class="info-row">
-                    <div class="info-label">Data de vencimento:</div>
-                    <div class="info-value" id="modalDate">15/09/2021</div>
-                </div>
-            </div>
-
-            <!-- Botão de fechar -->
-            <div class="modal-footer">
-                <button id="pagamento" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
-                    Pagar
-                </button>
-                <button id="closeModal">Fechar</button>
-            </div>
+        <!-- Notification -->
+        <div id="notification"
+            class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 hidden">
+            <span id="notificationMessage"></span>
         </div>
-    </div>
 
-    <div id="infoModalPaid" class="hidden">
-        <div class="modal-content">
-            <div class="modal-head">
-                <h2>Detalhes da Atividade </h2>
-            </div>
-
-            <!-- Seção de identificação -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações Gerais</div>
-                <div class="info-row">
-                    <div class="info-label">ID:</div>
-                    <div class="info-value" id="modalPaidID"></div>
+        <div id="infoModal" class="hidden">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <h2>Detalhes da Atividade </h2>
+                    <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2"></i>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="modalPaidActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="modalPaidSector">Documentação</div>
-                </div>
-            </div>
 
-            <div class="divider"></div>
-
-            <!-- Seção de valores -->
-            <div class="modal-section">
-                <div class="modal-section-title">Valores</div>
-                <div class="financial-section">
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Diego-Ana</div>
-                        <div class="financial-value" id="modalPaidValue"></div>
+                <!-- Seção de identificação -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Informações Gerais</div>
+                    <div class="info-row">
+                        <div class="info-label">ID:</div>
+                        <div class="info-value" id="modalId"></div>
                     </div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor pago por: Alex-Rute</div>
-                        <div class="financial-value" id="modalPaidValue2"></div>
+                    <div class="info-row">
+                        <div class="info-label">Atividade:</div>
+                        <div class="info-value" id="modalActivity"></div>
                     </div>
-                    <div class="divider"></div>
-                    <div class="financial-row">
-                        <div class="financial-label">Valor Total:</div>
-                        <div class="financial-value financial-total" id="modalPaidTotalValue"></div>
+                    <div class="info-row">
+                        <div class="info-label">Setor:</div>
+                        <div class="info-value" id="modalSector">Documentação</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="divider"></div>
+                <div class="divider"></div>
 
-            <!-- Data de vencimento -->
-            <div class="modal-section">
-                <div class="info-row">
-                    <div class="info-label">Data de vencimento:</div>
-                    <div class="info-value" id="modalPaidDate">15/09/2021</div>
-                </div>
-            </div>
-
-            <!-- Botão de fechar -->
-            <div class="modal-footer">
-                <button id="closeModalPaid">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="paymentModal" class="hidden">
-        <div class="modal-content payment-modal">
-            <h2>Registrar Pagamento</h2>
-
-            <!-- Seção de identificação da atividade -->
-            <div class="modal-section">
-                <div class="modal-section-title">Informações da Atividade</div>
-                <div class="info-row">
-                    <div class="info-label">Atividade:</div>
-                    <div class="info-value" id="paymentModalActivity"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Setor:</div>
-                    <div class="info-value" id="paymentModalSector"></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Valor Pendente:</div>
-                    <div class="info-value" id="paymentModalPending"></div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Formulário de pagamento -->
-            <div class="modal-section">
-                <div class="modal-section-title">Detalhes do Pagamento</div>
-                <form id="modalPaymentForm">
-                    <div class="form-group">
-                        <label>Quem está pagando?</label>
-                        <div class="payment-options">
-                            <div class="payment-option">
-                                <input type="radio" id="diegoAna" name="payer" value="Diego-Ana" checked>
-                                <label for="diegoAna" class="payment-option-label">
-                                    <i class="fas fa-user-friends"></i>
-                                    <span>Diego-Ana</span>
-                                </label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" id="alexRute" name="payer" value="Alex-Rute">
-                                <label for="alexRute" class="payment-option-label">
-                                    <i class="fas fa-user-friends"></i>
-                                    <span>Alex-Rute</span>
-                                </label>
-                            </div>
+                <!-- Seção de valores -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Valores</div>
+                    <div class="financial-section">
+                        <div class="financial-row">
+                            <div class="financial-label">Valor pago por: Diego-Ana</div>
+                            <div class="financial-value" id="modalValue"></div>
+                        </div>
+                        <div class="financial-row">
+                            <div class="financial-label">Valor pago por: Alex-Rute</div>
+                            <div class="financial-value" id="modalValue2"></div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="financial-row">
+                            <div class="financial-label">Valor pendente:</div>
+                            <div class="financial-value financial-pending" id="modalRemainingValue"></div>
+                        </div>
+                        <div class="financial-row">
+                            <div class="financial-label">Valor Total:</div>
+                            <div class="financial-value financial-total" id="modalTotalValue"></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Nova seção para upload de imagem/comprovante -->
-                    <div class="form-group">
-                        <label>Comprovante de Pagamento</label>
-                        <div class="image-upload-container">
-                            <div class="image-upload-preview">
-                                <div class="image-upload-placeholder">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span>Clique para adicionar comprovante</span>
+                <div class="divider"></div>
+
+                <!-- Data de vencimento -->
+                <div class="modal-section">
+                    <div class="info-row">
+                        <div class="info-label">Data de vencimento:</div>
+                        <div class="info-value" id="modalDate">15/09/2021</div>
+                    </div>
+                </div>
+
+                <!-- Botão de fechar -->
+                <div class="modal-footer">
+                    <button id="pagamento" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
+                        Pagar
+                    </button>
+                    <button id="closeModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="infoModalPaid" class="hidden">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <h2>Detalhes da Atividade </h2>
+                </div>
+
+                <!-- Seção de identificação -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Informações Gerais</div>
+                    <div class="info-row">
+                        <div class="info-label">ID:</div>
+                        <div class="info-value" id="modalPaidID"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Atividade:</div>
+                        <div class="info-value" id="modalPaidActivity"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Setor:</div>
+                        <div class="info-value" id="modalPaidSector">Documentação</div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Seção de valores -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Valores</div>
+                    <div class="financial-section">
+                        <div class="financial-row">
+                            <div class="financial-label">Valor pago por: Diego-Ana</div>
+                            <div class="financial-value" id="modalPaidValue"></div>
+                        </div>
+                        <div class="financial-row">
+                            <div class="financial-label">Valor pago por: Alex-Rute</div>
+                            <div class="financial-value" id="modalPaidValue2"></div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="financial-row">
+                            <div class="financial-label">Valor Total:</div>
+                            <div class="financial-value financial-total" id="modalPaidTotalValue"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Data de vencimento -->
+                <div class="modal-section">
+                    <div class="info-row">
+                        <div class="info-label">Data de vencimento:</div>
+                        <div class="info-value" id="modalPaidDate">15/09/2021</div>
+                    </div>
+                </div>
+
+                <!-- Botão de fechar -->
+                <div class="modal-footer">
+                    <button id="closeModalPaid">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="paymentModal" class="hidden">
+            <div class="modal-content payment-modal">
+                <h2>Registrar Pagamento</h2>
+
+                <!-- Seção de identificação da atividade -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Informações da Atividade</div>
+                    <div class="info-row">
+                        <div class="info-label">Atividade:</div>
+                        <div class="info-value" id="paymentModalActivity"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Setor:</div>
+                        <div class="info-value" id="paymentModalSector"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Valor Pendente:</div>
+                        <div class="info-value" id="paymentModalPending"></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Formulário de pagamento -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Detalhes do Pagamento</div>
+                    <form id="modalPaymentForm">
+                        <div class="form-group">
+                            <label>Quem está pagando?</label>
+                            <div class="payment-options">
+                                <div class="payment-option">
+                                    <input type="radio" id="diegoAna" name="payer" value="Diego-Ana" checked>
+                                    <label for="diegoAna" class="payment-option-label">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>Diego-Ana</span>
+                                    </label>
                                 </div>
-                                <img id="receiptPreview" alt="Comprovante de pagamento">
-                                <input type="file" id="receiptImage" class="image-upload-input" accept="image/*">
+                                <div class="payment-option">
+                                    <input type="radio" id="alexRute" name="payer" value="Alex-Rute">
+                                    <label for="alexRute" class="payment-option-label">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>Alex-Rute</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
 
-            <!-- Botões do modal -->
-            <div class="modal-footer">
-                <button id="confirmPayment" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
-                    <i class="fas fa-check-circle"></i> Confirmar Pagamento
-                </button>
-                <button id="closePaymentModal" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
-                    <i class="fas fa-times-circle"></i> Cancelar
-                </button>
+                        <!-- Nova seção para upload de imagem/comprovante -->
+                        <div class="form-group">
+                            <label>Comprovante de Pagamento</label>
+                            <div class="image-upload-container">
+                                <div class="image-upload-preview">
+                                    <div class="image-upload-placeholder">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Clique para adicionar comprovante</span>
+                                    </div>
+                                    <img id="receiptPreview" alt="Comprovante de pagamento">
+                                    <input type="file" id="receiptImage" class="image-upload-input" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Botões do modal -->
+                <div class="modal-footer">
+                    <button id="confirmPayment" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
+                        <i class="fas fa-check-circle"></i> Confirmar Pagamento
+                    </button>
+                    <button id="closePaymentModal" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Loader -->
-    <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50 hidden">
-        <div class="loader-spinner border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 animate-spin">
+        <!-- Loader -->
+        <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50 hidden">
+            <div
+                class="loader-spinner border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 animate-spin">
+            </div>
         </div>
-    </div>
 
-    <script src="./js/index.js"></script>
-    <script src="./js/modalPagamento.js"></script>
-    <script src="./js/export.js"></script>
+        <script src="./js/index.js"></script>
+        <script src="./js/modalPagamento.js"></script>
+        <script src="./js/export.js"></script>
 </body>
 
 </html>
