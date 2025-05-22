@@ -67,9 +67,46 @@
             gap: 1rem;
         }
 
+        /* Responsividade para a seção superior */
         @media (max-width: 1024px) {
             .top-section {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsividade adicional para telas pequenas */
+        @media (max-width: 640px) {
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            #addActivityForm div {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-buttons {
+                gap: 0.25rem;
+            }
+        }
+        
+        /* Melhorias gerais de responsividade */
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            
+            .top-section {
+                gap: 1rem;
+            }
+            
+            .values-grid {
+                gap: 0.75rem;
+            }
+            
+            #addActivityForm input,
+            #addActivityForm select {
+                padding: 0.5rem;
             }
         }
     </style>
