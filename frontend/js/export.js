@@ -1,3 +1,5 @@
+const url_api = 'http://localhost:10000';
+
 const exportPdfBtn = document.getElementById('exportPdfBtn');
 const exportExcelBtn = document.getElementById('exportExcelBtn');
 const exportImagesBtn = document.getElementById('exportImagesBtn');
@@ -16,9 +18,109 @@ exportImagesBtn.addEventListener('click', () => {
     exportChartImages();
 });
 
+
+async function fetchAllActivities() {
+    try {
+        const response = await fetch(`${url_api}/atividades`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar atividades');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Erro:', error);
+        return [];
+    }
+}
+async function fetchPendingActivities() {
+    try {
+        const response = await fetch(`${url_api}/atividades-pendentes`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar atividades pendentes');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Erro:', error);
+        return [];
+    }
+}
+
+// Função para buscar atividades pagas
+async function fetchPaidActivities() {
+    try {
+        const response = await fetch(`${url_api}/atividades-pagas`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar atividades pagas');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Erro:', error);
+        return [];
+    }
+}
+
+// Função para buscar valor total
+async function fetchTotalValue() {
+    try {
+        const response = await fetch(`${url_api}/valor-total`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar valor total');
+        }
+        const data = await response.json();
+        return data.total;
+    } catch (error) {
+        console.error('Erro:', error);
+        return 0;
+    }
+}
+
+// Função para buscar valor total pago
+async function fetchTotalPaidValue() {
+    try {
+        const response = await fetch(`${url_api}/valor-total-pago`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar valor total pago');
+        }
+        const data = await response.json();
+        return data.total_pago;
+    } catch (error) {
+        console.error('Erro:', error);
+        return 0;
+    }
+}
+
+// Função para buscar valor pago por Diego-Ana
+async function fetchDiegoPaidValue() {
+    try {
+        const response = await fetch(`${url_api}/valor-pago-diego`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar valor pago por Diego-Ana');
+        }
+        const data = await response.json();
+        return data.total_pago_diego;
+    } catch (error) {
+        console.error('Erro:', error);
+        return 0;
+    }
+}
+
+// Função para buscar valor pago por Alex-Rute
+async function fetchAlexPaidValue() {
+    try {
+        const response = await fetch(`${url_api}/valor-pago-alex`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar valor pago por Alex-Rute');
+        }
+        const data = await response.json();
+        return data.total_pago_alex;
+    } catch (error) {
+        console.error('Erro:', error);
+        return 0;
+    }
+}
+
 function exportToPDF() {
     // Mostrar loading
-    
+
 
     setTimeout(() => {
         try {
@@ -229,16 +331,189 @@ async function exportToExcel() {
         // Criar workbook
         const wb = XLSX.utils.book_new();
 
-        // Adicionar planilha de atividades
+        // ===== PLANILHA DE ATIVIDADES =====
         const ws_data = XLSX.utils.json_to_sheet(data);
+        
+        // Formatação da planilha de atividades
+        const range = XLSX.utils.decode_range(ws_data['!ref']);
+        
+        // Definir largura das colunas
+        ws_data['!cols'] = [
+            { wch: 8 },   // ID
+            { wch: 12 },  // Data
+            { wch: 30 },  // Atividade
+            { wch: 15 },  // Setor
+            { wch: 12 },  // Valor
+            { wch: 15 },  // Pago Diego-Ana
+            { wch: 15 },  // Pago Alex-Rute
+            { wch: 12 },  // Total Pago
+            { wch: 12 },  // Restante
+            { wch: 12 }   // Status
+        ];
+
+        // Aplicar estilos
+        if (!ws_data['!style']) ws_data['!style'] = {};
+
+        // Estilo do cabeçalho (linha 1)
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+            if (!ws_data[cellAddress]) continue;
+            
+            ws_data[cellAddress].s = {
+                fill: { fgColor: { rgb: "2E5BBA" } }, // Azul escuro
+                font: { color: { rgb: "FFFFFF" }, bold: true, sz: 12 },
+                alignment: { horizontal: "center", vertical: "center" },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                }
+            };
+        }
+
+        // Estilo para linhas de dados
+        for (let row = 1; row <= range.e.r; row++) {
+            const statusCell = ws_data[XLSX.utils.encode_cell({ r: row, c: 9 })]; // Coluna Status
+            const isCompleted = statusCell && statusCell.v === 'Concluída';
+            
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                if (!ws_data[cellAddress]) continue;
+                
+                ws_data[cellAddress].s = {
+                    fill: { 
+                        fgColor: { 
+                            rgb: isCompleted ? "D4EDDA" : (row % 2 === 0 ? "F8F9FA" : "FFFFFF") 
+                        } 
+                    }, // Verde claro para concluídas, alternando cinza/branco para outras
+                    font: { 
+                        color: { rgb: isCompleted ? "155724" : "000000" },
+                        bold: isCompleted && col === 9 // Status em negrito se concluída
+                    },
+                    alignment: { 
+                        horizontal: col === 2 ? "left" : "center", // Atividade à esquerda, resto centralizado
+                        vertical: "center" 
+                    },
+                    border: {
+                        top: { style: "thin", color: { rgb: "DEE2E6" } },
+                        bottom: { style: "thin", color: { rgb: "DEE2E6" } },
+                        left: { style: "thin", color: { rgb: "DEE2E6" } },
+                        right: { style: "thin", color: { rgb: "DEE2E6" } }
+                    },
+                    numFmt: (col >= 4 && col <= 8) ? '#,##0.00' : undefined // Formato de moeda para valores
+                };
+            }
+        }
+
         XLSX.utils.book_append_sheet(wb, ws_data, 'Atividades');
 
-        // Adicionar planilha de resumo
+        // ===== PLANILHA DE RESUMO =====
         const ws_resumo = XLSX.utils.json_to_sheet(resumo);
+        
+        // Formatação da planilha de resumo
+        const resumoRange = XLSX.utils.decode_range(ws_resumo['!ref']);
+        
+        ws_resumo['!cols'] = [
+            { wch: 20 }, // Resumo Financeiro
+            { wch: 15 }  // Valor
+        ];
+
+        // Cabeçalho do resumo
+        for (let col = 0; col <= 1; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+            if (!ws_resumo[cellAddress]) continue;
+            
+            ws_resumo[cellAddress].s = {
+                fill: { fgColor: { rgb: "28A745" } }, // Verde
+                font: { color: { rgb: "FFFFFF" }, bold: true, sz: 12 },
+                alignment: { horizontal: "center", vertical: "center" },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                }
+            };
+        }
+
+        // Dados do resumo
+        for (let row = 1; row <= resumoRange.e.r; row++) {
+            for (let col = 0; col <= 1; col++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                if (!ws_resumo[cellAddress]) continue;
+                
+                ws_resumo[cellAddress].s = {
+                    fill: { fgColor: { rgb: row % 2 === 0 ? "F8F9FA" : "FFFFFF" } },
+                    font: { color: { rgb: "000000" }, bold: col === 0 },
+                    alignment: { horizontal: col === 0 ? "left" : "center", vertical: "center" },
+                    border: {
+                        top: { style: "thin", color: { rgb: "DEE2E6" } },
+                        bottom: { style: "thin", color: { rgb: "DEE2E6" } },
+                        left: { style: "thin", color: { rgb: "DEE2E6" } },
+                        right: { style: "thin", color: { rgb: "DEE2E6" } }
+                    },
+                    numFmt: col === 1 && !ws_resumo[cellAddress].v.toString().includes('%') ? '#,##0.00' : undefined
+                };
+            }
+        }
+
         XLSX.utils.book_append_sheet(wb, ws_resumo, 'Resumo Financeiro');
 
-        // Adicionar planilha de setores
+        // ===== PLANILHA DE SETORES =====
         const ws_setores = XLSX.utils.json_to_sheet(setores);
+        
+        // Formatação da planilha de setores
+        const setoresRange = XLSX.utils.decode_range(ws_setores['!ref']);
+        
+        ws_setores['!cols'] = [
+            { wch: 20 }, // Setor
+            { wch: 15 }, // Total Atividades
+            { wch: 15 }, // Valor Total
+            { wch: 12 }, // Valor Pago
+            { wch: 15 }, // Valor Pendente
+            { wch: 12 }  // Progresso
+        ];
+
+        // Cabeçalho dos setores
+        for (let col = 0; col <= 5; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+            if (!ws_setores[cellAddress]) continue;
+            
+            ws_setores[cellAddress].s = {
+                fill: { fgColor: { rgb: "FD7E14" } }, // Laranja
+                font: { color: { rgb: "FFFFFF" }, bold: true, sz: 12 },
+                alignment: { horizontal: "center", vertical: "center" },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                }
+            };
+        }
+
+        // Dados dos setores
+        for (let row = 1; row <= setoresRange.e.r; row++) {
+            for (let col = 0; col <= 5; col++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                if (!ws_setores[cellAddress]) continue;
+                
+                ws_setores[cellAddress].s = {
+                    fill: { fgColor: { rgb: row % 2 === 0 ? "F8F9FA" : "FFFFFF" } },
+                    font: { color: { rgb: "000000" } },
+                    alignment: { horizontal: col === 0 ? "left" : "center", vertical: "center" },
+                    border: {
+                        top: { style: "thin", color: { rgb: "DEE2E6" } },
+                        bottom: { style: "thin", color: { rgb: "DEE2E6" } },
+                        left: { style: "thin", color: { rgb: "DEE2E6" } },
+                        right: { style: "thin", color: { rgb: "DEE2E6" } }
+                    },
+                    numFmt: (col >= 2 && col <= 4) ? '#,##0.00' : undefined
+                };
+            }
+        }
+
         XLSX.utils.book_append_sheet(wb, ws_setores, 'Análise por Setor');
 
         // Exportar para arquivo Excel
@@ -250,7 +525,6 @@ async function exportToExcel() {
     }
 
     // Esconder loading
-    hideLoading(exportExcelBtn);
 }
 
 // Função para exportar gráficos como imagens

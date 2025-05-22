@@ -26,10 +26,6 @@ SECRET_KEY = os.getenv("SECRET_KEY", "chave_secreta_padrao_para_desenvolvimento"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-logger.info(f"SECRET_KEY carregada: {'*' * len(SECRET_KEY)}")
-logger.info(f"Usando algoritmo: {ALGORITHM}")
-logger.info(f"Tempo de expiração de token configurado para: {ACCESS_TOKEN_EXPIRE_MINUTES} minutos")
-
 # OAuth2 esquema para autenticação
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
