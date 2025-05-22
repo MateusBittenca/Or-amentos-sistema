@@ -103,7 +103,12 @@
         // Função para buscar todas as atividades
         async function fetchAllActivities() {
             try {
-                const response = await fetch(`${API_URL}/atividades`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/atividades`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar atividades');
                 }
@@ -117,7 +122,12 @@
         // Função para buscar atividades pendentes
         async function fetchPendingActivities() {
             try {
-                const response = await fetch(`${API_URL}/atividades-pendentes`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/atividades-pendentes`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar atividades pendentes');
                 }
@@ -131,7 +141,12 @@
         // Função para buscar atividades pagas
         async function fetchPaidActivities() {
             try {
-                const response = await fetch(`${API_URL}/atividades-pagas`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/atividades-pagas`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar atividades pagas');
                 }
@@ -145,7 +160,12 @@
         // Função para buscar valor total
         async function fetchTotalValue() {
             try {
-                const response = await fetch(`${API_URL}/valor-total`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/valor-total`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar valor total');
                 }
@@ -160,7 +180,12 @@
         // Função para buscar valor total pago
         async function fetchTotalPaidValue() {
             try {
-                const response = await fetch(`${API_URL}/valor-total-pago`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/valor-total-pago`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar valor total pago');
                 }
@@ -175,7 +200,12 @@
         // Função para buscar valor pago por Diego-Ana
         async function fetchDiegoPaidValue() {
             try {
-                const response = await fetch(`${API_URL}/valor-pago-diego`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/valor-pago-diego`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar valor pago por Diego-Ana');
                 }
@@ -190,7 +220,12 @@
         // Função para buscar valor pago por Alex-Rute
         async function fetchAlexPaidValue() {
             try {
-                const response = await fetch(`${API_URL}/valor-pago-alex`);
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_URL}/valor-pago-alex`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erro ao buscar valor pago por Alex-Rute');
                 }

@@ -59,8 +59,12 @@ async function extrairDadosComprovante() {
     console.log("Enviando comprovante para extração:", [...formData.entries()]);
 
     try {
+        const token = localStorage.getItem('access_token');
         const response = await fetch(`${URL_api}/process-receipt`, {
             method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             body: formData,
         });
 
@@ -113,10 +117,12 @@ async function registrarPagamento(dadosComprovante) {
     console.log("Dados do pagamento formatados:", paymentData);
 
     try {
+        const token = localStorage.getItem('access_token');
         const response = await fetch(`${URL_api}/register-payment`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(paymentData),
         });

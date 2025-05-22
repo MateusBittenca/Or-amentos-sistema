@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse , HTMLResponse
 import os
@@ -16,7 +16,7 @@ from models import Activity, PendingActivity, PaidActivity, PaymentData, Extract
 from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_comprovante_ocr
 from managers.comprovante import ComprovantesManager
-from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme
+from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme, require_auth
 
 
 # Inicializar app FastAPI
@@ -63,7 +63,7 @@ def head_health_check():
     return {"status": "healthy"}
 
 @app.get("/atividades", response_model=List[Activity])
-def get_activities():
+def get_activities(_: bool = Depends(require_auth)):
     try:
         return manager.listar_atividades()
     except Exception as e:
@@ -71,7 +71,7 @@ def get_activities():
         raise HTTPException(status_code=500, detail=f"Erro ao buscar atividades: {str(e)}")
 
 @app.get("/atividades-pendentes", response_model=List[PendingActivity])
-def get_pending_activities():
+def get_pending_activities(_: bool = Depends(require_auth)):
     try:
         return manager.listar_atividades_pendentes()
     except Exception as e:
@@ -79,7 +79,7 @@ def get_pending_activities():
         raise HTTPException(status_code=500, detail=f"Erro ao buscar atividades pendentes: {str(e)}")
 
 @app.get("/atividades-pagas", response_model=List[PaidActivity])
-def get_paid_activities():
+def get_paid_activities(_: bool = Depends(require_auth)):
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -113,7 +113,7 @@ def get_paid_activities():
         raise HTTPException(status_code=500, detail=f"Erro ao buscar atividades pagas: {str(e)}")
 
 @app.post("/update-status")
-def update_status():
+def update_status(_: bool = Depends(require_auth)):
     try:
         return manager.atualizar_status()
     except Exception as e:
@@ -126,7 +126,7 @@ def add_activity(
     valor: str = Form(...),
     setor: str = Form(...), 
     data: str = Form(...),
-
+    _: bool = Depends(require_auth)
 ):
     logger.debug(f"Dados recebidos: atividade={atividade}, valor={valor}, setor={setor}, data={data}")
     
@@ -149,7 +149,7 @@ def add_activity(
         raise HTTPException(status_code=500, detail=error_message)
     
 @app.delete("/delete-activity/{id}")
-def delete_activity(id: int):
+def delete_activity(id: int, _: bool = Depends(require_auth)):
     """Excluir uma atividade pelo seu ID"""
     try:
         result = manager.excluir_atividade(id)
@@ -162,7 +162,7 @@ def delete_activity(id: int):
         raise HTTPException(status_code=500, detail=f"Erro ao excluir atividade: {str(e)}")
     
 @app.get("/valor-total")
-def get_total_value():
+def get_total_value(_: bool = Depends(require_auth)):
     """Calcular valor total da construção somando os valores das atividades"""
     try:
         total_value = manager.calcular_valor_total()
@@ -172,7 +172,7 @@ def get_total_value():
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total: {str(e)}")
 
 @app.get("/valor-total-pago")
-def get_valor_pago():
+def get_valor_pago(_: bool = Depends(require_auth)):
     """Calculate total amount paid by summing values in Alex-Rute and Diego-Ana columns"""
     try:
         total_pago = manager.calcular_valor_total_pago()
@@ -182,7 +182,7 @@ def get_valor_pago():
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o valor total pago: {str(e)}")
 
 @app.get("/valor-pago-diego")
-def get_valor_pago_diego():
+def get_valor_pago_diego(_: bool = Depends(require_auth)):
     try:
         total_pago_diego = manager.calcular_valor_pago_diego()
         return {"total_pago_diego": total_pago_diego}
@@ -191,7 +191,7 @@ def get_valor_pago_diego():
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o total pago por diego-Ana :  {str(e)}")
 
 @app.get("/valor-pago-alex")
-def get_valor_pago_alex():
+def get_valor_pago_alex(_: bool = Depends(require_auth)):
     try:
         total_pago_alex = manager.calcular_valor_pago_alex()
         return {"total_pago_alex": total_pago_alex}
@@ -200,7 +200,7 @@ def get_valor_pago_alex():
         raise HTTPException(status_code=500, detail=f"Erro ao calcular o total pago por Alex-Rute: {str(e)}")
 
 @app.post("/process-receipt", response_model=ExtractedData)
-async def process_receipt(file: UploadFile = File(...)):
+async def process_receipt(file: UploadFile = File(...), _: bool = Depends(require_auth)):
     try:
         # Get file extension from filename
         extension = file.filename.split('.')[-1].lower() if '.' in file.filename else 'jpg'
@@ -229,7 +229,7 @@ async def process_receipt(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register-payment")
-async def register_payment(payment: PaymentData):
+async def register_payment(payment: PaymentData, _: bool = Depends(require_auth)):
     try:
         # Validação básica dos dados
         if not payment.activity or not payment.payer or not payment.value:

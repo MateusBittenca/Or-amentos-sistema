@@ -25,7 +25,17 @@ document.addEventListener('DOMContentLoaded', function() {
 const api = {
   async fetchData(endpoint) {
     try {
-      const response = await fetch(`${API_URL}/${endpoint}`);
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${API_URL}/${endpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
       return await response.json();
     } catch (error) {
       console.error(`Erro ao buscar dados de ${endpoint}:`, error);
@@ -35,8 +45,12 @@ const api = {
 
   async deleteActivity(id) {
     try {
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_URL}/delete-activity/${id}`, {
         method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) {
@@ -54,8 +68,12 @@ const api = {
 
   async addActivity(formData) {
     try {
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_URL}/add-activity`, {
         method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData,
       });
 
@@ -166,16 +184,38 @@ const activityManager = {
       const activitiesList = document.getElementById("activitiesList");
       activitiesList.innerHTML = "";
 
-      if (Array.isArray(pendingActivities)) {
+      // Check if pendingActivities exists and is an array
+      if (pendingActivities && Array.isArray(pendingActivities)) {
         pendingActivities.forEach(activity => {
           const row = this.createActivityRow(activity);
           activitiesList.appendChild(row);
         });
       } else {
-        console.error("Expected an array but got:", pendingActivities);
+        console.error("Expected an array but got:", typeof pendingActivities, pendingActivities);
+        
+        // Display an error message in the UI
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              Erro ao carregar atividades pendentes. Por favor, recarregue a página.
+          </td>
+        `;
+        activitiesList.appendChild(tr);
       }
     } catch (error) {
       console.error("Erro ao carregar atividades pendentes:", error);
+      
+      // Show error in the UI
+      const activitiesList = document.getElementById("activitiesList");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            ${error.message || "Erro ao carregar atividades pendentes"}
+        </td>
+      `;
+      activitiesList.appendChild(tr);
     }
   },
 
@@ -291,18 +331,30 @@ const activityManager = {
   async loadPendingActivities() {
     try {
       const pendingActivities = await api.fetchData("atividades-pendentes");
-      ui.updateElementText("pendingActivities", pendingActivities.length);
+      if (pendingActivities && Array.isArray(pendingActivities)) {
+        ui.updateElementText("pendingActivities", pendingActivities.length);
+      } else {
+        ui.updateElementText("pendingActivities", "0");
+        console.error("Expected an array for pending activities but got:", typeof pendingActivities);
+      }
     } catch (error) {
       console.error("Erro ao carregar atividades pendentes:", error);
+      ui.updateElementText("pendingActivities", "0");
     }
   },
 
   async loadTotalActivities() {
     try {
       const activities = await api.fetchData("atividades");
-      ui.updateElementText("totalActivities", activities.length);
+      if (activities && Array.isArray(activities)) {
+        ui.updateElementText("totalActivities", activities.length);
+      } else {
+        ui.updateElementText("totalActivities", "0");
+        console.error("Expected an array for total activities but got:", typeof activities);
+      }
     } catch (error) {
       console.error("Erro ao carregar o total de atividades:", error);
+      ui.updateElementText("totalActivities", "0");
     }
   },
 

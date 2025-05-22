@@ -21,7 +21,12 @@ exportImagesBtn.addEventListener('click', () => {
 
 async function fetchAllActivities() {
     try {
-        const response = await fetch(`${url_api}/atividades`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/atividades`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar atividades');
         }
@@ -33,7 +38,12 @@ async function fetchAllActivities() {
 }
 async function fetchPendingActivities() {
     try {
-        const response = await fetch(`${url_api}/atividades-pendentes`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/atividades-pendentes`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar atividades pendentes');
         }
@@ -47,7 +57,12 @@ async function fetchPendingActivities() {
 // Função para buscar atividades pagas
 async function fetchPaidActivities() {
     try {
-        const response = await fetch(`${url_api}/atividades-pagas`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/atividades-pagas`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar atividades pagas');
         }
@@ -61,7 +76,12 @@ async function fetchPaidActivities() {
 // Função para buscar valor total
 async function fetchTotalValue() {
     try {
-        const response = await fetch(`${url_api}/valor-total`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/valor-total`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar valor total');
         }
@@ -76,7 +96,12 @@ async function fetchTotalValue() {
 // Função para buscar valor total pago
 async function fetchTotalPaidValue() {
     try {
-        const response = await fetch(`${url_api}/valor-total-pago`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/valor-total-pago`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar valor total pago');
         }
@@ -91,7 +116,12 @@ async function fetchTotalPaidValue() {
 // Função para buscar valor pago por Diego-Ana
 async function fetchDiegoPaidValue() {
     try {
-        const response = await fetch(`${url_api}/valor-pago-diego`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/valor-pago-diego`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar valor pago por Diego-Ana');
         }
@@ -106,7 +136,12 @@ async function fetchDiegoPaidValue() {
 // Função para buscar valor pago por Alex-Rute
 async function fetchAlexPaidValue() {
     try {
-        const response = await fetch(`${url_api}/valor-pago-alex`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${url_api}/valor-pago-alex`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error('Erro ao buscar valor pago por Alex-Rute');
         }
