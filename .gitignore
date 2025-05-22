@@ -1,4 +1,9 @@
-/__pycache__
 /json
 config.txt
 /backend/.env
+/backend/__pycache__
+/backend/utils/__pycache__
+/backend/auth/__pycache__
+/backend/database/__pycache__
+/backend/models/__pycache__
+/backend/managers/__pycache__
