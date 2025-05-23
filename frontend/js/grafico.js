@@ -625,9 +625,6 @@
         graphicBtn.addEventListener('click', () => {
             window.location.href = 'graficos.html';
         });
-        docsBtn.addEventListener('click', () => {
-            window.location.href = 'documentos.html';
-        });
         overviewUpdateBtn.addEventListener('click', async () => {
             showLoading(overviewUpdateBtn);
             const activities = await fetchAllActivities();
