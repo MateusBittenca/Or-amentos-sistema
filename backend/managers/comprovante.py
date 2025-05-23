@@ -242,7 +242,8 @@ class ComprovantesManager:
                     value=activity['valor'],
                     date=date_str,
                     diego_ana=activity['diego_ana'] or 0,
-                    alex_rute=activity['alex_rute'] or 0
+                    alex_rute=activity['alex_rute'] or 0,
+                    status=activity['status']
                 ))
             
             return activities_list

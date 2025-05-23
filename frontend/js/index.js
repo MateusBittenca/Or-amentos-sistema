@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:10000";
+const API_URL = "https://or-amentos-sistema.onrender.com";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -270,13 +270,23 @@ const activityManager = {
 
   createActivityAllRow(activity) {
     const row = document.createElement("tr");
+    const status = activity.status === 'paid' ? 'Concluído' : 'Pendente';
+    const statusClass = activity.status === 'paid' 
+      ? 'bg-green-100 text-green-800 border border-green-200' 
+      : 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+    
     row.innerHTML = `
       <td class="py-2 px-4 border-b">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
-      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.value)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
+      <td class="py-2 px-4 border-b">
+        <span class="px-3 py-1 text-sm rounded-full font-medium ${statusClass}">
+          ${status}
+        </span>
+      </td>
       <td class="py-2 px-4 border-b">
         <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Informação</button>
       </td>
@@ -284,7 +294,11 @@ const activityManager = {
 
     const infoButton = row.querySelector(".info-btn");
     infoButton.addEventListener("click", () => {
-      ui.showModal(activity);
+      if (activity.status === 'paid') {
+        ui.showModalpaid(activity);
+      } else {
+        ui.showModal(activity);
+      }
     });
 
     return row;
@@ -316,6 +330,7 @@ const activityManager = {
   async loadAllActivities() {
     try {
       const activities = await api.fetchData("atividades");
+      console.log(activities);
       const allActivitiesList = document.getElementById("allActivitiesList");
       allActivitiesList.innerHTML = "";
 

@@ -9,6 +9,7 @@ class Activity(BaseModel):
     date: Optional[str] = None
     diego_ana: Optional[float] = None
     alex_rute: Optional[float] = None
+    status: Optional[str] = None
 
 class User(BaseModel):
     id: int

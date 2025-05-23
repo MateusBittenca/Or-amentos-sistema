@@ -211,19 +211,20 @@
                     <!-- Abas de navegação -->
                     <div class="tabs-container">
                         <div class="tabs-header">
-                            <div class="tab active" data-tab="pending">
+                            <div class="tab active" data-tab="all">
+                                <i class="fas fa-list-ul mr-2"></i> Todas as atividades
+                            </div>
+                            <div class="tab " data-tab="pending">
                                 <i class="fas fa-exclamation-circle mr-2"></i> Atividades Pendentes
                             </div>
                             <div class="tab" data-tab="paid">
                                 <i class="fas fa-check-circle mr-2"></i> Atividades Pagas
                             </div>
-                            <div class="tab" data-tab="all">
-                                <i class="fas fa-list-ul mr-2"></i> Todas as atividades
-                            </div>
+                            
                         </div>
 
                         <!-- Conteúdo da aba Atividades Pendentes -->
-                        <div class="tab-content active" id="pending-tab">
+                        <div class="tab-content " id="pending-tab">
                             <div class="buscar flex items-center gap-2 mb-4">
                                 <input type="text" id="searchInput" placeholder="Buscar atividade pendente..."
                                     class="w-full px-3 py-2 border rounded">
@@ -285,7 +286,7 @@
                         </div>
 
                         <!-- Conteúdo da aba Todas as Atividades -->
-                        <div class="tab-content" id="all-tab">
+                        <div class="tab-content active" id="all-tab">
                             <div class="buscar flex items-center gap-2 mb-4">
                                 <input type="text" id="searchAllInput" placeholder="Buscar em todas as atividades..."
                                     class="w-full px-3 py-2 border rounded">
@@ -305,6 +306,7 @@
                                             <th class="py-2 px-4 border-b text-left">Valor pago Diego-Ana</th>
                                             <th class="py-2 px-4 border-b text-left">Valor pago Alex-Rute</th>
                                             <th class="py-2 px-4 border-b text-left">Data</th>
+                                            <th class="py-2 px-4 border-b text-left">Status</th>    
                                             <th class="py-2 px-4 border-b text-left">Ações</th>
                                         </tr>
                                     </thead>
