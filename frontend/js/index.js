@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -187,7 +187,7 @@ const activityManager = {
       // Check if pendingActivities exists and is an array
       if (pendingActivities && Array.isArray(pendingActivities)) {
         pendingActivities.forEach(activity => {
-          const row = this.createActivityRow(activity);
+          const row = this.createActivityPendingRow(activity);
           activitiesList.appendChild(row);
         });
       } else {
@@ -251,6 +251,8 @@ const activityManager = {
       <td class="py-2 px-4 border-b">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date}</td>
       <td class="py-2 px-4 border-b">
         <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Informação</button>
@@ -266,8 +268,29 @@ const activityManager = {
     return row;
   },
 
+  createActivityAllRow(activity) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
+      <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
+      <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
+      <td class="py-2 px-4 border-b">
+        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Informação</button>
+      </td>
+    `;
 
-  createActivityRow(activity) {
+    const infoButton = row.querySelector(".info-btn");
+    infoButton.addEventListener("click", () => {
+      ui.showModal(activity);
+    });
+
+    return row;
+  },
+
+  createActivityPendingRow(activity) {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="py-2 px-4 border-b">${activity.sector}</td>
@@ -290,7 +313,40 @@ const activityManager = {
     return row;
   },
 
+  async loadAllActivities() {
+    try {
+      const activities = await api.fetchData("atividades");
+      const allActivitiesList = document.getElementById("allActivitiesList");
+      allActivitiesList.innerHTML = "";
 
+      if (activities && Array.isArray(activities)) {
+        activities.forEach(activity => {
+          const row = this.createActivityAllRow(activity);
+          allActivitiesList.appendChild(row);
+        });
+      } else {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              Erro ao carregar todas as atividades. Por favor, recarregue a página.
+          </td>
+        `;
+        allActivitiesList.appendChild(tr);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar todas as atividades:", error);
+      const allActivitiesList = document.getElementById("allActivitiesList");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            ${error.message || "Erro ao carregar todas as atividades"}
+        </td>
+      `;
+      allActivitiesList.appendChild(tr);
+    }
+  },
 
   async loadTotalValue() {
     try {
@@ -420,6 +476,26 @@ const activityManager = {
     }
   },
 
+  filterAllActivities(searchText) {
+    const allActivitiesList = document.getElementById('allActivitiesList');
+    const rows = allActivitiesList.getElementsByTagName('tr');
+    const searchLower = searchText.toLowerCase();
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName('td');
+      let match = false;
+
+      for (let j = 0; j < cells.length; j++) {
+        if (cells[j].textContent.toLowerCase().includes(searchLower)) {
+          match = true;
+          break;
+        }
+      }
+
+      rows[i].style.display = match ? '' : 'none';
+    }
+  },
+
   async refreshAllData() {
     ui.showLoader();
     try {
@@ -427,6 +503,7 @@ const activityManager = {
         this.loadTotalActivities(),
         this.loadPendingActivities(),
         this.loadActivitiesPending(),
+        this.loadAllActivities(),
         this.loadTotalPaid(),
         this.loadTotalValue(),
         this.loadDiegoPaid(),
@@ -446,6 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
   activityManager.refreshAllData();
   activityManager.loadPaidActivities();
   activityManager.loadActivitiesPending();
+  activityManager.loadAllActivities();
 
   // Configurar evento do botão de fechar modal
   document.getElementById("closeModal").addEventListener("click", () => {
@@ -497,6 +575,18 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('searchPaidBtn').click();
     }
   });
+
+  // Configurar eventos de busca para todas as atividades
+  document.getElementById('searchAllBtn').addEventListener('click', () => {
+    const searchInput = document.getElementById('searchAllInput').value;
+    activityManager.filterAllActivities(searchInput);
+  });
+
+  document.getElementById('searchAllInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('searchAllBtn').click();
+    }
+  });
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -522,8 +612,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-
 
 document.getElementById("closeModalPaid").addEventListener("click", () => {
   ui.hideModalPaid();
