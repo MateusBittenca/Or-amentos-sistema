@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:10000";
+const API_URL = "https://or-amentos-sistema.onrender.com";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage

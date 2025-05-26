@@ -1,4 +1,4 @@
-const url_api = 'http://localhost:10000';
+const url_api = 'https://or-amentos-sistema.onrender.com';
 
 const exportPdfBtn = document.getElementById('exportPdfBtn');
 const exportExcelBtn = document.getElementById('exportExcelBtn');
