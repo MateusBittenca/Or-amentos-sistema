@@ -34,12 +34,19 @@
                 justify-content: center;
                 flex-wrap: wrap;
                 gap: 0.5rem;
+                margin-top: 0.5rem;
             }
 
             .nav-button {
                 flex: 1;
                 min-width: 100px;
                 text-align: center;
+            }
+            
+            /* User info responsive styles */
+            .user-info {
+                margin: 0.5rem auto;
+                justify-content: center;
             }
 
             /* Responsividade para o grid superior */
@@ -114,8 +121,9 @@
 
 <body class="bg-gray-100 min-h-screen">
     <nav class="bg-blue-800 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center nav-container">
+        <div class="container mx-auto flex justify-between items-center flex-wrap nav-container">
             <h1 class="text-2xl font-bold nav-title">Gestão de Gastos de Obra</h1>
+            <!-- User info will be inserted here by auth.js -->
             <div class="nav-buttons space-x-2 md:space-x-4">
                 <button id="homeBtn"
                     class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
@@ -193,7 +201,7 @@
                         <label class="block text-gray-700 mb-1">Data para pagar</label>
                         <input type="date" name="data" class="w-full px-3 py-2 border rounded" required>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded" id="addActivityButton">
                         <i class="fas fa-plus mr-2"></i>Adicionar
                     </button>
                 </form>
@@ -567,9 +575,56 @@
             </div>
         </div>
 
+        <script src="./js/auth.js"></script>
         <script src="./js/index.js"></script>
         <script src="./js/modalPagamento.js"></script>
         <script src="./js/export.js"></script>
+        <script>
+            // Animação do botão de adicionar atividade
+            document.getElementById('addActivityForm').addEventListener('submit', function(e) {
+                const button = document.getElementById('addActivityButton');
+                const originalContent = button.innerHTML;
+                
+                // Altera o texto do botão para "Adicionando..."
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Adicionando...';
+                button.disabled = true;
+                button.classList.add('opacity-75');
+                
+                // Restaura o botão após o envio do formulário
+                setTimeout(function() {
+                    button.innerHTML = originalContent;
+                    button.disabled = false;
+                    button.classList.remove('opacity-75');
+                }, 2000);
+            });
+            
+            // Animação dos botões de exportação
+            function setupExportButtonAnimation(buttonId, loadingText) {
+                const button = document.getElementById(buttonId);
+                if (!button) return;
+                
+                button.addEventListener('click', function() {
+                    const originalContent = button.innerHTML;
+                    
+                    // Altera o texto do botão para o texto de carregamento
+                    button.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i><span class="text-sm sm:text-base">${loadingText}</span>`;
+                    button.disabled = true;
+                    button.classList.add('opacity-75');
+                    
+                    // Restaura o botão após a exportação
+                    setTimeout(function() {
+                        button.innerHTML = originalContent;
+                        button.disabled = false;
+                        button.classList.remove('opacity-75');
+                    }, 3000);
+                });
+            }
+            
+            // Configurar animações para os botões de exportação
+            setupExportButtonAnimation('exportPdfBtn', 'Exportando PDF...');
+            setupExportButtonAnimation('exportExcelBtn', 'Exportando Excel...');
+            setupExportButtonAnimation('exportImagesBtn', 'Exportando Gráficos...');
+        </script>
 </body>
 
 </html>

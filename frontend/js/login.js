@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 // Form submission
 const loginForm = document.getElementById('loginForm');
@@ -28,14 +28,22 @@ loginForm.addEventListener('submit', async function (e) {
 
         if (!response.ok) {
             throw new Error('Usuário ou senha inválidos');
-
         }
 
         const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
+        
+        // Store user status in localStorage as backup
+        if (data.status) {
+            localStorage.setItem('user_status', data.status);
+        }
+        
+        // Store username for display purposes
+        if (data.user && data.user.nome) {
+            localStorage.setItem('username', data.user.nome);
+        }
 
-        // Redirecionar para index.html
-
+        // Redirecionar para dashboard.html
         window.location.href = 'dashboard.html';
 
     } catch (error) {

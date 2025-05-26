@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -330,7 +330,6 @@ const activityManager = {
   async loadAllActivities() {
     try {
       const activities = await api.fetchData("atividades");
-      console.log(activities);
       const allActivitiesList = document.getElementById("allActivitiesList");
       allActivitiesList.innerHTML = "";
 

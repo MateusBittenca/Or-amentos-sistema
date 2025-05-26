@@ -35,10 +35,12 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     user: User
+    status: str  # Adding status field to the token response
 
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+    status: Optional[str] = None  # Adding status field to token data
 
 # Funções de banco de dados
 def get_user_by_name(username: str) -> Optional[User]:
@@ -65,7 +67,10 @@ def authenticate_user(username: str, password: str) -> Optional[User]:
     logger.info(f"Tentando autenticar usuário: {username}")
     user = get_user_by_name(username)
     
-
+    # Verifica se o usuário existe
+    if user is None:
+        logger.warning(f"Usuário não encontrado: {username}")
+        return None
     
     # Verifica se a senha está correta
     if password != user.password:
@@ -107,7 +112,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         if username is None:
             raise credentials_exception
             
-        token_data = TokenData(username=username)
+        # Extrai o status (se disponível)
+        status: str = payload.get("status")
+        
+        token_data = TokenData(username=username, status=status)
         
     except JWTError as e:
         raise credentials_exception
@@ -140,14 +148,22 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     try:
-        # Armazena o nome do usuário no token em vez do ID
+        # Armazena o nome do usuário e status no token
         access_token = create_access_token(
-            data={"sub": user.nome},  # Usando o nome do usuário como identificador
+            data={
+                "sub": user.nome,  # Usando o nome do usuário como identificador
+                "status": user.status  # Incluindo o status do usuário no token
+            },
             expires_delta=access_token_expires
         )
         
         # Retorna o token
-        response = Token(access_token=access_token, token_type="bearer", user=user)
+        response = Token(
+            access_token=access_token, 
+            token_type="bearer", 
+            user=user,
+            status=user.status  # Incluindo o status na resposta
+        )
         return response
     except Exception as e:
         raise HTTPException(

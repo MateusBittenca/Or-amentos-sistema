@@ -1,4 +1,4 @@
-const URL_api = "https://or-amentos-sistema.onrender.com"; // URL do seu backend
+const URL_api = "http://localhost:10000"; // URL do seu backend
 const successMessage = document.getElementById("sucessMessage");
 
 document.getElementById("pagamento").addEventListener("click", () => {
@@ -103,6 +103,11 @@ async function registrarPagamento(dadosComprovante) {
 
     if (!pagador) {
         alert("Por favor, selecione um pagador.");
+        // Restaurar o estado do botão em caso de erro
+        const btnPagar = document.getElementById("confirmPayment");
+        btnPagar.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Pagamento';
+        btnPagar.disabled = false;
+        btnPagar.classList.remove('opacity-75');
         return false;
     }
 
@@ -132,36 +137,71 @@ async function registrarPagamento(dadosComprovante) {
             const result = await response.json();
             console.log("Pagamento registrado com sucesso:", result);
             
+            // Alterar o texto do botão para indicar sucesso
+            const btnPagar = document.getElementById("confirmPayment");
+            btnPagar.innerHTML = '<i class="fas fa-check-circle"></i> Pagamento Confirmado!';
+            btnPagar.classList.remove('opacity-75');
+            btnPagar.classList.add('bg-green-700');
+            
             // Exibir mensagem de sucesso
             showSuccessMessage("Pagamento registrado com sucesso!");
             
-            // Fechar o modal de pagamento
-            const paymentModal = document.getElementById("paymentModal");
-            paymentModal.classList.add("hidden");
-            paymentModal.style.display = "none";
-            
-            // Recarregar a página para atualizar os dados
+            // Fechar o modal de pagamento e recarregar a página após um breve delay
             setTimeout(() => {
+                const paymentModal = document.getElementById("paymentModal");
+                paymentModal.classList.add("hidden");
+                paymentModal.style.display = "none";
                 window.location.reload();
-            }, 1000);
+            }, 1500);
             
             return true;
         } else {
             const errorBody = await response.json();
             console.error("Erro detalhado do servidor:", errorBody);
             alert(`Erro ao registrar pagamento: ${errorBody.detail || "Erro desconhecido"}`);
+            
+            // Restaurar o estado do botão em caso de erro
+            const btnPagar = document.getElementById("confirmPayment");
+            btnPagar.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Pagamento';
+            btnPagar.disabled = false;
+            btnPagar.classList.remove('opacity-75');
+            
             return false;
         }
     } catch (error) {
         console.error("Erro ao registrar o pagamento:", error);
         alert(`Erro na comunicação com o servidor: ${error.message}`);
+        
+        // Restaurar o estado do botão em caso de erro
+        const btnPagar = document.getElementById("confirmPayment");
+        btnPagar.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Pagamento';
+        btnPagar.disabled = false;
+        btnPagar.classList.remove('opacity-75');
+        
         return false;
     }
 }
 
 const btnPagar = document.getElementById("confirmPayment");
 btnPagar.addEventListener("click", async () => {
-    await extrairDadosComprovante();
+    // Salvar o conteúdo original do botão
+    const originalContent = btnPagar.innerHTML;
+    
+    // Alterar o texto do botão para indicar processamento
+    btnPagar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processando pagamento...';
+    btnPagar.disabled = true;
+    btnPagar.classList.add('opacity-75');
+    
+    try {
+        // Executar a requisição de pagamento
+        await extrairDadosComprovante();
+    } catch (error) {
+        console.error("Erro durante o processamento do pagamento:", error);
+        // Em caso de erro, restaurar o botão
+        btnPagar.innerHTML = originalContent;
+        btnPagar.disabled = false;
+        btnPagar.classList.remove('opacity-75');
+    }
 });
 
 document.getElementById("receiptImage").addEventListener("change", function (event) {
