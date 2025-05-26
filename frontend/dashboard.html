@@ -116,6 +116,11 @@
                 padding: 0.5rem;
             }
         }
+
+        /* Estilo para elementos visíveis apenas para administradores */
+        .admin-only-element {
+            display: inline-flex;
+        }
     </style>
 </head>
 
@@ -364,7 +369,7 @@
             <div class="modal-content">
                 <div class="modal-head">
                     <h2>Detalhes da Atividade </h2>
-                    <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2"></i>
+                    <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2 admin-only-element"></i>
                 </div>
 
                 <!-- Seção de identificação -->
@@ -580,24 +585,7 @@
         <script src="./js/modalPagamento.js"></script>
         <script src="./js/export.js"></script>
         <script>
-            // Animação do botão de adicionar atividade
-            document.getElementById('addActivityForm').addEventListener('submit', function(e) {
-                const button = document.getElementById('addActivityButton');
-                const originalContent = button.innerHTML;
-                
-                // Altera o texto do botão para "Adicionando..."
-                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Adicionando...';
-                button.disabled = true;
-                button.classList.add('opacity-75');
-                
-                // Restaura o botão após o envio do formulário
-                setTimeout(function() {
-                    button.innerHTML = originalContent;
-                    button.disabled = false;
-                    button.classList.remove('opacity-75');
-                }, 2000);
-            });
-            
+
             // Animação dos botões de exportação
             function setupExportButtonAnimation(buttonId, loadingText) {
                 const button = document.getElementById(buttonId);

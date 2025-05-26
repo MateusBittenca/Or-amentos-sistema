@@ -83,6 +83,14 @@ function applyPermissions() {
             console.warn('Add activity form not found in the DOM');
         }
         
+        // Hide admin-only elements for non-admin users
+        if (!isAdmin()) {
+            const adminOnlyElements = document.querySelectorAll('.admin-only-element');
+            adminOnlyElements.forEach(element => {
+                element.style.display = 'none';
+            });
+        }
+        
         // Display user info in the UI
         displayUserInfo();
         
