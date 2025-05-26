@@ -1,4 +1,4 @@
-const url_api = 'https://or-amentos-sistema.onrender.com';
+const url_api = 'http://localhost:10000';
 
 const exportPdfBtn = document.getElementById('exportPdfBtn');
 const exportExcelBtn = document.getElementById('exportExcelBtn');
@@ -322,6 +322,20 @@ async function exportToExcel() {
             'Restante': activity.value - ((activity.diego_ana || 0) + (activity.alex_rute || 0)),
             'Status': (activity.diego_ana || 0) + (activity.alex_rute || 0) >= activity.value ? 'Concluída' : 'Pendente'
         }));
+        
+        // Função para formatar valores para o padrão brasileiro
+        function formatBrazilianCurrency(value) {
+            return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        
+        // Formatar os valores para o padrão brasileiro
+        data.forEach(item => {
+            item['Valor'] = formatBrazilianCurrency(item['Valor']);
+            item['Pago Diego-Ana'] = formatBrazilianCurrency(item['Pago Diego-Ana']);
+            item['Pago Alex-Rute'] = formatBrazilianCurrency(item['Pago Alex-Rute']);
+            item['Total Pago'] = formatBrazilianCurrency(item['Total Pago']);
+            item['Restante'] = formatBrazilianCurrency(item['Restante']);
+        });
 
         // Preparar resumo financeiro
         const totalValue = await fetchTotalValue();
@@ -330,11 +344,11 @@ async function exportToExcel() {
         const alexPaidValue = await fetchAlexPaidValue();
 
         const resumo = [
-            { 'Resumo Financeiro': 'Valor Total', 'Valor': totalValue },
-            { 'Resumo Financeiro': 'Valor Pago', 'Valor': totalPaidValue },
-            { 'Resumo Financeiro': 'Valor Restante', 'Valor': totalValue - totalPaidValue },
-            { 'Resumo Financeiro': 'Pago Diego-Ana', 'Valor': diegoPaidValue },
-            { 'Resumo Financeiro': 'Pago Alex-Rute', 'Valor': alexPaidValue },
+            { 'Resumo Financeiro': 'Valor Total', 'Valor': formatBrazilianCurrency(totalValue) },
+            { 'Resumo Financeiro': 'Valor Pago', 'Valor': formatBrazilianCurrency(totalPaidValue) },
+            { 'Resumo Financeiro': 'Valor Restante', 'Valor': formatBrazilianCurrency(totalValue - totalPaidValue) },
+            { 'Resumo Financeiro': 'Pago Diego-Ana', 'Valor': formatBrazilianCurrency(diegoPaidValue) },
+            { 'Resumo Financeiro': 'Pago Alex-Rute', 'Valor': formatBrazilianCurrency(alexPaidValue) },
             { 'Resumo Financeiro': 'Progresso', 'Valor': `${((totalPaidValue / totalValue) * 100).toFixed(2)}%` }
         ];
 
@@ -357,9 +371,9 @@ async function exportToExcel() {
         const setores = Object.keys(sectorData).map(sector => ({
             'Setor': sector,
             'Total Atividades': sectorData[sector].count,
-            'Valor Total': sectorData[sector].total,
-            'Valor Pago': sectorData[sector].paid,
-            'Valor Pendente': sectorData[sector].total - sectorData[sector].paid,
+            'Valor Total': formatBrazilianCurrency(sectorData[sector].total),
+            'Valor Pago': formatBrazilianCurrency(sectorData[sector].paid),
+            'Valor Pendente': formatBrazilianCurrency(sectorData[sector].total - sectorData[sector].paid),
             'Progresso': `${((sectorData[sector].paid / sectorData[sector].total) * 100).toFixed(2)}%`
         }));
 
@@ -436,7 +450,7 @@ async function exportToExcel() {
                         left: { style: "thin", color: { rgb: "DEE2E6" } },
                         right: { style: "thin", color: { rgb: "DEE2E6" } }
                     },
-                    numFmt: (col >= 4 && col <= 8) ? '#,##0.00' : undefined // Formato de moeda para valores
+                    alignment: { horizontal: col === 2 ? "left" : "center", vertical: "center" }
                 };
             }
         }
@@ -488,7 +502,7 @@ async function exportToExcel() {
                         left: { style: "thin", color: { rgb: "DEE2E6" } },
                         right: { style: "thin", color: { rgb: "DEE2E6" } }
                     },
-                    numFmt: col === 1 && !ws_resumo[cellAddress].v.toString().includes('%') ? '#,##0.00' : undefined
+                    alignment: { horizontal: col === 0 ? "left" : "center", vertical: "center" }
                 };
             }
         }
@@ -544,7 +558,7 @@ async function exportToExcel() {
                         left: { style: "thin", color: { rgb: "DEE2E6" } },
                         right: { style: "thin", color: { rgb: "DEE2E6" } }
                     },
-                    numFmt: (col >= 2 && col <= 4) ? '#,##0.00' : undefined
+                    alignment: { horizontal: col === 0 ? "left" : "center", vertical: "center" }
                 };
             }
         }

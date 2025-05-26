@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 // Form submission
 const loginForm = document.getElementById('loginForm');

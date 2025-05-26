@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -445,8 +445,24 @@ const activityManager = {
       ui.showSuccessMessage("Atividade adicionada com sucesso!");
       this.refreshAllData();
       document.getElementById("addActivityForm").reset();
+      
+      // Restaurar o estado do botão após adicionar com sucesso
+      const addButton = document.getElementById("addActivityButton");
+      if (addButton) {
+        addButton.innerHTML = `<i class="fas fa-plus mr-2"></i>Adicionar`;
+        addButton.disabled = false;
+        addButton.classList.remove('opacity-75');
+      }
     } catch (error) {
       alert("Erro ao adicionar atividade: " + error.message);
+      
+      // Restaurar o estado do botão em caso de erro
+      const addButton = document.getElementById("addActivityButton");
+      if (addButton) {
+        addButton.innerHTML = `<i class="fas fa-plus mr-2"></i>Adicionar`;
+        addButton.disabled = false;
+        addButton.classList.remove('opacity-75');
+      }
     }
   },
 

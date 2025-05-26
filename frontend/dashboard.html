@@ -632,6 +632,24 @@
             setupExportButtonAnimation('exportPdfBtn', 'Exportando PDF...');
             setupExportButtonAnimation('exportExcelBtn', 'Exportando Excel...');
             setupExportButtonAnimation('exportImagesBtn', 'Exportando Gráficos...');
+            
+            // Configurar animação para o botão de adicionar atividade
+            document.addEventListener('DOMContentLoaded', function() {
+                const addActivityForm = document.getElementById('addActivityForm');
+                const addButton = document.getElementById('addActivityButton');
+                
+                if (addActivityForm && addButton) {
+                    addActivityForm.addEventListener('submit', function() {
+                        const originalContent = addButton.innerHTML;
+                        addButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Adicionando...`;
+                        addButton.disabled = true;
+                        addButton.classList.add('opacity-75');
+                        
+                        // O botão será restaurado após o processamento do formulário pela função
+                        // addActivity no arquivo index.js, que já reseta o formulário após o sucesso
+                    });
+                }
+            });
         </script>
 </body>
 
