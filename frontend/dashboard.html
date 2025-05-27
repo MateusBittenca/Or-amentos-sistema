@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles/modalPayement.css">
     <link rel="stylesheet" href="styles/loader.css">
     <link rel="stylesheet" href="styles/message.css">
+    <link rel="stylesheet" href="styles/userdropdown.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -597,6 +598,30 @@
         <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50 hidden">
             <div
                 class="loader-spinner border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 animate-spin">
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteConfirmModal" class="hidden">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <h2>Confirmar Exclusão</h2>
+                </div>
+                
+                <div class="modal-section">
+                    <p class="text-center py-4">Tem certeza que deseja deletar esta atividade?</p>
+                    <p class="text-center text-red-600 font-medium">Esta ação não pode ser desfeita.</p>
+                </div>
+                
+                <!-- Botões do modal -->
+                <div class="modal-footer">
+                    <button id="confirmDelete" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">
+                        <i class="fas fa-trash-alt mr-2"></i> Confirmar
+                    </button>
+                    <button id="cancelDelete" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                </div>
             </div>
         </div>
 

@@ -177,7 +177,24 @@ const ui = {
     modal.style.display = "none";
   },
 
+  showDeleteConfirmModal(activityId) {
+    const deleteModal = document.getElementById("deleteConfirmModal");
+    deleteModal.classList.remove("hidden");
+    deleteModal.style.display = "flex";
+
+    // Store activityId for later use when confirmed
+    deleteModal.dataset.activityId = activityId;
+  },
+
+  hideDeleteConfirmModal() {
+    const deleteModal = document.getElementById("deleteConfirmModal");
+    deleteModal.classList.add("hidden");
+    deleteModal.style.display = "none";
+  },
+
   confirmAction(message) {
+    // The old implementation is no longer used
+    // We're using a modal instead of the browser confirm dialog
     return confirm(message);
   }
 };
@@ -296,8 +313,7 @@ const activityManager = {
       <td class="py-2 px-4 border-b">
         <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Comprovante</button>
       </td>
-    `;
-    console.log(activity);  
+    `; 
     const infoButton = row.querySelector(".info-btn");
     infoButton.addEventListener("click", () => {
       if (activity.status === 'paid') {
@@ -567,13 +583,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Configurar evento do botão de excluir
-  document.getElementById("btnDelete").addEventListener("click", async () => {
+  document.getElementById("btnDelete").addEventListener("click", () => {
     const activityId = document.getElementById("modalId").innerText;
+    ui.showDeleteConfirmModal(activityId);
+  });
 
-    if (ui.confirmAction("Tem certeza que deseja deletar esta atividade?")) {
-      await activityManager.deleteActivity(activityId);
-      ui.hideModal();
-    }
+  // Configurar eventos para os botões do modal de confirmação de exclusão
+  document.getElementById("confirmDelete").addEventListener("click", async () => {
+    const activityId = document.getElementById("deleteConfirmModal").dataset.activityId;
+    await activityManager.deleteActivity(activityId);
+    ui.hideDeleteConfirmModal();
+    ui.hideModal();
+  });
+
+  document.getElementById("cancelDelete").addEventListener("click", () => {
+    ui.hideDeleteConfirmModal();
   });
 
   // Configurar evento do formulário de adicionar atividade

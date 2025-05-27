@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gráficos - Sistema de Gestão de Gastos de Obra</title>
+    <link rel="stylesheet" href="styles/userdropdown.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -114,16 +115,17 @@
 
 <body class="bg-gray-100 min-h-screen">
     <nav class="bg-blue-800 text-white p-4 shadow-md">
-        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-            <h1 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-0">Gestão de Gastos de Obra</h1>
-            <div class="flex flex-wrap justify-center gap-2">
-                <button id="homeBtn"
-                    class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors flex items-center">
-                    <i class="fas fa-home mr-1"></i><span>Home</span>
-                </button>
+        <div class="container mx-auto flex justify-between items-center flex-wrap nav-container">
+            <h1 class="text-2xl font-bold nav-title">Gestão de Gastos de Obra</h1>
+            <!-- User info will be inserted here by auth.js -->
+            <div class="nav-buttons space-x-2 md:space-x-4">
+                <a href="dashboard.html" id="homeBtn"
+                    class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
+                    <i class="fas fa-home"></i> <span class="hidden sm:inline">Home</span>
+                </a>
                 <a href="graficos.html" id="graphicBtn"
-                    class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded inline-flex items-center text-white transition-colors">
-                    <i class="fas fa-chart-line mr-1"></i><span>Gráficos</span>
+                    class="nav-button bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded inline-block text-white transition-colors">
+                    <i class="fas fa-chart-line"></i> <span class="hidden sm:inline">Gráficos</span>
                 </a>
             </div>
         </div>
@@ -437,5 +439,8 @@
             </div>
         </div>
     </div>
+    <script src="./js/auth.js"></script>
     <script src="./js/grafico.js"></script>
+</body>
+</html>
         
