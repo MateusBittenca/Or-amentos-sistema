@@ -155,8 +155,7 @@ async function fetchAlexPaidValue() {
 
 function exportToPDF() {
     // Mostrar loading
-
-
+    
     setTimeout(() => {
         try {
             // Criar novo documento PDF
