@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:10000";
+const API_URL = "https://or-amentos-sistema.onrender.com";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -135,8 +135,14 @@ const ui = {
     this.updateElementText("modalSector", activity.sector || "-");
     this.updateElementText("modalValue", formatter.currency(activity.diego_ana));
     this.updateElementText("modalValue2", formatter.currency(activity.alex_rute));
-    this.updateElementText("modalRemainingValue", formatter.currency(activity.valor_restante));
-    this.updateElementText("modalTotalValue", formatter.currency(activity.total_value));
+    
+    // Calcula o valor restante se não estiver disponível
+    const valorRestante = activity.valor_restante !== undefined ? 
+      activity.valor_restante : 
+      (activity.total_value || activity.value) - (activity.diego_ana + activity.alex_rute);
+    
+    this.updateElementText("modalRemainingValue", formatter.currency(valorRestante));
+    this.updateElementText("modalTotalValue", formatter.currency(activity.total_value || activity.value));
     this.updateElementText("modalDate", activity.date || "-");
 
     const modal = document.getElementById("infoModal");
@@ -151,7 +157,7 @@ const ui = {
     this.updateElementText("modalPaidSector", activity.sector || "-");
     this.updateElementText("modalPaidValue", formatter.currency(activity.diego_ana));
     this.updateElementText("modalPaidValue2", formatter.currency(activity.alex_rute));
-    this.updateElementText("modalPaidTotalValue", formatter.currency(activity.total_value));
+    this.updateElementText("modalPaidTotalValue", formatter.currency(activity.total_value || activity.value));
     this.updateElementText("modalPaidDate", activity.date || "-");
 
     const modal = document.getElementById("infoModalPaid");
@@ -255,7 +261,7 @@ const activityManager = {
       <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date}</td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Informação</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Comprovante</button>
       </td>
     `;
 
@@ -288,10 +294,10 @@ const activityManager = {
         </span>
       </td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Informação</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Comprovante</button>
       </td>
     `;
-
+    console.log(activity);  
     const infoButton = row.querySelector(".info-btn");
     infoButton.addEventListener("click", () => {
       if (activity.status === 'paid') {
