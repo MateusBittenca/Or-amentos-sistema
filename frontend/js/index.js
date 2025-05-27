@@ -288,7 +288,7 @@ const activityManager = {
         </span>
       </td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Informação</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Comprovante</button>
       </td>
     `;
 
