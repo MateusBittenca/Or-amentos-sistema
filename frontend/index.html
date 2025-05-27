@@ -106,8 +106,86 @@
             </div>
         </div>
     </div>
-    <script src="./js/login.js"></script>
+    
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Recuperar Senha</h3>
+                    <button id="closeForgotModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-gray-600 mb-6">Digite seu nome de usuário para receber instruções de recuperação de senha.</p>
+                
+                <form id="forgotPasswordForm" class="space-y-4">
+                    <div>
+                        <label for="resetUsername" class="block text-sm font-medium text-gray-700 mb-1">Nome de Usuário</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="resetUsername" name="resetUsername" 
+                                class="pl-10 input-focus block w-full px-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                placeholder="Seu nome de usuário" required>
+                        </div>
+                    </div>
 
+                    <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition duration-300">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Enviar Solicitação
+                    </button>
+                </form>
+                
+                <div id="resetSuccess" class="hidden mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span id="resetSuccessMessage">Instruções enviadas com sucesso!</span>
+                    
+                    <!-- Password Reset Form (shown after token is received) -->
+                    <div id="passwordResetFormContainer" class="mt-4 border-t border-green-200 pt-4">
+                        <p class="text-gray-700 mb-3">Use o token fornecido para definir uma nova senha:</p>
+                        <form id="passwordResetForm" class="space-y-4">
+                            <div>
+                                <label for="resetToken" class="block text-sm font-medium text-gray-700 mb-1">Token de Recuperação</label>
+                                <input type="text" id="resetToken" name="resetToken" 
+                                    class="input-focus block w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                    placeholder="Cole o token aqui" required>
+                            </div>
+                            
+                            <div>
+                                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
+                                <input type="password" id="newPassword" name="newPassword" 
+                                    class="input-focus block w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                    placeholder="Nova senha" required>
+                            </div>
+                            
+                            <div>
+                                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirmar Senha</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" 
+                                    class="input-focus block w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 transition duration-150 ease-in-out"
+                                    placeholder="Confirme a nova senha" required>
+                            </div>
+                            
+                            <button type="submit" 
+                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none transition duration-300">
+                                <i class="fas fa-key mr-2"></i>
+                                Redefinir Senha
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div id="resetError" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span id="resetErrorMessage">Erro ao processar solicitação.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./js/login.js"></script>
 
 </body>
 
