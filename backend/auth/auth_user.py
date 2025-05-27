@@ -2,14 +2,16 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 import logging
+import secrets
+import string
 
 from database import get_db_connection
-from models import User
+from models import User, PasswordResetResponse, PasswordUpdateResponse
 
 # Configurar logging
 logger = logging.getLogger("auth_user")
@@ -25,9 +27,13 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY", "chave_secreta_padrao_para_desenvolvimento")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+PASSWORD_RESET_EXPIRE_MINUTES = 15
 
 # OAuth2 esquema para autenticação
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+# Armazenamento temporário de tokens de reset (em produção, use banco de dados)
+reset_tokens: Dict[str, Dict] = {}
 
 
 # Models
@@ -179,3 +185,119 @@ def require_auth(token: str = Depends(oauth2_scheme)):
     # Isso vai verificar o token e levantar exceção se inválido
     get_current_user(token)
     return True
+
+# Funções para recuperação de senha
+
+def generate_reset_token(username: str) -> PasswordResetResponse:
+    """
+    Gera um token de recuperação de senha para o usuário
+    """
+    user = get_user_by_name(username)
+    if not user:
+        logger.warning(f"Tentativa de recuperação de senha para usuário inexistente: {username}")
+        # Retornamos sucesso mesmo se o usuário não existe para evitar enumeration attacks
+        return PasswordResetResponse(
+            success=True,
+            message="Se o usuário existir, instruções foram enviadas."
+        )
+    
+    # Gerar token aleatório
+    token_chars = string.ascii_letters + string.digits
+    reset_token = ''.join(secrets.choice(token_chars) for _ in range(32))
+    
+    # Armazenar token com informações de expiração
+    expires = datetime.utcnow() + timedelta(minutes=PASSWORD_RESET_EXPIRE_MINUTES)
+    reset_tokens[username] = {
+        "token": reset_token,
+        "expires": expires
+    }
+    
+    logger.info(f"Token de recuperação gerado para {username}: {reset_token}")
+    
+    # Em um ambiente de produção, enviaríamos um email aqui
+    # Por enquanto, apenas retornamos o token para simular
+    return PasswordResetResponse(
+        success=True,
+        message=f"Token de recuperação: {reset_token}"
+    )
+
+def validate_reset_token(username: str, token: str) -> bool:
+    """
+    Valida se o token de recuperação é válido para o usuário
+    """
+    if username not in reset_tokens:
+        logger.warning(f"Token não encontrado para usuário: {username}")
+        return False
+    
+    token_data = reset_tokens[username]
+    
+    # Verificar expiração
+    if datetime.utcnow() > token_data["expires"]:
+        logger.warning(f"Token expirado para usuário: {username}")
+        # Limpar token expirado
+        del reset_tokens[username]
+        return False
+    
+    # Verificar token
+    if token_data["token"] != token:
+        logger.warning(f"Token inválido para usuário: {username}")
+        return False
+    
+    return True
+
+def update_password(username: str, new_password: str) -> bool:
+    """
+    Atualiza a senha do usuário no banco de dados
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Atualizar senha
+        cursor.execute(
+            "UPDATE usuarios SET password = %s WHERE LOWER(nome) = LOWER(%s)",
+            (new_password, username)
+        )
+        
+        affected_rows = cursor.rowcount
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        if affected_rows > 0:
+            logger.info(f"Senha atualizada com sucesso para usuário: {username}")
+            return True
+        else:
+            logger.warning(f"Usuário não encontrado ao atualizar senha: {username}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Erro ao atualizar senha: {str(e)}")
+        return False
+
+async def reset_password(username: str, reset_token: str, new_password: str) -> PasswordUpdateResponse:
+    """
+    Redefine a senha do usuário usando o token de recuperação
+    """
+    # Validar token
+    if not validate_reset_token(username, reset_token):
+        return PasswordUpdateResponse(
+            success=False,
+            message="Token inválido ou expirado"
+        )
+    
+    # Atualizar senha
+    if update_password(username, new_password):
+        # Limpar token após uso bem-sucedido
+        if username in reset_tokens:
+            del reset_tokens[username]
+            
+        return PasswordUpdateResponse(
+            success=True,
+            message="Senha atualizada com sucesso"
+        )
+    else:
+        return PasswordUpdateResponse(
+            success=False,
+            message="Erro ao atualizar senha"
+        )

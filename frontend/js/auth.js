@@ -56,6 +56,30 @@ function getCurrentUser() {
 }
 
 /**
+ * Logout the current user and redirect to login page
+ */
+function logout() {
+    console.log('Logging out user');
+    // Clear all authentication data from localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_status');
+    localStorage.removeItem('username');
+    
+    // Redirect to login page
+    window.location.href = 'index.html';
+}
+
+/**
+ * Toggle the user dropdown menu
+ */
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+/**
  * Apply permission-based UI restrictions
  */
 function applyPermissions() {
@@ -112,17 +136,63 @@ function displayUserInfo() {
     if (navContainer) {
         // Create user info element
         const userInfoElement = document.createElement('div');
-        userInfoElement.className = 'flex items-center ml-auto mr-4 text-sm user-info';
-        userInfoElement.innerHTML = `
+        userInfoElement.className = 'relative flex items-center ml-auto mr-4 text-sm user-info';
+        
+        // Create the user avatar and name display that will trigger the dropdown
+        const userDisplay = document.createElement('div');
+        userDisplay.className = 'flex items-center cursor-pointer bg-blue-700 hover:bg-blue-600 rounded-full px-3 py-1 transition-colors';
+        userDisplay.innerHTML = `
             <i class="fas fa-user-circle text-xl mr-2"></i>
-            <span>${username}</span>
-            ${isUserAdmin ? '<span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded">ADM</span>' : ''}
+            <span class="font-medium">${username}</span>
+            ${isUserAdmin ? '<span class="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">ADM</span>' : ''}
+            <i class="fas fa-chevron-down ml-2 text-xs"></i>
         `;
+        userDisplay.addEventListener('click', toggleUserDropdown);
+        userInfoElement.appendChild(userDisplay);
+        
+        // Create the dropdown menu
+        const dropdownMenu = document.createElement('div');
+        dropdownMenu.id = 'userDropdown';
+        dropdownMenu.className = 'absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg hidden z-10';
+        dropdownMenu.innerHTML = `
+            <div class="py-1 text-gray-800">
+                <div class="border-b border-gray-200 px-4 py-2 text-sm font-medium">
+                    <p>Conectado como</p>
+                    <p class="font-bold">${username}</p>
+                </div>
+                <a href="#" id="logoutBtn" class="block px-4 py-2 text-sm hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                </a>
+            </div>
+        `;
+        userInfoElement.appendChild(dropdownMenu);
         
         // Insert before the nav-buttons
         const navButtons = navContainer.querySelector('.nav-buttons');
         if (navButtons) {
             navContainer.insertBefore(userInfoElement, navButtons);
+            
+            // Add event listener to logout button
+            setTimeout(() => {
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        logout();
+                    });
+                }
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    const userInfo = document.querySelector('.user-info');
+                    if (userInfo && !userInfo.contains(e.target)) {
+                        const dropdown = document.getElementById('userDropdown');
+                        if (dropdown && !dropdown.classList.contains('hidden')) {
+                            dropdown.classList.add('hidden');
+                        }
+                    }
+                });
+            }, 100);
         } else {
             navContainer.appendChild(userInfoElement);
         }
@@ -173,5 +243,6 @@ function debugUserInfo() {
 window.auth = {
     isAdmin,
     getCurrentUser,
-    parseJwt
+    parseJwt,
+    logout
 }; 

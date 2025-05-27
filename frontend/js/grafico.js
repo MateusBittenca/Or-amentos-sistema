@@ -1,4 +1,4 @@
-        const API_URL = 'https://or-amentos-sistema.onrender.com'; // Ajuste para seu endereço de API
+        const API_URL = 'http://localhost:10000'; // Ajuste para seu endereço de API
 
         // Inicialização de gráficos
         let charts = {};

@@ -50,3 +50,20 @@ class ExtractedData(BaseModel):
     date: Optional[str] = None
     name: Optional[str] = None
     full_text: Optional[str] = None
+
+# Password reset models
+class PasswordResetRequest(BaseModel):
+    username: str
+
+class PasswordResetResponse(BaseModel):
+    message: str
+    success: bool
+
+class PasswordUpdateRequest(BaseModel):
+    username: str
+    reset_token: str
+    new_password: str
+
+class PasswordUpdateResponse(BaseModel):
+    success: bool
+    message: str

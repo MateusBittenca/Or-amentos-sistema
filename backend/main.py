@@ -9,14 +9,17 @@ import json
 from typing import List
 from fastapi.security import OAuth2PasswordRequestForm
 import logging
+from fastapi import status
 
 # Importar de nossos módulos
 from config import logger
-from models import Activity, PendingActivity, PaidActivity, PaymentData, ExtractedData,User
+from models import Activity, PendingActivity, PaidActivity, PaymentData, ExtractedData, User
+from models import PasswordResetRequest, PasswordResetResponse, PasswordUpdateRequest, PasswordUpdateResponse
 from database import get_db_connection, initialize_database
 from utils.ocr import ComprovanteReader, processar_comprovante_ocr
 from managers.comprovante import ComprovantesManager
 from auth.auth_user import login_for_access_token, get_current_user, oauth2_scheme, require_auth
+from auth.auth_user import generate_reset_token, reset_password
 from utils.cache import clear_cache
 
 
@@ -254,6 +257,38 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """Endpoint de autenticação para gerar token JWT"""
     return await login_for_access_token(form_data)
 
+# Password reset endpoints
+@app.post("/password/request-reset", response_model=PasswordResetResponse)
+async def request_password_reset(request: PasswordResetRequest):
+    """Solicitar redefinição de senha"""
+    try:
+        logger.info(f"Solicitação de redefinição de senha para usuário: {request.username}")
+        response = generate_reset_token(request.username)
+        return response
+    except Exception as e:
+        logger.error(f"Erro ao solicitar redefinição de senha: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao processar solicitação de redefinição de senha"
+        )
+
+@app.post("/password/reset", response_model=PasswordUpdateResponse)
+async def confirm_password_reset(request: PasswordUpdateRequest):
+    """Confirmar redefinição de senha com token"""
+    try:
+        logger.info(f"Confirmação de redefinição de senha para usuário: {request.username}")
+        response = await reset_password(
+            request.username,
+            request.reset_token,
+            request.new_password
+        )
+        return response
+    except Exception as e:
+        logger.error(f"Erro ao redefinir senha: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao processar redefinição de senha"
+        )
 
 # Run the app
 if __name__ == "__main__":
