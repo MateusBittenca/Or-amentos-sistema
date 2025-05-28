@@ -122,6 +122,11 @@
         .admin-only-element {
             display: inline-flex;
         }
+        
+        /* Estilo específico para o botão de editar */
+        #btnEdit:hover {
+            color: #3182ce !important; /* Mantém a cor azul no hover */
+        }
     </style>
 </head>
 
@@ -390,7 +395,10 @@
             <div class="modal-content">
                 <div class="modal-head">
                     <h2>Detalhes da Atividade </h2>
-                    <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2 admin-only-element"></i>
+                    <div class="action-icons">
+                        <i id="btnEdit" class="fas fa-pencil-alt text-blue-600 cursor-pointer mr-3 admin-only-element" title="Editar atividade"></i>
+                        <i id="btnDelete" class="fas fa-trash-alt text-red-600 cursor-pointer admin-only-element" title="Excluir atividade"></i>
+                    </div>
                 </div>
 
                 <!-- Seção de identificação -->
@@ -460,6 +468,7 @@
             <div class="modal-content">
                 <div class="modal-head">
                     <h2>Detalhes da Atividade </h2>
+                    <i id="btnDeletePaid" class="fas fa-trash-alt text-red-600 cursor-pointer ml-2 admin-only-element"></i>
                 </div>
 
                 <!-- Seção de identificação -->

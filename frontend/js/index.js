@@ -588,12 +588,19 @@ document.addEventListener("DOMContentLoaded", () => {
     ui.showDeleteConfirmModal(activityId);
   });
 
+  // Configurar evento do botão de excluir para atividades pagas
+  document.getElementById("btnDeletePaid").addEventListener("click", () => {
+    const activityId = document.getElementById("modalPaidID").innerText;
+    ui.showDeleteConfirmModal(activityId);
+  });
+
   // Configurar eventos para os botões do modal de confirmação de exclusão
   document.getElementById("confirmDelete").addEventListener("click", async () => {
     const activityId = document.getElementById("deleteConfirmModal").dataset.activityId;
     await activityManager.deleteActivity(activityId);
     ui.hideDeleteConfirmModal();
     ui.hideModal();
+    ui.hideModalPaid();
   });
 
   document.getElementById("cancelDelete").addEventListener("click", () => {
