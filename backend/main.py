@@ -154,6 +154,61 @@ def delete_activity(id: int, _: bool = Depends(require_auth)):
     except Exception as e:
         logger.error(f"Erro ao excluir atividade: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro ao excluir atividade: {str(e)}")
+
+@app.put("/edit-activity/{id}")
+def edit_activity(
+    id: int, 
+    atividade: str = Form(None),
+    setor: str = Form(None),
+    valor: str = Form(None),
+    data: str = Form(None),
+    alex_rute: str = Form(None),
+    diego_ana: str = Form(None),
+    _: bool = Depends(require_auth)
+):
+    """Editar uma atividade pelo seu ID"""
+    try:
+        # Converter valores de string para float quando presentes
+        valor_float = None
+        if valor:
+            try:
+                valor_float = float(valor.replace(',', '.'))
+            except ValueError:
+                raise HTTPException(status_code=400, detail="O valor deve ser um número")
+        
+        alex_rute_float = None
+        if alex_rute:
+            try:
+                alex_rute_float = float(alex_rute.replace(',', '.'))
+            except ValueError:
+                raise HTTPException(status_code=400, detail="O valor de Alex-Rute deve ser um número")
+        
+        diego_ana_float = None
+        if diego_ana:
+            try:
+                diego_ana_float = float(diego_ana.replace(',', '.'))
+            except ValueError:
+                raise HTTPException(status_code=400, detail="O valor de Diego-Ana deve ser um número")
+        
+        result = manager.editar_atividade(
+            id=id,
+            atividade=atividade if atividade else None,
+            setor=setor if setor else None,
+            valor=valor_float,
+            data=data if data else None,
+            alex_rute=alex_rute_float,
+            diego_ana=diego_ana_float
+        )
+        
+        # Limpar cache após edição
+        clear_cache("activities")
+        return result
+    except HTTPException as he:
+        # Relançar exceções HTTP
+        raise he
+    except Exception as e:
+        logger.error(f"Erro ao editar atividade: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Erro ao editar atividade: {str(e)}")
     
 @app.get("/valor-total")
 def get_total_value(_: bool = Depends(require_auth)):

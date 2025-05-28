@@ -66,6 +66,37 @@ const api = {
     }
   },
 
+  async editActivity(id, formData) {
+    try {
+      const token = localStorage.getItem('access_token');
+      
+      // Log do FormData para debug
+      console.log("Enviando dados para edição:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      
+      const response = await fetch(`${API_URL}/edit-activity/${id}`, {
+        method: "PUT",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || "Erro desconhecido");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Erro ao editar atividade:", error);
+      throw error;
+    }
+  },
+
   async addActivity(formData) {
     try {
       const token = localStorage.getItem('access_token');
@@ -192,6 +223,51 @@ const ui = {
     deleteModal.style.display = "none";
   },
 
+  showEditModal(activity) {
+    // Log dos dados da atividade para debug
+    console.log("Dados da atividade para edição:", activity);
+    
+    // Converter data do formato DD/MM/AAAA para AAAA-MM-DD (formato do input date)
+    let formattedDate = "";
+    if (activity.date && activity.date.trim() !== '-') {
+      const dateParts = activity.date.split('/');
+      if (dateParts.length === 3) {
+        formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      }
+    }
+    
+    // Preencher o formulário com os dados da atividade
+    document.getElementById("editActivityId").value = activity.id;
+    document.getElementById("editAtividade").value = activity.activity;
+    document.getElementById("editValor").value = activity.total_value || activity.value;
+    
+    // Selecionar o setor correto
+    const sectorSelect = document.getElementById("editSetor");
+    for (let i = 0; i < sectorSelect.options.length; i++) {
+      if (sectorSelect.options[i].value === activity.sector) {
+        sectorSelect.selectedIndex = i;
+        break;
+      }
+    }
+    
+    document.getElementById("editData").value = formattedDate;
+    document.getElementById("editDiegoAna").value = activity.diego_ana || 0;
+    document.getElementById("editAlexRute").value = activity.alex_rute || 0;
+    
+    // Mostrar o modal
+    const modal = document.getElementById("editActivityModal");
+    document.body.classList.add('overflow-hidden'); // Impedir rolagem do body
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+  },
+
+  hideEditModal() {
+    document.body.classList.remove('overflow-hidden'); // Restaurar rolagem do body
+    const modal = document.getElementById("editActivityModal");
+    modal.classList.add("hidden");
+    modal.style.display = "none";
+  },
+
   confirmAction(message) {
     // The old implementation is no longer used
     // We're using a modal instead of the browser confirm dialog
@@ -293,10 +369,11 @@ const activityManager = {
 
   createActivityAllRow(activity) {
     const row = document.createElement("tr");
-    const status = activity.status === 'paid' ? 'Concluído' : 'Pendente';
-    const statusClass = activity.status === 'paid' 
-      ? 'bg-green-100 text-green-800 border border-green-200' 
-      : 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+    // Adicionar o ID da atividade como atributo de dados
+    row.setAttribute("data-activity-id", activity.id);
+    
+    const statusClass = activity.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+    const status = activity.status === 'paid' ? 'Concluido' : 'Pendente';
     
     row.innerHTML = `
       <td class="py-2 px-4 border-b">${activity.sector}</td>
@@ -313,7 +390,8 @@ const activityManager = {
       <td class="py-2 px-4 border-b">
         <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Comprovante</button>
       </td>
-    `; 
+    `;
+
     const infoButton = row.querySelector(".info-btn");
     infoButton.addEventListener("click", () => {
       if (activity.status === 'paid') {
@@ -566,6 +644,30 @@ const activityManager = {
     } finally {
       ui.hideLoader();
     }
+  },
+
+  async editActivity(formData) {
+    try {
+      const id = formData.get('id');
+      ui.showLoader();
+      
+      const result = await api.editActivity(id, formData);
+      ui.showSuccessMessage("Atividade atualizada com sucesso!");
+      ui.hideEditModal();
+      ui.hideModal();
+      
+      // Garantir atualização completa da página
+      await this.refreshAllData();
+      await this.loadPaidActivities();
+      await this.loadActivitiesPending();
+      await this.loadAllActivities();
+      
+      return result;
+    } catch (error) {
+      alert("Erro ao editar atividade: " + error.message);
+    } finally {
+      ui.hideLoader();
+    }
   }
 };
 
@@ -652,6 +754,93 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('searchAllInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       document.getElementById('searchAllBtn').click();
+    }
+  });
+
+  // Configurar evento do botão de editar
+  document.getElementById("btnEdit").addEventListener("click", () => {
+    const activityId = document.getElementById("modalId").innerText;
+    
+    // Usar os dados já disponíveis no modal, sem fazer chamada API
+    const selectedActivity = {
+      id: activityId,
+      activity: document.getElementById("modalActivity").innerText,
+      sector: document.getElementById("modalSector").innerText,
+      value: parseFloat(document.getElementById("modalTotalValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      total_value: parseFloat(document.getElementById("modalTotalValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      diego_ana: parseFloat(document.getElementById("modalValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      alex_rute: parseFloat(document.getElementById("modalValue2").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      date: document.getElementById("modalDate").innerText
+    };
+    
+    ui.showEditModal(selectedActivity);
+  });
+
+  // Configurar evento do botão de editar para atividades pagas
+  document.getElementById("btnEditPaid").addEventListener("click", () => {
+    const activityId = document.getElementById("modalPaidID").innerText;
+    
+    // Usar os dados já disponíveis no modal, sem fazer chamada API
+    const selectedActivity = {
+      id: activityId,
+      activity: document.getElementById("modalPaidActivity").innerText,
+      sector: document.getElementById("modalPaidSector").innerText,
+      value: parseFloat(document.getElementById("modalPaidTotalValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      total_value: parseFloat(document.getElementById("modalPaidTotalValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      diego_ana: parseFloat(document.getElementById("modalPaidValue").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      alex_rute: parseFloat(document.getElementById("modalPaidValue2").innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+      date: document.getElementById("modalPaidDate").innerText
+    };
+    
+    ui.showEditModal(selectedActivity);
+  });
+
+  // Configurar eventos para o modal de edição
+  document.getElementById("cancelEdit").addEventListener("click", () => {
+    ui.hideEditModal();
+  });
+  
+  document.getElementById("confirmEdit").addEventListener("click", async () => {
+    try {
+      ui.hideEditModal();
+      ui.hideModalPaid();
+      ui.hideModal();
+      ui.showLoader();
+      
+      const form = document.getElementById("editActivityForm");
+      const formData = new FormData(form);
+      
+      // Log para debug
+      console.log("Dados do formulário de edição:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+      
+      // Validações básicas
+      const valor = formData.get('valor');
+      if (valor && parseFloat(valor) <= 0) {
+        alert("O valor total deve ser maior que zero.");
+        return;
+      }
+      
+      const diegoAna = formData.get('diego_ana');
+      if (diegoAna && parseFloat(diegoAna) < 0) {
+        alert("O valor pago por Diego-Ana não pode ser negativo.");
+        return;
+      }
+      
+      const alexRute = formData.get('alex_rute');
+      if (alexRute && parseFloat(alexRute) < 0) {
+        alert("O valor pago por Alex-Rute não pode ser negativo.");
+        return;
+      }
+      
+      await activityManager.editActivity(formData);
+    } catch (error) {
+      console.error("Erro ao processar edição:", error);
+      alert("Ocorreu um erro ao editar a atividade: " + error.message);
+    } finally {
+      ui.hideLoader();
     }
   });
 });

@@ -371,6 +371,99 @@ class ComprovantesManager:
             logger.error(f"Erro ao excluir atividade: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Erro ao excluir atividade: {str(e)}")
     
+    def editar_atividade(self, id: int, atividade: Optional[str] = None, 
+                       setor: Optional[str] = None, valor: Optional[float] = None,
+                       data: Optional[str] = None, alex_rute: Optional[float] = None, 
+                       diego_ana: Optional[float] = None) -> Dict[str, Any]:
+        """Editar uma atividade existente pelo ID"""
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+            
+            # Verificar se a atividade existe
+            cursor.execute("SELECT * FROM atividades WHERE idAtividades = %s", (id,))
+            activity = cursor.fetchone()
+            
+            if not activity:
+                cursor.close()
+                connection.close()
+                raise HTTPException(status_code=404, detail=f"Atividade com ID {id} não encontrada")
+            
+            # Preparar os valores a serem atualizados
+            update_fields = []
+            params = []
+            
+            if atividade is not None:
+                update_fields.append("nome = %s")
+                params.append(atividade)
+                
+            if setor is not None:
+                update_fields.append("setor = %s")
+                params.append(setor)
+                
+            if valor is not None:
+                if valor <= 0:
+                    raise HTTPException(status_code=400, detail="Valor deve ser maior que zero")
+                update_fields.append("valor = %s")
+                params.append(valor)
+                
+            if data is not None:
+                data_formatada = self._format_date(data)
+                update_fields.append("data = %s")
+                params.append(data_formatada)
+                
+            if alex_rute is not None:
+                if alex_rute < 0:
+                    raise HTTPException(status_code=400, detail="Valor pago deve ser maior ou igual a zero")
+                update_fields.append("alex_rute = %s")
+                params.append(alex_rute)
+                
+            if diego_ana is not None:
+                if diego_ana < 0:
+                    raise HTTPException(status_code=400, detail="Valor pago deve ser maior ou igual a zero")
+                update_fields.append("diego_ana = %s")
+                params.append(diego_ana)
+            
+            # Se não há campos para atualizar, retorna
+            if not update_fields:
+                cursor.close()
+                connection.close()
+                return {"sucesso": False, "mensagem": "Nenhum campo fornecido para atualização"}
+                
+            # Calcular o novo status com base nos valores de pagamento
+            new_alex = alex_rute if alex_rute is not None else activity['alex_rute'] or 0
+            new_diego = diego_ana if diego_ana is not None else activity['diego_ana'] or 0
+            new_total = valor if valor is not None else activity['valor']
+            
+            status = "paid" if (new_alex + new_diego) >= new_total else "pending"
+            update_fields.append("status = %s")
+            params.append(status)
+            
+            # Construir e executar a consulta de atualização
+            update_query = "UPDATE atividades SET " + ", ".join(update_fields) + " WHERE idAtividades = %s"
+            params.append(id)
+            
+            cursor.execute(update_query, params)
+            connection.commit()
+            
+            cursor.close()
+            connection.close()
+            
+            # Limpar cache após atualização
+            clear_cache("activities")
+            
+            return {
+                "sucesso": True,
+                "mensagem": f"Atividade ID {id} atualizada com sucesso",
+                "status_atual": status
+            }
+        except HTTPException as he:
+            # Relançar exceções HTTP
+            raise he
+        except Exception as e:
+            logger.error(f"Erro ao editar atividade: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Erro ao editar atividade: {str(e)}")
+    
     @cached(expiry=30, key_prefix="valor_total")
     def calcular_valor_total(self) -> float:
         """Calcular o valor total das atividades"""
