@@ -1,4 +1,4 @@
-const API_URL = "https://or-amentos-sistema.onrender.com";
+const API_URL = "http://localhost:10000";
 
 function checkAuthentication() {
     // Verificar se existe um token de autenticação no localStorage
@@ -130,6 +130,40 @@ const formatter = {
       maximumFractionDigits: 2,
     })}`;
   }
+};
+
+// Utilitário para agrupar atividades por setor
+const groupBySector = (activities) => {
+  const grouped = activities.reduce((acc, activity) => {
+    const sector = activity.sector || 'Sem Setor';
+    if (!acc[sector]) {
+      acc[sector] = [];
+    }
+    acc[sector].push(activity);
+    return acc;
+  }, {});
+
+  // Ordenar setores alfabeticamente e retornar array ordenado
+  const sortedSectors = Object.keys(grouped).sort();
+  const result = [];
+  
+  sortedSectors.forEach(sector => {
+    // Ordenar atividades dentro do setor por data (mais recente primeiro) ou por ID
+    grouped[sector].sort((a, b) => {
+      // Primeiro tenta ordenar por data
+      if (a.date && b.date && a.date !== '-' && b.date !== '-') {
+        const dateA = new Date(a.date.split('/').reverse().join('-'));
+        const dateB = new Date(b.date.split('/').reverse().join('-'));
+        return dateB - dateA; // Mais recente primeiro
+      }
+      // Se não houver data válida, ordena por ID (assumindo que ID maior = mais recente)
+      return (b.id || 0) - (a.id || 0);
+    });
+    
+    result.push(...grouped[sector]);
+  });
+  
+  return result;
 };
 
 // Módulo de UI para gerenciar a interface do usuário
@@ -285,7 +319,18 @@ const activityManager = {
 
       // Check if pendingActivities exists and is an array
       if (pendingActivities && Array.isArray(pendingActivities)) {
-        pendingActivities.forEach(activity => {
+        // Agrupar atividades por setor
+        const groupedActivities = groupBySector(pendingActivities);
+        
+        let currentSector = null;
+        groupedActivities.forEach(activity => {
+          // Adicionar cabeçalho do setor se mudou
+          if (currentSector !== activity.sector) {
+            currentSector = activity.sector;
+            const sectorHeader = this.createSectorHeader(currentSector || 'Sem Setor');
+            activitiesList.appendChild(sectorHeader);
+          }
+          
           const row = this.createActivityPendingRow(activity);
           activitiesList.appendChild(row);
         });
@@ -325,7 +370,18 @@ const activityManager = {
       paidActivitiesList.innerHTML = "";
 
       if (Array.isArray(paidActivities) && paidActivities.length > 0) {
-        paidActivities.forEach(activity => {
+        // Agrupar atividades pagas por setor
+        const groupedActivities = groupBySector(paidActivities);
+        
+        let currentSector = null;
+        groupedActivities.forEach(activity => {
+          // Adicionar cabeçalho do setor se mudou
+          if (currentSector !== activity.sector) {
+            currentSector = activity.sector;
+            const sectorHeader = this.createSectorHeader(currentSector || 'Sem Setor');
+            paidActivitiesList.appendChild(sectorHeader);
+          }
+          
           const row = this.createPaidActivityRow(activity);
           paidActivitiesList.appendChild(row);
         });
@@ -344,17 +400,30 @@ const activityManager = {
     }
   },
 
+  createSectorHeader(sectorName) {
+    const headerRow = document.createElement("tr");
+    headerRow.className = "sector-header bg-gray-100 border-t-2 border-gray-300";
+    headerRow.innerHTML = `
+      <td colspan="7" class="py-3 px-4 font-bold text-gray-800 text-lg bg-gradient-to-r from-blue-50 to-blue-100">
+        <i class="fas fa-folder mr-2 text-blue-600"></i>
+        ${sectorName}
+      </td>
+    `;
+    return headerRow;
+  },
+
   createPaidActivityRow(activity) {
     const row = document.createElement("tr");
+    row.className = "activity-row hover:bg-gray-50";
     row.innerHTML = `
-      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b pl-8 text-gray-600">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date}</td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded view-details">Comprovante</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded view-details hover:bg-blue-600 transition-colors">Comprovante</button>
       </td>
     `;
 
@@ -369,6 +438,7 @@ const activityManager = {
 
   createActivityAllRow(activity) {
     const row = document.createElement("tr");
+    row.className = "activity-row hover:bg-gray-50";
     // Adicionar o ID da atividade como atributo de dados
     row.setAttribute("data-activity-id", activity.id);
     
@@ -376,7 +446,7 @@ const activityManager = {
     const status = activity.status === 'paid' ? 'Concluido' : 'Pendente';
     
     row.innerHTML = `
-      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b pl-8 text-gray-600">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.value)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
@@ -388,7 +458,7 @@ const activityManager = {
         </span>
       </td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn">Comprovante</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded info-btn hover:bg-blue-600 transition-colors">Comprovante</button>
       </td>
     `;
 
@@ -406,15 +476,16 @@ const activityManager = {
 
   createActivityPendingRow(activity) {
     const row = document.createElement("tr");
+    row.className = "activity-row hover:bg-gray-50";
     row.innerHTML = `
-      <td class="py-2 px-4 border-b">${activity.sector}</td>
+      <td class="py-2 px-4 border-b pl-8 text-gray-600">${activity.sector}</td>
       <td class="py-2 px-4 border-b">${activity.activity || "-"}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.total_value)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.diego_ana)}</td>
       <td class="py-2 px-4 border-b">${formatter.currency(activity.alex_rute)}</td>
       <td class="py-2 px-4 border-b">${activity.date || "-"}</td>
       <td class="py-2 px-4 border-b">
-        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn">Comprovante</button>
+        <button class="bg-blue-500 text-white px-2 py-1 rounded pagar-btn hover:bg-blue-600 transition-colors">Comprovante</button>
       </td>
     `;
 
@@ -434,14 +505,25 @@ const activityManager = {
       allActivitiesList.innerHTML = "";
 
       if (activities && Array.isArray(activities)) {
-        activities.forEach(activity => {
+        // Agrupar todas as atividades por setor
+        const groupedActivities = groupBySector(activities);
+        
+        let currentSector = null;
+        groupedActivities.forEach(activity => {
+          // Adicionar cabeçalho do setor se mudou
+          if (currentSector !== activity.sector) {
+            currentSector = activity.sector;
+            const sectorHeader = this.createSectorHeader(currentSector || 'Sem Setor');
+            allActivitiesList.appendChild(sectorHeader);
+          }
+          
           const row = this.createActivityAllRow(activity);
           allActivitiesList.appendChild(row);
         });
       } else {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+          <td colspan="8" class="py-4 px-4 text-center text-gray-500">
               <i class="fas fa-exclamation-circle mr-2"></i>
               Erro ao carregar todas as atividades. Por favor, recarregue a página.
           </td>
@@ -453,7 +535,7 @@ const activityManager = {
       const allActivitiesList = document.getElementById("allActivitiesList");
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td colspan="7" class="py-4 px-4 text-center text-gray-500">
+        <td colspan="8" class="py-4 px-4 text-center text-gray-500">
             <i class="fas fa-exclamation-circle mr-2"></i>
             ${error.message || "Erro ao carregar todas as atividades"}
         </td>
@@ -572,7 +654,14 @@ const activityManager = {
     const searchLower = searchText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
-      const cells = rows[i].getElementsByTagName('td');
+      const row = rows[i];
+      
+      // Pular cabeçalhos de setor
+      if (row.classList.contains('sector-header')) {
+        continue;
+      }
+      
+      const cells = row.getElementsByTagName('td');
       let match = false;
 
       for (let j = 0; j < cells.length; j++) {
@@ -582,8 +671,11 @@ const activityManager = {
         }
       }
 
-      rows[i].style.display = match ? '' : 'none';
+      row.style.display = match ? '' : 'none';
     }
+    
+    // Mostrar/ocultar cabeçalhos de setor baseado nas atividades visíveis
+    this.toggleSectorHeaders('activitiesList');
   },
 
   filterpaidActivities(searchText) {
@@ -592,7 +684,14 @@ const activityManager = {
     const searchLower = searchText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
-      const cells = rows[i].getElementsByTagName('td');
+      const row = rows[i];
+      
+      // Pular cabeçalhos de setor
+      if (row.classList.contains('sector-header')) {
+        continue;
+      }
+      
+      const cells = row.getElementsByTagName('td');
       let match = false;
 
       for (let j = 0; j < cells.length; j++) {
@@ -602,8 +701,11 @@ const activityManager = {
         }
       }
 
-      rows[i].style.display = match ? '' : 'none';
+      row.style.display = match ? '' : 'none';
     }
+    
+    // Mostrar/ocultar cabeçalhos de setor baseado nas atividades visíveis
+    this.toggleSectorHeaders('paidActivitiesList');
   },
 
   filterAllActivities(searchText) {
@@ -612,7 +714,14 @@ const activityManager = {
     const searchLower = searchText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
-      const cells = rows[i].getElementsByTagName('td');
+      const row = rows[i];
+      
+      // Pular cabeçalhos de setor
+      if (row.classList.contains('sector-header')) {
+        continue;
+      }
+      
+      const cells = row.getElementsByTagName('td');
       let match = false;
 
       for (let j = 0; j < cells.length; j++) {
@@ -622,7 +731,42 @@ const activityManager = {
         }
       }
 
-      rows[i].style.display = match ? '' : 'none';
+      row.style.display = match ? '' : 'none';
+    }
+    
+    // Mostrar/ocultar cabeçalhos de setor baseado nas atividades visíveis
+    this.toggleSectorHeaders('allActivitiesList');
+  },
+
+  toggleSectorHeaders(listId) {
+    const list = document.getElementById(listId);
+    const rows = list.getElementsByTagName('tr');
+    
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      
+      if (row.classList.contains('sector-header')) {
+        // Verificar se há atividades visíveis após este cabeçalho
+        let hasVisibleActivities = false;
+        
+        for (let j = i + 1; j < rows.length; j++) {
+          const nextRow = rows[j];
+          
+          // Se encontrou outro cabeçalho, para de procurar
+          if (nextRow.classList.contains('sector-header')) {
+            break;
+          }
+          
+          // Se encontrou uma atividade visível, marca como verdadeiro
+          if (nextRow.style.display !== 'none') {
+            hasVisibleActivities = true;
+            break;
+          }
+        }
+        
+        // Mostrar/ocultar o cabeçalho baseado na existência de atividades visíveis
+        row.style.display = hasVisibleActivities ? '' : 'none';
+      }
     }
   },
 
