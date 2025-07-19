@@ -11,9 +11,13 @@ logger = logging.getLogger(__name__)
 
 # Configuração do banco de dados
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "turntable.proxy.rlwy.net"),
-    "user": os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", "SpDrzzWjYjYcvQDrlOldHkKLKMmmJRbt"),
-    "database": os.getenv("DB_NAME", "railway"),
-    "port": int(os.getenv("DB_PORT", "10713")),
+    "host": "34.44.96.177",  # IP público da instância Cloud SQL
+    "port": 3306,
+    "user": "Mateus",
+    "password": "RI3eh9N9:4f.|`ip",
+    "database": "obras",
+    "charset": "utf8mb4",
+    "autocommit": True,
+    "ssl_disabled": False,  # SSL habilitado por padrão no Cloud SQL
+    "consume_results": True  # Consumir resultados automaticamente
 }

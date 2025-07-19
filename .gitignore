@@ -7,3 +7,4 @@ config.txt
 /backend/database/__pycache__
 /backend/models/__pycache__
 /backend/managers/__pycache__
+/cloud.py
