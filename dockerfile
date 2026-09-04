@@ -1,8 +1,14 @@
+FROM node:20-alpine AS frontend
+WORKDIR /web
+COPY frontend-app/package.json frontend-app/package-lock.json ./
+RUN npm ci
+COPY frontend-app/ ./
+RUN npm run build
+
 FROM python:3.10-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar Tesseract e dependências
 RUN apt-get update -y && \
     apt-get install -y \
     tesseract-ocr \
@@ -12,17 +18,13 @@ RUN apt-get update -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Diretório de trabalho
 WORKDIR /app
 
-# Copiar tudo para dentro da imagem
 COPY . .
+COPY --from=frontend /web/dist /app/frontend-app/dist
 
-# Instalar dependências Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expor porta (ajustada para o padrão Render)
-EXPOSE 10000
+EXPOSE 8000
 
-# Comando para rodar o servidor web (ajuste se necessário)
 CMD ["python", "backend/main.py"]

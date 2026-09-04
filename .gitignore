@@ -1,5 +1,7 @@
 /json
 config.txt
+.env
+.venv
 /backend/.env
 /backend/__pycache__
 /backend/utils/__pycache__
@@ -8,3 +10,6 @@ config.txt
 /backend/models/__pycache__
 /backend/managers/__pycache__
 /cloud.py
+node_modules
+frontend-app/node_modules
+frontend-app/dist

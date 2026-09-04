@@ -1,0 +1,44 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: obras-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: obras_root
+      MYSQL_DATABASE: obras
+      MYSQL_USER: obras
+      MYSQL_PASSWORD: obras123
+    ports:
+      - "3306:3306"
+    volumes:
+      - obras_mysql_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pobras_root"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  app:
+    build: .
+    container_name: obras-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: obras
+      DB_PASSWORD: obras123
+      DB_NAME: obras
+      DB_SSL_DISABLED: "true"
+      SECRET_KEY: dev-secret-key-change-me
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  obras_mysql_data:
