@@ -12,6 +12,7 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState('')
   const [saving, setSaving] = useState(false)
+  const [dragging, setDragging] = useState(false)
 
   const open = Boolean(activity)
   const restante = activity ? activityValue(activity) - paidTotal(activity) : 0
@@ -23,22 +24,45 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
     if (!open) return
     setFile(null)
     setPreview('')
+    setDragging(false)
     setPayer(localStorage.getItem('user_id') || '')
     api.get(`/obras/${obraId}/membros`).then((data) => {
       setMembros(Array.isArray(data) ? data : [])
     }).catch(() => setMembros([]))
   }, [open, obraId])
 
-  function onFile(e) {
-    const selected = e.target.files?.[0]
-    setFile(selected || null)
-    if (selected) {
-      const reader = new FileReader()
-      reader.onload = (ev) => setPreview(ev.target.result)
-      reader.readAsDataURL(selected)
-    } else {
+  function applyFile(selected) {
+    if (!selected) {
+      setFile(null)
       setPreview('')
+      return
     }
+    if (!String(selected.type || '').startsWith('image/')) {
+      showToast('Envie uma imagem (jpg, png ou similar)', 'error')
+      return
+    }
+    setFile(selected)
+    const reader = new FileReader()
+    reader.onload = (ev) => setPreview(ev.target.result)
+    reader.readAsDataURL(selected)
+  }
+
+  function onFile(e) {
+    applyFile(e.target.files?.[0] || null)
+    e.target.value = ''
+  }
+
+  function onDrop(e) {
+    e.preventDefault()
+    setDragging(false)
+    applyFile(e.dataTransfer.files?.[0] || null)
+  }
+
+  function clearFile(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setFile(null)
+    setPreview('')
   }
 
   async function confirm() {
@@ -105,10 +129,42 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
                   ))}
                 </select>
               </Field>
-              <Field label="Comprovante (opcional, OCR)">
-                <input type="file" accept="image/*" onChange={onFile} />
-              </Field>
-              {preview ? <img src={preview} alt="Comprovante" className="max-h-40 rounded-lg" /> : null}
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Comprovante (opcional, OCR)</p>
+                {preview ? (
+                  <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-4 text-center">
+                    <img src={preview} alt="Comprovante" className="mx-auto max-h-40 rounded-lg" />
+                    <p className="mt-2 text-xs text-gray-600 truncate">{file?.name}</p>
+                    <div className="mt-3 flex items-center justify-center gap-3">
+                      <label className="cursor-pointer text-sm text-blue-700 hover:text-blue-800">
+                        <input type="file" accept="image/*" className="hidden" onChange={onFile} />
+                        Trocar imagem
+                      </label>
+                      <button type="button" className="text-sm text-red-600 hover:text-red-700" onClick={clearFile}>
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    className={`block cursor-pointer rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
+                      dragging
+                        ? 'border-blue-600 bg-blue-50'
+                        : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50'
+                    }`}
+                    onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={onDrop}
+                  >
+                    <input type="file" accept="image/*" className="hidden" onChange={onFile} />
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-2">
+                      <i className="fas fa-image text-xl" />
+                    </span>
+                    <p className="text-sm font-medium text-blue-800">Clique ou arraste a imagem</p>
+                    <p className="text-xs text-gray-500 mt-1">JPG, PNG — o valor pode ser lido automaticamente</p>
+                  </label>
+                )}
+              </div>
             </>
           ) : null}
         </div>
