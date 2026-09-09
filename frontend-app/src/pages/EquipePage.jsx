@@ -92,55 +92,84 @@ export default function EquipePage() {
       ) : null}
       {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
 
-      <Card className="p-4">
+      <Card className="overflow-hidden">
         {!loaded ? (
-          <p className="text-sm text-gray-500">Carregando...</p>
+          <p className="text-sm text-gray-500 p-4">Carregando...</p>
         ) : membros.length <= 1 ? (
-          <>
+          <div className="p-4">
             <EmptyState icon="fa-user-friends" text="Só você nesta obra. Gere um convite para chamar alguém." />
             {membros.length === 1 ? (
-              <p className="text-center text-sm text-gray-600 -mt-4 mb-4">{membros[0].nome} · {membros[0].papel}</p>
+              <p className="text-center text-sm text-gray-600 -mt-4 mb-2">{membros[0].nome} · {membros[0].papel}</p>
             ) : null}
-          </>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-gray-600">
-                <tr>
-                  <th className="text-left py-2 px-3">Membro</th>
-                  <th className="text-left py-2 px-3">Papel</th>
-                  <th className="text-left py-2 px-3">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {membros.map((membro) => (
-                  <tr key={membro.usuario_id} className="border-t">
-                    <td className="py-2 px-3">{membro.nome}</td>
-                    <td className="py-2 px-3">
-                      {owner && membro.papel !== 'owner' ? (
-                        <select
-                          className="input-focus px-2 py-1 border rounded-lg"
-                          value={membro.papel}
-                          onChange={(e) => changePapel(membro.usuario_id, e.target.value)}
-                        >
-                          <option value="editor">editor</option>
-                          <option value="membro">membro</option>
-                          <option value="leitura">leitura</option>
-                        </select>
-                      ) : (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{membro.papel}</span>
-                      )}
-                    </td>
-                    <td className="py-2 px-3">
-                      {owner && membro.papel !== 'owner' ? (
-                        <button type="button" className="text-red-600" onClick={() => remove(membro.usuario_id)}>Remover</button>
-                      ) : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
+        ) : (
+          <>
+            <div className="sm:hidden divide-y divide-gray-100">
+              {membros.map((membro) => (
+                <div key={membro.usuario_id} className="px-4 py-4">
+                  <p className="font-medium text-gray-800 break-all">{membro.nome}</p>
+                  <div className="mt-3 flex items-center gap-2">
+                    {owner && membro.papel !== 'owner' ? (
+                      <select
+                        className="input-focus flex-1 px-2 py-2 border rounded-lg text-sm"
+                        value={membro.papel}
+                        onChange={(e) => changePapel(membro.usuario_id, e.target.value)}
+                      >
+                        <option value="editor">editor</option>
+                        <option value="membro">membro</option>
+                        <option value="leitura">leitura</option>
+                      </select>
+                    ) : (
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{membro.papel}</span>
+                    )}
+                    {owner && membro.papel !== 'owner' ? (
+                      <button type="button" className="text-red-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-50 shrink-0" onClick={() => remove(membro.usuario_id)}>
+                        Remover
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+                  <tr>
+                    <th className="text-left font-medium py-3 px-4">Membro</th>
+                    <th className="text-left font-medium py-3 px-4">Papel</th>
+                    <th className="text-right font-medium py-3 px-4">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {membros.map((membro) => (
+                    <tr key={membro.usuario_id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 font-medium text-gray-800">{membro.nome}</td>
+                      <td className="py-3 px-4">
+                        {owner && membro.papel !== 'owner' ? (
+                          <select
+                            className="input-focus px-2 py-1 border rounded-lg"
+                            value={membro.papel}
+                            onChange={(e) => changePapel(membro.usuario_id, e.target.value)}
+                          >
+                            <option value="editor">editor</option>
+                            <option value="membro">membro</option>
+                            <option value="leitura">leitura</option>
+                          </select>
+                        ) : (
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{membro.papel}</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        {owner && membro.papel !== 'owner' ? (
+                          <button type="button" className="text-red-600 text-sm font-medium hover:bg-red-50 px-3 py-1.5 rounded-lg" onClick={() => remove(membro.usuario_id)}>Remover</button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </Card>
     </div>

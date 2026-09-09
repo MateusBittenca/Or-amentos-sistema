@@ -40,13 +40,15 @@ export default function ObraLayout() {
   }, [obraId, navigate])
 
   const base = `/obras/${obraId}`
-  const linkClass = ({ isActive }) =>
+  const desktopLinkClass = ({ isActive }) =>
     `nav-link inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-10'}`
+  const mobileLinkClass = ({ isActive }) =>
+    `flex flex-col items-center justify-center gap-0.5 min-h-[56px] text-[11px] font-medium ${isActive ? 'bg-white bg-opacity-20 text-white' : 'text-blue-100'}`
 
   return (
     <div className="min-h-screen flex flex-col">
       <nav className="bg-blue-800 text-white shadow-md">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h1 className="font-bold flex items-center">
               <i className="fas fa-hard-hat mr-2" />Gestão de Gastos
@@ -55,11 +57,11 @@ export default function ObraLayout() {
               <p className="text-xs text-blue-200 truncate">{obra.nome} · {obra.papel}</p>
             ) : null}
           </div>
-          <div className="flex items-center gap-1 flex-wrap">
+          <div className="hidden sm:flex items-center gap-1 flex-wrap">
             {links.map((item) => (
-              <NavLink key={item.label} to={item.to ? `${base}/${item.to}` : base} end={item.end} className={linkClass}>
+              <NavLink key={item.label} to={item.to ? `${base}/${item.to}` : base} end={item.end} className={desktopLinkClass}>
                 <i className={`fas ${item.icon}`} />
-                <span className="hidden sm:inline">{item.label}</span>
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </div>
@@ -86,10 +88,20 @@ export default function ObraLayout() {
           </div>
         </div>
       </nav>
-      <div className="container mx-auto px-4 py-6 flex-grow">
+      <div className="container mx-auto px-4 py-6 flex-grow pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-6">
         {error ? <p className="text-red-600 mb-4">{error}</p> : null}
         <Outlet context={{ obra, setObra }} />
       </div>
+      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-blue-800 text-white shadow-[0_-2px_8px_rgba(0,0,0,0.15)] pb-[env(safe-area-inset-bottom)]">
+        <div className="grid grid-cols-4">
+          {links.map((item) => (
+            <NavLink key={item.label} to={item.to ? `${base}/${item.to}` : base} end={item.end} className={mobileLinkClass}>
+              <i className={`fas ${item.icon} text-base`} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </div>
+      </nav>
     </div>
   )
 }

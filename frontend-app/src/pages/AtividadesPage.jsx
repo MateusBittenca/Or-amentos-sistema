@@ -63,81 +63,130 @@ export default function AtividadesPage() {
     }
   }
 
+  function activityActions(activity, stacked) {
+    return (
+      <div className={stacked ? 'flex gap-2' : 'flex items-center justify-end gap-2 whitespace-nowrap'}>
+        {(canPayObra(papel) || isPaid(activity)) ? (
+          <button
+            type="button"
+            className={`bg-blue-50 text-blue-800 px-3 py-1.5 rounded-lg text-sm font-medium ${stacked ? 'flex-1' : ''}`}
+            onClick={() => setPayActivity(activity)}
+          >
+            {isPaid(activity) ? 'Comprovante' : 'Pagar'}
+          </button>
+        ) : null}
+        {canEditObra(papel) ? (
+          <button
+            type="button"
+            className={`text-red-600 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 ${stacked ? 'flex-1' : ''}`}
+            onClick={() => removeActivity(activity)}
+          >
+            Excluir
+          </button>
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <h2 className="text-xl font-semibold text-blue-800">Atividades</h2>
         {canEditObra(papel) ? (
-          <Button onClick={() => setAddOpen(true)}>
+          <Button className="w-full sm:w-auto" onClick={() => setAddOpen(true)}>
             <i className="fas fa-plus mr-2" />Adicionar atividade
           </Button>
         ) : null}
       </div>
 
-      <Card className="p-4">
-        <div className="flex flex-wrap gap-2 border-b mb-4">
-          {TABS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`px-4 py-2 text-sm font-medium ${tab === item.id ? 'text-blue-700 border-b-2 border-blue-600' : 'text-gray-500'}`}
-              onClick={() => setTab(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-2 mb-4">
-          <input
-            className="input-focus w-full px-3 py-2 border rounded-lg"
-            placeholder="Buscar atividade..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        {error ? <p className="text-sm text-red-600 mb-3">{error}</p> : null}
-        {!loaded ? (
-          <p className="text-sm text-gray-500">Carregando...</p>
-        ) : filtered.length === 0 ? (
-          <EmptyState text="Nenhuma atividade encontrada" />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-gray-600">
-                <tr>
-                  <th className="text-left py-2 px-3">Setor</th>
-                  <th className="text-left py-2 px-3">Atividade</th>
-                  <th className="text-left py-2 px-3">Valor</th>
-                  <th className="text-left py-2 px-3">Pago</th>
-                  <th className="text-left py-2 px-3">Data</th>
-                  <th className="text-left py-2 px-3">Status</th>
-                  <th className="text-left py-2 px-3">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((activity) => (
-                  <tr key={activity.id} className="border-t hover:bg-gray-50">
-                    <td className="py-2 px-3">{activity.sector}</td>
-                    <td className="py-2 px-3">{activity.activity}</td>
-                    <td className="py-2 px-3">{formatCurrency(activityValue(activity))}</td>
-                    <td className="py-2 px-3">{formatCurrency(paidTotal(activity))}</td>
-                    <td className="py-2 px-3">{activity.date || '-'}</td>
-                    <td className="py-2 px-3"><StatusPill paid={isPaid(activity)} /></td>
-                    <td className="py-2 px-3 space-x-2 whitespace-nowrap">
-                      {(canPayObra(papel) || isPaid(activity)) ? (
-                        <button type="button" className="bg-blue-50 text-blue-800 px-3 py-1 rounded-lg" onClick={() => setPayActivity(activity)}>
-                          {isPaid(activity) ? 'Comprovante' : 'Pagar'}
-                        </button>
-                      ) : null}
-                      {canEditObra(papel) ? (
-                        <button type="button" className="text-red-600" onClick={() => removeActivity(activity)}>Excluir</button>
-                      ) : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <Card className="overflow-hidden">
+        <div className="p-4 pb-0">
+          <div className="flex flex-wrap gap-2 border-b">
+            {TABS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`px-3 sm:px-4 py-2 text-sm font-medium ${tab === item.id ? 'text-blue-700 border-b-2 border-blue-600' : 'text-gray-500'}`}
+                onClick={() => setTab(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
+          <div className="py-4">
+            <input
+              className="input-focus w-full px-3 py-2 border rounded-lg"
+              placeholder="Buscar atividade..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          {error ? <p className="text-sm text-red-600 pb-3">{error}</p> : null}
+        </div>
+        {!loaded ? (
+          <p className="text-sm text-gray-500 px-4 pb-4">Carregando...</p>
+        ) : filtered.length === 0 ? (
+          <div className="px-4 pb-4">
+            <EmptyState text="Nenhuma atividade encontrada" />
+          </div>
+        ) : (
+          <>
+            <div className="lg:hidden divide-y divide-gray-100">
+              {filtered.map((activity) => (
+                <div key={activity.id} className="px-4 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-800 leading-snug">{activity.activity}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {activity.sector || 'Sem setor'}
+                        {activity.date ? ` · ${activity.date}` : ''}
+                      </p>
+                    </div>
+                    <StatusPill paid={isPaid(activity)} />
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-xs text-gray-500">Valor</p>
+                      <p className="font-semibold text-gray-800 tabular-nums">{formatCurrency(activityValue(activity))}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500">Pago</p>
+                      <p className="font-semibold text-gray-800 tabular-nums">{formatCurrency(paidTotal(activity))}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3">{activityActions(activity, true)}</div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+                  <tr>
+                    <th className="text-left font-medium py-3 px-4">Setor</th>
+                    <th className="text-left font-medium py-3 px-4">Atividade</th>
+                    <th className="text-right font-medium py-3 px-4">Valor</th>
+                    <th className="text-right font-medium py-3 px-4">Pago</th>
+                    <th className="text-left font-medium py-3 px-4">Data</th>
+                    <th className="text-left font-medium py-3 px-4">Status</th>
+                    <th className="text-right font-medium py-3 px-4">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filtered.map((activity) => (
+                    <tr key={activity.id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 text-gray-600 whitespace-nowrap">{activity.sector || '-'}</td>
+                      <td className="py-3 px-4 font-medium text-gray-800 max-w-xs truncate">{activity.activity}</td>
+                      <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(activityValue(activity))}</td>
+                      <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(paidTotal(activity))}</td>
+                      <td className="py-3 px-4 text-gray-600 whitespace-nowrap">{activity.date || '-'}</td>
+                      <td className="py-3 px-4"><StatusPill paid={isPaid(activity)} /></td>
+                      <td className="py-3 px-4">{activityActions(activity, false)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </Card>
 

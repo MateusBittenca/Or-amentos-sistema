@@ -88,40 +88,60 @@ export default function ResumoPage() {
         )}
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center justify-between mb-3">
+      <Card className="overflow-hidden">
+        <div className="flex items-center justify-between gap-3 px-4 py-4">
           <h3 className="text-lg font-semibold text-blue-800">Atividades recentes</h3>
-          <Link to={`/obras/${obraId}/atividades`} className="text-sm text-blue-700">Ver todas</Link>
+          <Link to={`/obras/${obraId}/atividades`} className="text-sm text-blue-700 shrink-0">Ver todas</Link>
         </div>
         {!loaded ? null : recent.length === 0 ? (
-          <EmptyState text="Nenhuma atividade nesta obra" />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-gray-600">
-                <tr>
-                  <th className="text-left py-2 px-3">Atividade</th>
-                  <th className="text-left py-2 px-3">Valor</th>
-                  <th className="text-left py-2 px-3">Status</th>
-                  <th className="text-left py-2 px-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((activity) => (
-                  <tr key={activity.id} className="border-t">
-                    <td className="py-2 px-3">{activity.activity}</td>
-                    <td className="py-2 px-3">{formatCurrency(activity.value)}</td>
-                    <td className="py-2 px-3"><StatusPill paid={isPaid(activity)} /></td>
-                    <td className="py-2 px-3">
-                      <button type="button" className="text-blue-700 text-sm" onClick={() => setPayActivity(activity)}>
-                        {isPaid(activity) ? 'Comprovante' : 'Pagar'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="px-4 pb-4">
+            <EmptyState text="Nenhuma atividade nesta obra" />
           </div>
+        ) : (
+          <>
+            <div className="md:hidden divide-y divide-gray-100">
+              {recent.map((activity) => (
+                <div key={activity.id} className="px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-medium text-gray-800 leading-snug min-w-0">{activity.activity}</p>
+                    <StatusPill paid={isPaid(activity)} />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold tabular-nums text-gray-800">{formatCurrency(activity.value)}</p>
+                    <button type="button" className="text-blue-700 text-sm font-medium" onClick={() => setPayActivity(activity)}>
+                      {isPaid(activity) ? 'Comprovante' : 'Pagar'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+                  <tr>
+                    <th className="text-left font-medium py-3 px-4">Atividade</th>
+                    <th className="text-right font-medium py-3 px-4">Valor</th>
+                    <th className="text-left font-medium py-3 px-4">Status</th>
+                    <th className="text-right font-medium py-3 px-4">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {recent.map((activity) => (
+                    <tr key={activity.id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 font-medium text-gray-800 max-w-xs truncate">{activity.activity}</td>
+                      <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(activity.value)}</td>
+                      <td className="py-3 px-4"><StatusPill paid={isPaid(activity)} /></td>
+                      <td className="py-3 px-4 text-right">
+                        <button type="button" className="text-blue-700 text-sm font-medium" onClick={() => setPayActivity(activity)}>
+                          {isPaid(activity) ? 'Comprovante' : 'Pagar'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </Card>
 
