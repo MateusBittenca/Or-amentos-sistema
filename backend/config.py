@@ -21,5 +21,5 @@ DB_CONFIG = {
     "charset": "utf8mb4",
     "autocommit": True,
     "ssl_disabled": ssl_disabled,
-    "consume_results": True
+    "consume_results": True,
 }
