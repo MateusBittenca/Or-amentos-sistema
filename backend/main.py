@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,7 +24,16 @@ from auth.auth_user import (
     login_for_access_token, get_current_user, require_obra_member, register_user,
 )
 
-app = FastAPI(title="API de Gerenciamento de Despesas de Construção")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Inicializando recursos da aplicação...")
+    initialize_database()
+    logger.info("Aplicação iniciada com sucesso")
+    yield
+
+
+app = FastAPI(title="API de Gerenciamento de Despesas de Construção", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,12 +56,6 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.error("Erro não tratado", exc_info=exc)
     return JSONResponse(status_code=500, content={"detail": INTERNAL_ERROR})
 
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Inicializando recursos da aplicação...")
-    initialize_database()
-    logger.info("Aplicação iniciada com sucesso")
 
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend-app", "dist"))
 
