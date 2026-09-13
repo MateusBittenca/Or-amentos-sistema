@@ -124,6 +124,18 @@ export const api = {
     return parseResponse(response)
   },
 
+  async getBlob(path, obraId) {
+    const response = await fetch(withObraQuery(path, obraId), { headers: authHeaders() })
+    if (!response.ok) {
+      const text = await response.text()
+      const data = text ? JSON.parse(text) : {}
+      const error = new Error(apiError(data, `Erro ${response.status}`))
+      error.status = response.status
+      throw error
+    }
+    return response.blob()
+  },
+
   async getPublic(path) {
     const response = await fetch(path, { headers: JSON_HEADERS })
     return parseResponse(response)

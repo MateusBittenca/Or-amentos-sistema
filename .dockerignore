@@ -8,3 +8,4 @@ venv
 node_modules
 frontend-app/node_modules
 frontend-app/dist
+backend/uploads

@@ -28,6 +28,7 @@ export default defineConfig({
       '/valor-pago-membros': { target: 'http://127.0.0.1:8000' },
       '/process-receipt': { target: 'http://127.0.0.1:8000' },
       '/register-payment': { target: 'http://127.0.0.1:8000' },
+      '/pagamentos': { target: 'http://127.0.0.1:8000' },
       '/password': { target: 'http://127.0.0.1:8000' },
       '/obras': { target: 'http://127.0.0.1:8000', bypass: htmlBypass },
       '/convite': { target: 'http://127.0.0.1:8000', bypass: htmlBypass },

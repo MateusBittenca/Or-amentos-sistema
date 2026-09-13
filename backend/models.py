@@ -3,9 +3,11 @@ from typing import List, Optional
 
 
 class PaymentItem(BaseModel):
+    id: int
     usuario_id: int
     nome: str
     valor: float
+    comprovante_url: Optional[str] = None
 
 
 class Activity(BaseModel):
@@ -60,8 +62,7 @@ class PaidActivity(BaseModel):
 
 
 class PaymentData(BaseModel):
-    activity: str
-    sector: Optional[str] = None
+    atividade_id: int
     usuario_id: int
     value: str
     date: Optional[str] = None

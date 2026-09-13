@@ -45,7 +45,14 @@ def processar_comprovante_ocr(contents, filetype="jpg"):
     """
     try:
         image = Image.open(io.BytesIO(contents))
-        texto = pytesseract.image_to_string(image, lang='eng')
+        try:
+            texto = pytesseract.image_to_string(image, lang='por')
+        except pytesseract.TesseractError:
+            logger.warning("Tesseract sem idioma por; usando eng")
+            texto = pytesseract.image_to_string(image, lang='eng')
         return texto
-    except Exception as e:
-        raise Exception(f"Erro ao processar OCR com Tesseract: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception:
+        logger.error("Erro ao processar OCR com Tesseract", exc_info=True)
+        raise HTTPException(status_code=500, detail="Não foi possível ler o comprovante")

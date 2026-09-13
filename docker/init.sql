@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS pagamentos (
     usuario_id INT NOT NULL,
     valor DECIMAL(12, 2) NOT NULL,
     data VARCHAR(20) DEFAULT NULL,
+    comprovante_url VARCHAR(500) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (atividade_id) REFERENCES atividades(idAtividades) ON DELETE CASCADE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)

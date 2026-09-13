@@ -35,7 +35,9 @@ services:
       DB_PASSWORD: obras123
       DB_NAME: obras
       DB_SSL_DISABLED: "true"
+      ENV: "dev"
       SECRET_KEY: dev-secret-key-change-me
+      CORS_ORIGINS: "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000"
     depends_on:
       db:
         condition: service_healthy

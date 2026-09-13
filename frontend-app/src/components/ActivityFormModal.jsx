@@ -4,6 +4,14 @@ import { SECTORS } from '../constants'
 import { Button, Field, Modal, inputClass } from './ui'
 import { useToast } from './Toast'
 
+function toDateInput(value) {
+  if (!value) return ''
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
+  const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  if (match) return `${match[3]}-${match[2]}-${match[1]}`
+  return ''
+}
+
 export default function ActivityFormModal({ open, obraId, onClose, onSaved, activity }) {
   const { showToast } = useToast()
   const [atividade, setAtividade] = useState(activity?.activity || '')
@@ -17,7 +25,7 @@ export default function ActivityFormModal({ open, obraId, onClose, onSaved, acti
     setAtividade(activity?.activity || '')
     setValor(activity?.value || activity?.total_value || '')
     setSetor(activity?.sector || '')
-    setData('')
+    setData(toDateInput(activity?.date))
   }, [open, activity])
 
   async function submit(e) {

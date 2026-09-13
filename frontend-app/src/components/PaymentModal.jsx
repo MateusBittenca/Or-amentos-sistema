@@ -5,6 +5,35 @@ import { formatCurrency, parseCurrencyInput } from '../format'
 import { Button, Field, Modal, inputClass } from './ui'
 import { useToast } from './Toast'
 
+const MAX_RECEIPT_BYTES = 5 * 1024 * 1024
+
+function StoredReceipt({ pagamento, obraId }) {
+  const [src, setSrc] = useState('')
+
+  useEffect(() => {
+    if (!pagamento?.id || !pagamento.comprovante_url) return undefined
+    let objectUrl = ''
+    let cancelled = false
+    api.getBlob(`/pagamentos/${pagamento.id}/comprovante`, obraId)
+      .then((blob) => {
+        if (cancelled) return
+        objectUrl = URL.createObjectURL(blob)
+        setSrc(objectUrl)
+      })
+      .catch(() => {
+        if (!cancelled) setSrc('')
+      })
+    return () => {
+      cancelled = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [pagamento, obraId])
+
+  if (!pagamento?.comprovante_url) return null
+  if (!src) return <p className="text-xs text-gray-500 mt-1">Carregando comprovante...</p>
+  return <img src={src} alt={`Comprovante de ${pagamento.nome}`} className="mt-2 max-h-32 rounded-lg" />
+}
+
 export default function PaymentModal({ activity, obraId, papel, onClose, onSaved }) {
   const { showToast } = useToast()
   const [membros, setMembros] = useState([])
@@ -19,6 +48,7 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
   const alreadyPaid = activity ? restante <= 0 : false
   const canPay = canPayObra(papel || localStorage.getItem('obra_papel'))
   const canChoosePayer = canEditObra(papel || localStorage.getItem('obra_papel'))
+  const storedPayments = (activity?.pagamentos || []).filter((item) => item.comprovante_url)
 
   useEffect(() => {
     if (!open) return
@@ -39,6 +69,10 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
     }
     if (!String(selected.type || '').startsWith('image/')) {
       showToast('Envie uma imagem (jpg, png ou similar)', 'error')
+      return
+    }
+    if (selected.size > MAX_RECEIPT_BYTES) {
+      showToast('O comprovante deve ter no máximo 5 MB', 'error')
       return
     }
     setFile(selected)
@@ -69,22 +103,31 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
     if (!activity) return
     setSaving(true)
     try {
-      let value = restante
+      const maxValue = Math.round(Math.max(restante, 0) * 100) / 100
+      let value = maxValue
       let date = new Date().toISOString().split('T')[0]
       if (file) {
-        const form = new FormData()
-        form.append('file', file)
-        const extracted = await api.postForm('/process-receipt', form, obraId)
-        if (extracted.value) value = parseCurrencyInput(extracted.value) || value
+        const ocrForm = new FormData()
+        ocrForm.append('file', file)
+        const extracted = await api.postForm('/process-receipt', ocrForm, obraId)
+        if (extracted.value) {
+          const extractedValue = Math.round(Number(parseCurrencyInput(extracted.value) || value) * 100) / 100
+          if (extractedValue > maxValue) {
+            showToast('O valor do comprovante foi limitado ao restante da atividade')
+            value = maxValue
+          } else {
+            value = extractedValue
+          }
+        }
         if (extracted.date) date = extracted.date
       }
-      await api.postJson('/register-payment', {
-        activity: activity.activity,
-        sector: activity.sector || null,
-        usuario_id: parseInt(payer, 10),
-        value: String(value),
-        date,
-      }, obraId)
+      const form = new FormData()
+      form.append('atividade_id', String(activity.id))
+      form.append('usuario_id', String(parseInt(payer, 10)))
+      form.append('value', String(value))
+      form.append('date', date)
+      if (file) form.append('file', file)
+      await api.postForm('/register-payment', form, obraId)
       onSaved()
     } catch (err) {
       showToast(err.message || 'Erro ao registrar pagamento', 'error')
@@ -115,9 +158,14 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
           <p><span className="text-gray-600">Pago:</span> {formatCurrency(paidTotal(activity))}</p>
           <p><span className="text-gray-600">Pendente:</span> {formatCurrency(Math.max(restante, 0))}</p>
           {(activity.pagamentos || []).length > 0 ? (
-            <p className="text-gray-600">
-              Pagamentos: {(activity.pagamentos || []).map((p) => `${p.nome}: ${formatCurrency(p.valor)}`).join(' | ')}
-            </p>
+            <div className="space-y-2">
+              {(activity.pagamentos || []).map((pagamento) => (
+                <div key={pagamento.id || `${pagamento.usuario_id}-${pagamento.valor}`} className="rounded-lg bg-gray-50 p-3">
+                  <p className="text-gray-700">{pagamento.nome}: {formatCurrency(pagamento.valor)}</p>
+                  <StoredReceipt pagamento={pagamento} obraId={obraId} />
+                </div>
+              ))}
+            </div>
           ) : null}
 
           {!alreadyPaid && canPay ? (
@@ -161,11 +209,14 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
                       <i className="fas fa-image text-xl" />
                     </span>
                     <p className="text-sm font-medium text-blue-800">Clique ou arraste a imagem</p>
-                    <p className="text-xs text-gray-500 mt-1">JPG, PNG — o valor pode ser lido automaticamente</p>
+                    <p className="text-xs text-gray-500 mt-1">JPG, PNG ou WebP até 5 MB — o valor pode ser lido automaticamente</p>
                   </label>
                 )}
               </div>
             </>
+          ) : null}
+          {alreadyPaid && storedPayments.length === 0 ? (
+            <p className="text-xs text-gray-500">Nenhum comprovante anexado a estes pagamentos.</p>
           ) : null}
         </div>
       ) : null}

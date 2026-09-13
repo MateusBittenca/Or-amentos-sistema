@@ -24,6 +24,7 @@ export default function AtividadesPage() {
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
+  const [editActivity, setEditActivity] = useState(null)
   const [payActivity, setPayActivity] = useState(null)
   const papel = obra?.papel || localStorage.getItem('obra_papel')
 
@@ -65,7 +66,7 @@ export default function AtividadesPage() {
 
   function activityActions(activity, stacked) {
     return (
-      <div className={stacked ? 'flex gap-2' : 'flex items-center justify-end gap-2 whitespace-nowrap'}>
+      <div className={stacked ? 'flex flex-wrap gap-2' : 'flex items-center justify-end gap-2 whitespace-nowrap'}>
         {(canPayObra(papel) || isPaid(activity)) ? (
           <button
             type="button"
@@ -73,6 +74,15 @@ export default function AtividadesPage() {
             onClick={() => setPayActivity(activity)}
           >
             {isPaid(activity) ? 'Comprovante' : 'Pagar'}
+          </button>
+        ) : null}
+        {canEditObra(papel) ? (
+          <button
+            type="button"
+            className={`text-blue-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 ${stacked ? 'flex-1' : ''}`}
+            onClick={() => setEditActivity(activity)}
+          >
+            Editar
           </button>
         ) : null}
         {canEditObra(papel) ? (
@@ -195,6 +205,13 @@ export default function AtividadesPage() {
         obraId={obraId}
         onClose={() => setAddOpen(false)}
         onSaved={() => { setAddOpen(false); showToast('Atividade adicionada'); load() }}
+      />
+      <ActivityFormModal
+        open={Boolean(editActivity)}
+        activity={editActivity}
+        obraId={obraId}
+        onClose={() => setEditActivity(null)}
+        onSaved={() => { setEditActivity(null); showToast('Atividade atualizada'); load() }}
       />
       <PaymentModal
         activity={payActivity}

@@ -4,13 +4,12 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List
 from pydantic import BaseModel
-import os
-from dotenv import load_dotenv
 import logging
 import secrets
 import string
 
-from database import get_db_connection
+from config import SECRET_KEY
+from database import db_cursor
 from models import User, UserPublic, PasswordResetResponse, PasswordUpdateResponse, RegisterRequest
 from auth.passwords import hash_password, verify_password, is_hashed
 
@@ -20,9 +19,6 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 logger.addHandler(handler)
 
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY", "chave_secreta_padrao_para_desenvolvimento")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
 PASSWORD_RESET_EXPIRE_MINUTES = 15
@@ -64,33 +60,21 @@ def to_public_user(user: User) -> UserPublic:
 
 def get_user_by_name(username: str) -> Optional[User]:
     """Busca usuário no DB pelo nome"""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+    with db_cursor() as cursor:
         cursor.execute("SELECT * FROM usuarios WHERE LOWER(nome) = LOWER(%s)", (username,))
         user_data = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if user_data:
-            return _user_from_row(user_data)
-        return None
-    except Exception:
-        return None
+    if user_data:
+        return _user_from_row(user_data)
+    return None
 
 
 def get_user_by_id(user_id: int) -> Optional[User]:
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+    with db_cursor() as cursor:
         cursor.execute("SELECT * FROM usuarios WHERE id = %s", (user_id,))
         user_data = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if user_data:
-            return _user_from_row(user_data)
-        return None
-    except Exception:
-        return None
+    if user_data:
+        return _user_from_row(user_data)
+    return None
 
 
 def authenticate_user(username: str, password: str) -> Optional[User]:
@@ -173,35 +157,27 @@ def register_user(payload: RegisterRequest) -> UserPublic:
     if get_user_by_name(nome):
         raise HTTPException(status_code=400, detail="Já existe uma conta com este e-mail")
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO usuarios (nome, password, status) VALUES (%s, %s, %s)",
-        (nome, hash_password(password), "USER"),
-    )
-    user_id = cursor.lastrowid
-    conn.commit()
-    cursor.close()
-    conn.close()
+    with db_cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO usuarios (nome, password, status) VALUES (%s, %s, %s)",
+            (nome, hash_password(password), "USER"),
+        )
+        user_id = cursor.lastrowid
     return UserPublic(id=user_id, nome=nome)
 
 
 def get_membership(obra_id: int, usuario_id: int) -> Optional[dict]:
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """
-        SELECT om.papel, o.nome as obra_nome, o.criado_por, o.descricao
-        FROM obra_membros om
-        JOIN obras o ON o.id = om.obra_id
-        WHERE om.obra_id = %s AND om.usuario_id = %s
-        """,
-        (obra_id, usuario_id),
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return row
+    with db_cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT om.papel, o.nome as obra_nome, o.criado_por, o.descricao
+            FROM obra_membros om
+            JOIN obras o ON o.id = om.obra_id
+            WHERE om.obra_id = %s AND om.usuario_id = %s
+            """,
+            (obra_id, usuario_id),
+        )
+        return cursor.fetchone()
 
 
 def assert_obra_access(obra_id: int, usuario_id: int, min_papel: str = "leitura") -> dict:
@@ -259,19 +235,14 @@ def validate_reset_token(username: str, token: str) -> bool:
 
 def update_password(username: str, new_password: str) -> bool:
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE usuarios SET password = %s WHERE LOWER(nome) = LOWER(%s)",
-            (hash_password(new_password), username),
-        )
-        affected_rows = cursor.rowcount
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return affected_rows > 0
+        with db_cursor() as cursor:
+            cursor.execute(
+                "UPDATE usuarios SET password = %s WHERE LOWER(nome) = LOWER(%s)",
+                (hash_password(new_password), username),
+            )
+            return cursor.rowcount > 0
     except Exception as e:
-        logger.error(f"Erro ao atualizar senha: {str(e)}")
+        logger.error(f"Erro ao atualizar senha: {e}")
         return False
 
 

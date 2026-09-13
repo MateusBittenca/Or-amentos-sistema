@@ -1,7 +1,8 @@
+from contextlib import contextmanager
 import mysql.connector
 from mysql.connector import Error, pooling
 from fastapi import HTTPException
-from config import DB_CONFIG, logger
+from config import DB_CONFIG, ENV, INTERNAL_ERROR, UPLOADS_DIR, logger
 
 connection_pool = None
 
@@ -18,7 +19,7 @@ def init_connection_pool():
         logger.info("Pool de conexões inicializado com sucesso")
     except Error as e:
         logger.error(f"Erro ao inicializar o pool de conexões MySQL: {e}")
-        raise HTTPException(status_code=500, detail=f"Erro na inicialização do pool: {str(e)}")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR)
 
 
 def get_db_connection():
@@ -31,7 +32,31 @@ def get_db_connection():
         return connection_pool.get_connection()
     except Error as e:
         logger.error(f"Erro ao obter conexão do pool: {e}")
-        raise HTTPException(status_code=500, detail=f"Erro de conexão com o banco de dados: {str(e)}")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR)
+
+
+@contextmanager
+def db_cursor(dictionary=True):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=dictionary)
+    try:
+        yield cursor
+        connection.commit()
+    except Exception:
+        try:
+            connection.rollback()
+        except Exception:
+            pass
+        raise
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+        try:
+            connection.close()
+        except Exception:
+            pass
 
 
 def _column_exists(cursor, table, column):
@@ -62,6 +87,7 @@ def initialize_database():
         from auth.passwords import hash_password, is_hashed
 
         init_connection_pool()
+        UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
         connection = get_db_connection()
         cursor = connection.cursor()
 
@@ -124,11 +150,15 @@ def initialize_database():
                 usuario_id INT NOT NULL,
                 valor DECIMAL(12, 2) NOT NULL,
                 data VARCHAR(20) DEFAULT NULL,
+                comprovante_url VARCHAR(500) DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (atividade_id) REFERENCES atividades(idAtividades) ON DELETE CASCADE,
                 FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             )
         """)
+
+        if not _column_exists(cursor, "pagamentos", "comprovante_url"):
+            cursor.execute("ALTER TABLE pagamentos ADD COLUMN comprovante_url VARCHAR(500) DEFAULT NULL")
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS convites (
@@ -153,120 +183,105 @@ def initialize_database():
                 )
 
         cursor.execute("SELECT COUNT(*) FROM usuarios")
-        if cursor.fetchone()[0] == 0:
+        user_count = cursor.fetchone()[0]
+        if ENV == "dev" and user_count == 0:
             cursor.execute(
                 "INSERT INTO usuarios (nome, password, status) VALUES (%s, %s, %s)",
                 ("admin@local.com", hash_password("admin123"), "USER"),
             )
+            admin_id = cursor.lastrowid
+            cursor.execute(
+                "INSERT INTO obras (nome, descricao, criado_por) VALUES (%s, %s, %s)",
+                ("Obra existente", "Dados migrados do sistema anterior", admin_id),
+            )
+            obra_id = cursor.lastrowid
+            cursor.execute(
+                "INSERT INTO obra_membros (obra_id, usuario_id, papel) VALUES (%s, %s, %s)",
+                (obra_id, admin_id, "owner"),
+            )
+            cursor.execute(
+                """
+                INSERT INTO atividades (obra_id, nome, valor, data, setor, status)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                (obra_id, "Projeto estrutural", 5000.00, "15/03/2024", "Projeto", "paid"),
+            )
+            atividade_paga_id = cursor.lastrowid
+            cursor.execute(
+                "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
+                (atividade_paga_id, admin_id, 5000.00, "15/03/2024"),
+            )
+            cursor.execute(
+                """
+                INSERT INTO atividades (obra_id, nome, valor, data, setor, status)
+                VALUES (%s, %s, %s, %s, %s, %s),
+                       (%s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    obra_id, "Cimento 50kg x 20", 1800.00, "20/03/2024", "Cimento e Concreto", "pending",
+                    obra_id, "Instalação elétrica 1º andar", 3200.00, "01/04/2024", "Elétrica", "pending",
+                ),
+            )
 
-        cursor.execute("SELECT id FROM usuarios WHERE LOWER(nome) = LOWER(%s)", ("admin@local.com",))
-        admin_row = cursor.fetchone()
-        admin_id = admin_row[0] if admin_row else None
+        cursor.execute("SELECT id FROM obras LIMIT 1")
+        obra_row = cursor.fetchone()
+        if obra_row:
+            cursor.execute("UPDATE atividades SET obra_id = %s WHERE obra_id IS NULL", (obra_row[0],))
 
-        if admin_id:
-            cursor.execute("SELECT id FROM obras LIMIT 1")
-            obra_row = cursor.fetchone()
-            if not obra_row:
-                cursor.execute(
-                    "INSERT INTO obras (nome, descricao, criado_por) VALUES (%s, %s, %s)",
-                    ("Obra existente", "Dados migrados do sistema anterior", admin_id),
-                )
-                obra_id = cursor.lastrowid
-                cursor.execute(
-                    "INSERT INTO obra_membros (obra_id, usuario_id, papel) VALUES (%s, %s, %s)",
-                    (obra_id, admin_id, "owner"),
-                )
-            else:
-                obra_id = obra_row[0]
-                cursor.execute(
-                    "SELECT id FROM obra_membros WHERE obra_id = %s AND usuario_id = %s",
-                    (obra_id, admin_id),
-                )
-                if not cursor.fetchone():
-                    cursor.execute(
-                        "INSERT INTO obra_membros (obra_id, usuario_id, papel) VALUES (%s, %s, %s)",
-                        (obra_id, admin_id, "owner"),
-                    )
+        cursor.execute("SELECT id FROM usuarios LIMIT 1")
+        payer_row = cursor.fetchone()
+        payer_id = payer_row[0] if payer_row else None
 
-            cursor.execute("UPDATE atividades SET obra_id = %s WHERE obra_id IS NULL", (obra_id,))
-
-            has_diego = _column_exists(cursor, "atividades", "diego_ana")
-            has_alex = _column_exists(cursor, "atividades", "alex_rute")
-            if has_diego or has_alex:
-                cursor.execute("SELECT COUNT(*) FROM pagamentos")
-                if cursor.fetchone()[0] == 0:
-                    select_cols = ["idAtividades"]
-                    if has_diego:
-                        select_cols.append("COALESCE(diego_ana, 0)")
-                    if has_alex:
-                        select_cols.append("COALESCE(alex_rute, 0)")
-                    if has_diego and has_alex:
-                        cursor.execute(
-                            f"SELECT {', '.join(select_cols)}, data FROM atividades"
-                        )
-                        for row in cursor.fetchall():
-                            atividade_id, diego, alex, data = row
-                            total = float(diego or 0) + float(alex or 0)
-                            if total > 0:
-                                cursor.execute(
-                                    "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
-                                    (atividade_id, admin_id, total, data),
-                                )
-                    elif has_diego:
-                        cursor.execute("SELECT idAtividades, COALESCE(diego_ana, 0), data FROM atividades")
-                        for atividade_id, diego, data in cursor.fetchall():
-                            if float(diego or 0) > 0:
-                                cursor.execute(
-                                    "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
-                                    (atividade_id, admin_id, diego, data),
-                                )
-                    elif has_alex:
-                        cursor.execute("SELECT idAtividades, COALESCE(alex_rute, 0), data FROM atividades")
-                        for atividade_id, alex, data in cursor.fetchall():
-                            if float(alex or 0) > 0:
-                                cursor.execute(
-                                    "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
-                                    (atividade_id, admin_id, alex, data),
-                                )
-
+        has_diego = _column_exists(cursor, "atividades", "diego_ana")
+        has_alex = _column_exists(cursor, "atividades", "alex_rute")
+        if has_diego or has_alex:
+            cursor.execute("SELECT COUNT(*) FROM pagamentos")
+            if payer_id and cursor.fetchone()[0] == 0:
+                select_cols = ["idAtividades"]
                 if has_diego:
-                    cursor.execute("ALTER TABLE atividades DROP COLUMN diego_ana")
+                    select_cols.append("COALESCE(diego_ana, 0)")
                 if has_alex:
-                    cursor.execute("ALTER TABLE atividades DROP COLUMN alex_rute")
+                    select_cols.append("COALESCE(alex_rute, 0)")
+                if has_diego and has_alex:
+                    cursor.execute(
+                        f"SELECT {', '.join(select_cols)}, data FROM atividades"
+                    )
+                    for row in cursor.fetchall():
+                        atividade_id, diego, alex, data = row
+                        total = float(diego or 0) + float(alex or 0)
+                        if total > 0:
+                            cursor.execute(
+                                "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
+                                (atividade_id, payer_id, total, data),
+                            )
+                elif has_diego:
+                    cursor.execute("SELECT idAtividades, COALESCE(diego_ana, 0), data FROM atividades")
+                    for atividade_id, diego, data in cursor.fetchall():
+                        if float(diego or 0) > 0:
+                            cursor.execute(
+                                "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
+                                (atividade_id, payer_id, diego, data),
+                            )
+                elif has_alex:
+                    cursor.execute("SELECT idAtividades, COALESCE(alex_rute, 0), data FROM atividades")
+                    for atividade_id, alex, data in cursor.fetchall():
+                        if float(alex or 0) > 0:
+                            cursor.execute(
+                                "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
+                                (atividade_id, payer_id, alex, data),
+                            )
+            if has_diego:
+                cursor.execute("ALTER TABLE atividades DROP COLUMN diego_ana")
+            if has_alex:
+                cursor.execute("ALTER TABLE atividades DROP COLUMN alex_rute")
 
-            cursor.execute("SELECT COUNT(*) FROM atividades WHERE obra_id = %s", (obra_id,))
-            if cursor.fetchone()[0] == 0:
-                cursor.execute(
-                    """
-                    INSERT INTO atividades (obra_id, nome, valor, data, setor, status)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                    """,
-                    (obra_id, "Projeto estrutural", 5000.00, "15/03/2024", "Projeto", "paid"),
-                )
-                atividade_paga_id = cursor.lastrowid
-                cursor.execute(
-                    "INSERT INTO pagamentos (atividade_id, usuario_id, valor, data) VALUES (%s, %s, %s, %s)",
-                    (atividade_paga_id, admin_id, 5000.00, "15/03/2024"),
-                )
-                cursor.execute(
-                    """
-                    INSERT INTO atividades (obra_id, nome, valor, data, setor, status)
-                    VALUES (%s, %s, %s, %s, %s, %s),
-                           (%s, %s, %s, %s, %s, %s)
-                    """,
-                    (
-                        obra_id, "Cimento 50kg x 20", 1800.00, "20/03/2024", "Cimento e Concreto", "pending",
-                        obra_id, "Instalação elétrica 1º andar", 3200.00, "01/04/2024", "Elétrica", "pending",
-                    ),
-                )
-
-            cursor.execute("""
-                UPDATE atividades a
-                SET status = CASE
-                    WHEN COALESCE((SELECT SUM(p.valor) FROM pagamentos p WHERE p.atividade_id = a.idAtividades), 0) >= a.valor
-                    THEN 'paid' ELSE 'pending'
-                END
-            """)
+        cursor.execute("""
+            UPDATE atividades a
+            SET status = CASE
+                WHEN COALESCE((SELECT SUM(p.valor) FROM pagamentos p WHERE p.atividade_id = a.idAtividades), 0) >= a.valor
+                THEN 'paid' ELSE 'pending'
+            END
+        """)
 
         connection.commit()
         cursor.close()
@@ -274,4 +289,4 @@ def initialize_database():
         logger.info("Banco de dados inicializado com sucesso")
     except Error as e:
         logger.error(f"Erro ao inicializar o banco de dados: {e}")
-        raise HTTPException(status_code=500, detail=f"Erro de inicialização do banco de dados: {str(e)}")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR)
