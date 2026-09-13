@@ -2,7 +2,7 @@ import re
 from typing import List, Dict, Any, Optional
 from fastapi import HTTPException
 from database import db_cursor
-from models import PendingActivity, Activity, PaidActivity, PaymentItem, ValorMembro
+from models import PendingActivity, Activity, PaidActivity, PaymentItem, ValorMembro, SaldoMembro, ResumoObra
 from utils.receipts import save_receipt
 
 
@@ -380,3 +380,41 @@ class ComprovantesManager:
             ValorMembro(usuario_id=row["usuario_id"], nome=row["nome"], total=float(row["total"] or 0))
             for row in rows
         ]
+
+    def _cotas(self, total: float, n: int) -> List[float]:
+        if n <= 0:
+            return []
+        cents = int(round(float(total) * 100))
+        base, rem = divmod(cents, n)
+        return [(base + (1 if i < rem else 0)) / 100.0 for i in range(n)]
+
+    def calcular_saldos(self, obra_id: int) -> List[SaldoMembro]:
+        total = float(self.calcular_valor_total(obra_id) or 0)
+        membros = self.calcular_valor_pago_membros(obra_id)
+        cotas = self._cotas(total, len(membros))
+        saldos = []
+        for membro, cota in zip(membros, cotas):
+            pago = round(float(membro.total), 2)
+            saldos.append(SaldoMembro(
+                usuario_id=membro.usuario_id,
+                nome=membro.nome,
+                pago=pago,
+                cota=cota,
+                saldo=round(cota - pago, 2),
+            ))
+        saldos.sort(key=lambda item: (-item.saldo, item.nome))
+        return saldos
+
+    def montar_resumo(self, obra_id: int) -> ResumoObra:
+        atividades = self.listar_atividades(obra_id)
+        total = float(self.calcular_valor_total(obra_id) or 0)
+        total_pago = float(self.calcular_valor_total_pago(obra_id) or 0)
+        membros = self.calcular_valor_pago_membros(obra_id)
+        return ResumoObra(
+            total=round(total, 2),
+            total_pago=round(total_pago, 2),
+            restante=round(total - total_pago, 2),
+            membros=membros,
+            saldos=self.calcular_saldos(obra_id),
+            atividades=atividades,
+        )

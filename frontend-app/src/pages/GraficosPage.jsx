@@ -22,16 +22,11 @@ export default function GraficosPage() {
   async function load() {
     setError('')
     try {
-      const [list, totalData, pagoData, membrosData] = await Promise.all([
-        api.get('/atividades', obraId),
-        api.get('/valor-total', obraId),
-        api.get('/valor-total-pago', obraId),
-        api.get('/valor-pago-membros', obraId),
-      ])
-      setActivities(Array.isArray(list) ? list : [])
-      setTotal(Number(totalData.total || 0))
-      setPago(Number(pagoData.total_pago || 0))
-      setMembros(Array.isArray(membrosData) ? membrosData : [])
+      const data = await api.get(`/obras/${obraId}/resumo`)
+      setActivities(Array.isArray(data.atividades) ? data.atividades : [])
+      setTotal(Number(data.total || 0))
+      setPago(Number(data.total_pago || 0))
+      setMembros(Array.isArray(data.membros) ? data.membros : [])
     } catch (err) {
       setError(err.message || 'Erro ao carregar gráficos')
     }

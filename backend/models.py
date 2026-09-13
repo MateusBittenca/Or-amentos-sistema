@@ -127,3 +127,20 @@ class ValorMembro(BaseModel):
     usuario_id: int
     nome: str
     total: float
+
+
+class SaldoMembro(BaseModel):
+    usuario_id: int
+    nome: str
+    pago: float
+    cota: float
+    saldo: float
+
+
+class ResumoObra(BaseModel):
+    total: float
+    total_pago: float
+    restante: float
+    membros: List[ValorMembro]
+    saldos: List[SaldoMembro]
+    atividades: List[Activity]

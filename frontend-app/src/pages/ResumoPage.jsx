@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Link, useOutletContext, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { canEditObra, paidTotal, isPaid } from '../constants'
+import { canEditObra, isPaid } from '../constants'
 import { formatCurrency } from '../format'
 import { Button, Card, EmptyState, Kpi, StatusPill } from '../components/ui'
 import { useToast } from '../components/Toast'
 import ActivityFormModal from '../components/ActivityFormModal'
 import PaymentModal from '../components/PaymentModal'
+
+function saldoLabel(saldo) {
+  const value = Number(saldo || 0)
+  if (value > 0.009) return { text: `Deve ${formatCurrency(value)}`, className: 'text-amber-800 bg-amber-50' }
+  if (value < -0.009) return { text: `A receber ${formatCurrency(-value)}`, className: 'text-green-800 bg-green-50' }
+  return { text: 'Em dia', className: 'text-gray-600 bg-gray-100' }
+}
 
 export default function ResumoPage() {
   const { obraId } = useParams()
@@ -14,7 +21,8 @@ export default function ResumoPage() {
   const { showToast } = useToast()
   const [total, setTotal] = useState(0)
   const [pago, setPago] = useState(0)
-  const [membros, setMembros] = useState([])
+  const [restante, setRestante] = useState(0)
+  const [saldos, setSaldos] = useState([])
   const [activities, setActivities] = useState([])
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
@@ -24,16 +32,12 @@ export default function ResumoPage() {
   async function load() {
     setError('')
     try {
-      const [totalData, pagoData, membrosData, atividades] = await Promise.all([
-        api.get('/valor-total', obraId),
-        api.get('/valor-total-pago', obraId),
-        api.get('/valor-pago-membros', obraId),
-        api.get('/atividades', obraId),
-      ])
-      setTotal(Number(totalData.total || 0))
-      setPago(Number(pagoData.total_pago || 0))
-      setMembros(Array.isArray(membrosData) ? membrosData : [])
-      setActivities(Array.isArray(atividades) ? atividades : [])
+      const data = await api.get(`/obras/${obraId}/resumo`)
+      setTotal(Number(data.total || 0))
+      setPago(Number(data.total_pago || 0))
+      setRestante(Number(data.restante || 0))
+      setSaldos(Array.isArray(data.saldos) ? data.saldos : [])
+      setActivities(Array.isArray(data.atividades) ? data.atividades : [])
     } catch (err) {
       setError(err.message || 'Erro ao carregar resumo')
     } finally {
@@ -43,10 +47,8 @@ export default function ResumoPage() {
 
   useEffect(() => { load() }, [obraId])
 
-  const restante = total - pago
   const pct = total > 0 ? ((pago / total) * 100).toFixed(0) : '0'
   const recent = activities.slice(0, 8)
-  const hasPayments = membros.some((item) => Number(item.total) > 0)
   const canEdit = canEditObra(obra?.papel || localStorage.getItem('obra_papel'))
 
   return (
@@ -70,20 +72,30 @@ export default function ResumoPage() {
 
       <Card className="p-4 mb-4">
         <h3 className="text-lg font-semibold text-blue-800 mb-3">
-          <i className="fas fa-users mr-2" />Pago por membro
+          <i className="fas fa-balance-scale mr-2" />Quem deve quanto
         </h3>
+        <p className="text-xs text-gray-500 mb-3">Cota igual do total da obra entre os membros.</p>
         {!loaded ? (
           <p className="text-sm text-gray-500">Carregando...</p>
-        ) : !hasPayments ? (
-          <EmptyState icon="fa-wallet" text="Nenhum pagamento ainda" />
+        ) : saldos.length === 0 ? (
+          <EmptyState icon="fa-wallet" text="Nenhum membro nesta obra" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {membros.map((item) => (
-              <div key={item.usuario_id} className="flex items-center justify-between bg-blue-50 rounded-lg px-3 py-2">
-                <span className="text-sm text-gray-700 truncate">{item.nome}</span>
-                <span className="font-bold text-gray-800 ml-2">{formatCurrency(item.total)}</span>
-              </div>
-            ))}
+            {saldos.map((item) => {
+              const badge = saldoLabel(item.saldo)
+              return (
+                <div key={item.usuario_id} className="rounded-lg border border-gray-100 px-3 py-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-gray-800 truncate">{item.nome}</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.className}`}>{badge.text}</span>
+                  </div>
+                  <div className="mt-2 flex justify-between text-xs text-gray-500">
+                    <span>Pago {formatCurrency(item.pago)}</span>
+                    <span>Cota {formatCurrency(item.cota)}</span>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
       </Card>

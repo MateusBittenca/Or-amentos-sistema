@@ -11,7 +11,7 @@ from fastapi import status
 from config import logger, CORS_ORIGINS, INTERNAL_ERROR
 from models import (
     Activity, PendingActivity, PaidActivity, ExtractedData,
-    UserPublic, RegisterRequest, ObraCreate, ObraOut, ConviteCreate, MembroUpdate, MembroOut, ValorMembro,
+    UserPublic, RegisterRequest, ObraCreate, ObraOut, ConviteCreate, MembroUpdate, MembroOut, ValorMembro, ResumoObra,
 )
 from models import PasswordResetRequest, PasswordResetResponse, PasswordUpdateRequest, PasswordUpdateResponse
 from database import db_cursor, initialize_database
@@ -137,6 +137,12 @@ def create_obra(payload: ObraCreate, current_user: UserPublic = Depends(get_curr
 @app.get("/obras/{obra_id}", response_model=ObraOut)
 def get_obra(obra_id: int, current_user: UserPublic = Depends(get_current_user)):
     return obras_manager.obter_obra(obra_id, current_user.id)
+
+
+@app.get("/obras/{obra_id}/resumo", response_model=ResumoObra)
+def get_resumo(obra_id: int, current_user: UserPublic = Depends(get_current_user)):
+    obras_manager.obter_obra(obra_id, current_user.id)
+    return manager.montar_resumo(obra_id)
 
 
 @app.get("/obras/{obra_id}/membros", response_model=List[MembroOut])
