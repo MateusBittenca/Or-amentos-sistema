@@ -1,7 +1,5 @@
 import { Chart } from 'chart.js/auto'
 
-const MEMBER_COLORS = ['#3B82F6', '#FBBF24', '#10B981', '#EF4444', '#8B5CF6', '#F97316']
-
 export function paidTotal(a) {
   return Number(a.total_pago || 0)
 }
@@ -51,72 +49,16 @@ export function createCharts(canvasMap, activities) {
     options: { ...baseOptions, plugins: { legend: { position: 'bottom' } } },
   })
 
-  make('expenseDistributionChart', {
-    type: 'bar',
-    data: {
-      labels: activities.map((a) => a.activity),
-      datasets: [{ label: 'Gastos', data: activities.map((a) => a.value), backgroundColor: '#3B82F6' }],
-    },
-    options: { ...baseOptions, plugins: { legend: { display: false } } },
-  })
-
-  make('expenseEvolutionChart', {
-    type: 'line',
-    data: {
-      labels: activities.map((a) => a.date),
-      datasets: [{
-        label: 'Evolução',
-        data: activities.map((a) => a.value),
-        borderColor: '#3B82F6',
-        backgroundColor: '#3B82F6',
-        fill: false,
-      }],
-    },
-    options: { ...baseOptions, plugins: { legend: { display: false } } },
-  })
-
-  const memberNames = []
-  activities.forEach((a) => {
-    (a.pagamentos || []).forEach((p) => {
-      if (!memberNames.includes(p.nome)) memberNames.push(p.nome)
-    })
-  })
-  make('paymentComparisonChart', {
-    type: 'bar',
-    data: {
-      labels: activities.map((a) => a.activity),
-      datasets: (memberNames.length ? memberNames : ['Pago']).map((name, index) => ({
-        label: name,
-        data: activities.map((a) => {
-          const found = (a.pagamentos || []).find((p) => p.nome === name)
-          return found ? Number(found.valor) : (memberNames.length ? 0 : paidTotal(a))
-        }),
-        backgroundColor: MEMBER_COLORS[index % MEMBER_COLORS.length],
-      })),
-    },
-    options: { ...baseOptions, plugins: { legend: { position: 'top' } } },
-  })
-
   const sectorSums = {}
-  const sectorCounts = {}
   activities.forEach((a) => {
     const sector = a.sector || 'Sem setor'
     sectorSums[sector] = (sectorSums[sector] || 0) + a.value
-    sectorCounts[sector] = (sectorCounts[sector] || 0) + 1
   })
   make('sectorExpenseChart', {
     type: 'bar',
     data: {
       labels: Object.keys(sectorSums),
       datasets: [{ label: 'Gastos por setor', data: Object.values(sectorSums), backgroundColor: '#3B82F6' }],
-    },
-    options: { ...baseOptions, plugins: { legend: { display: false } } },
-  })
-  make('sectorActivityChart', {
-    type: 'bar',
-    data: {
-      labels: Object.keys(sectorCounts),
-      datasets: [{ label: 'Atividades por setor', data: Object.values(sectorCounts), backgroundColor: '#3B82F6' }],
     },
     options: { ...baseOptions, plugins: { legend: { display: false } } },
   })
@@ -137,27 +79,6 @@ export function createCharts(canvasMap, activities) {
       ],
     },
     options: { ...baseOptions, plugins: { legend: { position: 'top' } } },
-  })
-
-  const totals = {}
-  activities.forEach((a) => {
-    (a.pagamentos || []).forEach((p) => {
-      totals[p.nome] = (totals[p.nome] || 0) + Number(p.valor || 0)
-    })
-    if (!(a.pagamentos || []).length && paidTotal(a)) {
-      totals.Pago = (totals.Pago || 0) + paidTotal(a)
-    }
-  })
-  make('paymentDistributionChart', {
-    type: 'pie',
-    data: {
-      labels: Object.keys(totals).length ? Object.keys(totals) : ['Sem pagamentos'],
-      datasets: [{
-        data: Object.values(totals).length ? Object.values(totals) : [1],
-        backgroundColor: Object.keys(totals).map((_, i) => MEMBER_COLORS[i % MEMBER_COLORS.length]),
-      }],
-    },
-    options: { ...baseOptions, plugins: { legend: { position: 'bottom' } } },
   })
 
   return instances

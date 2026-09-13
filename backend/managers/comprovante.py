@@ -1,7 +1,7 @@
 import re
 from typing import List, Dict, Any, Optional
 from fastapi import HTTPException
-from database import db_cursor
+from database import DISPLAY_NAME_SQL, db_cursor
 from models import PendingActivity, Activity, PaidActivity, PaymentItem, ValorMembro, SaldoMembro, ResumoObra
 from utils.receipts import save_receipt
 
@@ -41,7 +41,7 @@ class ComprovantesManager:
         placeholders = ",".join(["%s"] * len(atividade_ids))
         cursor.execute(
             f"""
-            SELECT p.id, p.atividade_id, p.usuario_id, p.valor, p.comprovante_url, u.nome
+            SELECT p.id, p.atividade_id, p.usuario_id, p.valor, p.comprovante_url, {DISPLAY_NAME_SQL} as nome
             FROM pagamentos p
             JOIN usuarios u ON u.id = p.usuario_id
             WHERE p.atividade_id IN ({placeholders})
@@ -358,8 +358,8 @@ class ComprovantesManager:
     def calcular_valor_pago_membros(self, obra_id: int) -> List[ValorMembro]:
         with db_cursor() as cursor:
             cursor.execute(
-                """
-                SELECT u.id as usuario_id, u.nome, COALESCE(pay.total, 0) as total
+                f"""
+                SELECT u.id as usuario_id, {DISPLAY_NAME_SQL} as nome, COALESCE(pay.total, 0) as total
                 FROM obra_membros om
                 JOIN usuarios u ON u.id = om.usuario_id
                 LEFT JOIN (
@@ -370,8 +370,8 @@ class ComprovantesManager:
                     GROUP BY p.usuario_id
                 ) pay ON pay.usuario_id = u.id
                 WHERE om.obra_id = %s
-                GROUP BY u.id, u.nome, pay.total
-                ORDER BY total DESC, u.nome
+                GROUP BY u.id, u.nome, u.nome_exibicao, pay.total
+                ORDER BY total DESC, nome
                 """,
                 (obra_id, obra_id),
             )

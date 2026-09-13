@@ -48,11 +48,11 @@ export const api = {
     return parseResponse(response)
   },
 
-  async register(nome, password) {
+  async register(nome, password, nomeExibicao) {
     const response = await fetch('/register', {
       method: 'POST',
       headers: { ...JSON_HEADERS, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, password }),
+      body: JSON.stringify({ nome, password, nome_exibicao: nomeExibicao }),
     })
     return parseResponse(response)
   },

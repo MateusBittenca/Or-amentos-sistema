@@ -4,6 +4,7 @@ import { api } from '../api'
 import { useAuth } from '../auth'
 import { Button, Card } from '../components/ui'
 import { useToast } from '../components/Toast'
+import { roleLabel } from '../constants'
 
 export default function ConvitePage() {
   const { token } = useParams()
@@ -68,7 +69,7 @@ export default function ConvitePage() {
           {loading ? <p className="text-gray-600">Carregando convite...</p> : null}
           {invite ? (
             <p className="text-gray-600 mb-6">
-              Você foi convidado para <strong>{invite.obra_nome}</strong> como {invite.papel}.
+              Você foi convidado para <strong>{invite.obra_nome}</strong> como {roleLabel(invite.papel)}.
             </p>
           ) : null}
           {error ? <p className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</p> : null}

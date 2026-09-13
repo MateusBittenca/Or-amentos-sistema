@@ -17,7 +17,7 @@ export async function exportPdf({ charts, total, pago, activities }) {
   doc.text(`Total: ${formatCurrency(total)}  |  Pago: ${formatCurrency(pago)}  |  Atividades: ${activities.length}`, 20, 40)
 
   let y = 50
-  const ids = ['statusChart', 'expenseDistributionChart', 'timelineChart', 'paymentDistributionChart']
+  const ids = ['statusChart', 'sectorExpenseChart', 'timelineChart']
   ids.forEach((id, index) => {
     const chart = charts[id]
     if (!chart) return

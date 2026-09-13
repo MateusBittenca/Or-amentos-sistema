@@ -27,6 +27,7 @@ class User(BaseModel):
     nome: str
     password: str
     status: Optional[str] = None
+    nome_exibicao: Optional[str] = None
 
 
 class UserPublic(BaseModel):
@@ -37,6 +38,7 @@ class UserPublic(BaseModel):
 class RegisterRequest(BaseModel):
     nome: str
     password: str
+    nome_exibicao: str
 
 
 class PendingActivity(BaseModel):

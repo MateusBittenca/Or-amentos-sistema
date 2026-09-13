@@ -51,11 +51,17 @@ def _user_from_row(user_data: dict) -> User:
         nome=user_data["nome"],
         password=user_data["password"],
         status=user_data.get("status"),
+        nome_exibicao=user_data.get("nome_exibicao"),
     )
 
 
+def public_display_name(user: User) -> str:
+    extra = (user.nome_exibicao or "").strip()
+    return extra or user.nome
+
+
 def to_public_user(user: User) -> UserPublic:
-    return UserPublic(id=user.id, nome=user.nome)
+    return UserPublic(id=user.id, nome=public_display_name(user))
 
 
 def get_user_by_name(username: str) -> Optional[User]:
@@ -148,9 +154,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 def register_user(payload: RegisterRequest) -> UserPublic:
     nome = (payload.nome or "").strip()
+    nome_exibicao = (payload.nome_exibicao or "").strip()
     password = payload.password or ""
     if not nome or not password:
         raise HTTPException(status_code=400, detail="E-mail e senha são obrigatórios")
+    if len(nome_exibicao) < 2:
+        raise HTTPException(status_code=400, detail="Informe seu nome (mínimo 2 caracteres)")
     if len(password) < 4:
         raise HTTPException(status_code=400, detail="A senha deve ter pelo menos 4 caracteres")
 
@@ -159,11 +168,11 @@ def register_user(payload: RegisterRequest) -> UserPublic:
 
     with db_cursor() as cursor:
         cursor.execute(
-            "INSERT INTO usuarios (nome, password, status) VALUES (%s, %s, %s)",
-            (nome, hash_password(password), "USER"),
+            "INSERT INTO usuarios (nome, nome_exibicao, password, status) VALUES (%s, %s, %s, %s)",
+            (nome, nome_exibicao, hash_password(password), "USER"),
         )
         user_id = cursor.lastrowid
-    return UserPublic(id=user_id, nome=nome)
+    return UserPublic(id=user_id, nome=nome_exibicao)
 
 
 def get_membership(obra_id: int, usuario_id: int) -> Optional[dict]:

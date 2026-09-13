@@ -116,7 +116,7 @@ export default function ResumoPage() {
                 <div key={activity.id} className="px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium text-gray-800 leading-snug min-w-0">{activity.activity}</p>
-                    <StatusPill paid={isPaid(activity)} />
+                    <StatusPill activity={activity} />
                   </div>
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold tabular-nums text-gray-800">{formatCurrency(activity.value)}</p>
@@ -142,7 +142,7 @@ export default function ResumoPage() {
                     <tr key={activity.id} className="hover:bg-gray-50">
                       <td className="py-3 px-4 font-medium text-gray-800 max-w-xs truncate">{activity.activity}</td>
                       <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(activity.value)}</td>
-                      <td className="py-3 px-4"><StatusPill paid={isPaid(activity)} /></td>
+                      <td className="py-3 px-4"><StatusPill activity={activity} /></td>
                       <td className="py-3 px-4 text-right">
                         <button type="button" className="text-blue-700 text-sm font-medium" onClick={() => setPayActivity(activity)}>
                           {isPaid(activity) ? 'Comprovante' : 'Pagar'}

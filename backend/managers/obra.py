@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 import secrets
 from fastapi import HTTPException
-from database import db_cursor
+from database import DISPLAY_NAME_SQL, db_cursor
 from models import ObraOut, MembroOut
 from auth.auth_user import assert_obra_access, ROLE_RANK
 
@@ -74,12 +74,12 @@ class ObrasManager:
         assert_obra_access(obra_id, usuario_id, "leitura")
         with db_cursor() as cursor:
             cursor.execute(
-                """
-                SELECT om.usuario_id, u.nome, om.papel
+                f"""
+                SELECT om.usuario_id, {DISPLAY_NAME_SQL} as nome, om.papel
                 FROM obra_membros om
                 JOIN usuarios u ON u.id = om.usuario_id
                 WHERE om.obra_id = %s
-                ORDER BY FIELD(om.papel, 'owner', 'editor', 'membro', 'leitura'), u.nome
+                ORDER BY FIELD(om.papel, 'owner', 'editor', 'membro', 'leitura'), nome
                 """,
                 (obra_id,),
             )

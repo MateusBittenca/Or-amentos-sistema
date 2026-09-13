@@ -7,6 +7,22 @@ import { useToast } from './Toast'
 
 const MAX_RECEIPT_BYTES = 5 * 1024 * 1024
 
+function todayISO() {
+  return new Date().toISOString().split('T')[0]
+}
+
+function toDateInput(value) {
+  if (!value) return ''
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
+  const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  if (match) return `${match[3]}-${match[2]}-${match[1]}`
+  return ''
+}
+
+function roundCents(value) {
+  return Math.round(Number(value || 0) * 100) / 100
+}
+
 function StoredReceipt({ pagamento, obraId }) {
   const [src, setSrc] = useState('')
 
@@ -41,7 +57,12 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState('')
   const [saving, setSaving] = useState(false)
+  const [readingReceipt, setReadingReceipt] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [payValue, setPayValue] = useState('')
+  const [payDate, setPayDate] = useState(todayISO())
+  const [valueFromReceipt, setValueFromReceipt] = useState(false)
+  const [dateFromReceipt, setDateFromReceipt] = useState(false)
 
   const open = Boolean(activity)
   const restante = activity ? activityValue(activity) - paidTotal(activity) : 0
@@ -49,6 +70,7 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
   const canPay = canPayObra(papel || localStorage.getItem('obra_papel'))
   const canChoosePayer = canEditObra(papel || localStorage.getItem('obra_papel'))
   const storedPayments = (activity?.pagamentos || []).filter((item) => item.comprovante_url)
+  const maxValue = roundCents(Math.max(restante, 0))
 
   useEffect(() => {
     if (!open) return
@@ -56,10 +78,45 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
     setPreview('')
     setDragging(false)
     setPayer(localStorage.getItem('user_id') || '')
+    setPayValue(String(roundCents(Math.max(activityValue(activity) - paidTotal(activity), 0))))
+    setPayDate(todayISO())
+    setValueFromReceipt(false)
+    setDateFromReceipt(false)
+    setReadingReceipt(false)
     api.get(`/obras/${obraId}/membros`).then((data) => {
       setMembros(Array.isArray(data) ? data : [])
     }).catch(() => setMembros([]))
-  }, [open, obraId])
+  }, [open, obraId, activity])
+
+  async function readReceipt(selected) {
+    setReadingReceipt(true)
+    try {
+      const form = new FormData()
+      form.append('file', selected)
+      const extracted = await api.postForm('/process-receipt', form, obraId)
+      if (extracted.value) {
+        const extractedValue = roundCents(Number(parseCurrencyInput(extracted.value) || 0))
+        if (extractedValue > 0) {
+          if (extractedValue > maxValue) {
+            showToast('O valor do comprovante foi limitado ao restante da atividade')
+            setPayValue(String(maxValue))
+          } else {
+            setPayValue(String(extractedValue))
+          }
+          setValueFromReceipt(true)
+        }
+      }
+      const iso = toDateInput(extracted.date)
+      if (iso) {
+        setPayDate(iso)
+        setDateFromReceipt(true)
+      }
+    } catch (err) {
+      showToast(err.message || 'Não foi possível ler o comprovante', 'error')
+    } finally {
+      setReadingReceipt(false)
+    }
+  }
 
   function applyFile(selected) {
     if (!selected) {
@@ -79,6 +136,7 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
     const reader = new FileReader()
     reader.onload = (ev) => setPreview(ev.target.result)
     reader.readAsDataURL(selected)
+    readReceipt(selected)
   }
 
   function onFile(e) {
@@ -101,31 +159,22 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
 
   async function confirm() {
     if (!activity) return
+    const value = roundCents(payValue)
+    if (!(value > 0) || value > maxValue) {
+      showToast('Informe um valor maior que zero e até o restante', 'error')
+      return
+    }
+    if (!payDate) {
+      showToast('Informe a data do pagamento', 'error')
+      return
+    }
     setSaving(true)
     try {
-      const maxValue = Math.round(Math.max(restante, 0) * 100) / 100
-      let value = maxValue
-      let date = new Date().toISOString().split('T')[0]
-      if (file) {
-        const ocrForm = new FormData()
-        ocrForm.append('file', file)
-        const extracted = await api.postForm('/process-receipt', ocrForm, obraId)
-        if (extracted.value) {
-          const extractedValue = Math.round(Number(parseCurrencyInput(extracted.value) || value) * 100) / 100
-          if (extractedValue > maxValue) {
-            showToast('O valor do comprovante foi limitado ao restante da atividade')
-            value = maxValue
-          } else {
-            value = extractedValue
-          }
-        }
-        if (extracted.date) date = extracted.date
-      }
       const form = new FormData()
       form.append('atividade_id', String(activity.id))
       form.append('usuario_id', String(parseInt(payer, 10)))
       form.append('value', String(value))
-      form.append('date', date)
+      form.append('date', payDate)
       if (file) form.append('file', file)
       await api.postForm('/register-payment', form, obraId)
       onSaved()
@@ -170,6 +219,35 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
 
           {!alreadyPaid && canPay ? (
             <>
+              <Field label="Valor (R$)">
+                <input
+                  className={inputClass()}
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  max={maxValue}
+                  value={payValue}
+                  onChange={(e) => {
+                    setPayValue(e.target.value)
+                    setValueFromReceipt(false)
+                  }}
+                  required
+                />
+                {valueFromReceipt ? <p className="text-xs text-blue-700 mt-1">Valor lido do comprovante</p> : null}
+              </Field>
+              <Field label="Data">
+                <input
+                  className={inputClass()}
+                  type="date"
+                  value={payDate}
+                  onChange={(e) => {
+                    setPayDate(e.target.value)
+                    setDateFromReceipt(false)
+                  }}
+                  required
+                />
+                {dateFromReceipt ? <p className="text-xs text-blue-700 mt-1">Data lida do comprovante</p> : null}
+              </Field>
               <Field label="Quem está pagando?">
                 <select className={inputClass()} value={payer} onChange={(e) => setPayer(e.target.value)}>
                   {(canChoosePayer ? membros : membros.filter((m) => String(m.usuario_id) === String(localStorage.getItem('user_id')))).map((membro) => (
@@ -178,11 +256,12 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
                 </select>
               </Field>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Comprovante (opcional, OCR)</p>
+                <p className="text-sm text-gray-600 mb-1">Comprovante (opcional)</p>
                 {preview ? (
                   <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-4 text-center">
                     <img src={preview} alt="Comprovante" className="mx-auto max-h-40 rounded-lg" />
                     <p className="mt-2 text-xs text-gray-600 truncate">{file?.name}</p>
+                    {readingReceipt ? <p className="mt-1 text-xs text-blue-700">Lendo valor da imagem...</p> : null}
                     <div className="mt-3 flex items-center justify-center gap-3">
                       <label className="cursor-pointer text-sm text-blue-700 hover:text-blue-800">
                         <input type="file" accept="image/*" className="hidden" onChange={onFile} />
@@ -209,7 +288,7 @@ export default function PaymentModal({ activity, obraId, papel, onClose, onSaved
                       <i className="fas fa-image text-xl" />
                     </span>
                     <p className="text-sm font-medium text-blue-800">Clique ou arraste a imagem</p>
-                    <p className="text-xs text-gray-500 mt-1">JPG, PNG ou WebP até 5 MB — o valor pode ser lido automaticamente</p>
+                    <p className="text-xs text-gray-500 mt-1">JPG, PNG ou WebP até 5 MB — o valor pode ser lido automaticamente da imagem</p>
                   </label>
                 )}
               </div>

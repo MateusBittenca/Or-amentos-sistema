@@ -18,7 +18,7 @@ def unique_email(prefix="t"):
 
 def register_and_login(client, email=None, password="senha1234"):
     email = email or unique_email()
-    created = client.post("/register", json={"nome": email, "password": password})
+    created = client.post("/register", json={"nome": email, "password": password, "nome_exibicao": "Teste User"})
     assert created.status_code == 200, created.text
     token_response = client.post("/token", data={"username": email, "password": password})
     assert token_response.status_code == 200, token_response.text

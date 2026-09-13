@@ -8,6 +8,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('login')
   const [email, setEmail] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
@@ -40,13 +41,17 @@ export default function LoginPage() {
   async function handleRegister(e) {
     e.preventDefault()
     setError('')
+    if (displayName.trim().length < 2) {
+      setError('Informe seu nome (mínimo 2 caracteres)')
+      return
+    }
     if (password.length < 4) {
       setError('A senha precisa ter no mínimo 4 caracteres')
       return
     }
     setLoading(true)
     try {
-      await register(email.trim(), password)
+      await register(email.trim(), password, displayName.trim())
       await afterAuth()
     } catch (err) {
       setError(err.message || 'Erro ao criar conta')
@@ -95,19 +100,29 @@ export default function LoginPage() {
             {error ? <p className="mb-3 text-sm text-red-600 bg-red-50 rounded-lg p-2">{error}</p> : null}
 
             <form onSubmit={tab === 'login' ? handleLogin : handleRegister}>
+              {tab === 'register' ? (
+                <Field label="Seu nome">
+                  <input className={inputClass()} type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required minLength={2} />
+                </Field>
+              ) : null}
               <Field label="E-mail">
                 <input className={inputClass()} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </Field>
               <Field label="Senha">
                 <div className="relative">
                   <input
-                    className={`${inputClass()} pr-10`}
+                    className={`${inputClass()} pr-12`}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                  <button type="button" className="absolute right-3 top-2.5 text-gray-400" onClick={() => setShowPassword(!showPassword)}>
+                  <button
+                    type="button"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center text-gray-600"
+                    aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
                     <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
                   </button>
                 </div>

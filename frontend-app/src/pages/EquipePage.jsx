@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { canEditObra, isObraOwner } from '../constants'
+import { canEditObra, isObraOwner, ROLE_HINTS, ROLE_INVITE_OPTIONS, roleLabel } from '../constants'
 import { Button, Card, EmptyState, Field, inputClass } from '../components/ui'
 import { useToast } from '../components/Toast'
 
@@ -74,15 +74,18 @@ export default function EquipePage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
         <h2 className="text-xl font-semibold text-blue-800">Equipe</h2>
         {canInvite ? (
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <Field label="Papel do convite">
-              <select className={inputClass()} value={papel} onChange={(e) => setPapel(e.target.value)}>
-                <option value="editor">editor</option>
-                <option value="membro">membro</option>
-                <option value="leitura">leitura</option>
-              </select>
-            </Field>
-            <Button onClick={gerarConvite}>Gerar convite</Button>
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-end gap-2">
+              <Field label="Papel do convite">
+                <select className={inputClass()} value={papel} onChange={(e) => setPapel(e.target.value)}>
+                  {ROLE_INVITE_OPTIONS.map((item) => (
+                    <option key={item} value={item}>{roleLabel(item)}</option>
+                  ))}
+                </select>
+              </Field>
+              <Button onClick={gerarConvite} className="mb-3">Gerar convite</Button>
+            </div>
+            <p className="text-xs text-gray-500 -mt-2">{ROLE_HINTS[papel]}</p>
           </div>
         ) : null}
       </div>
@@ -99,7 +102,7 @@ export default function EquipePage() {
           <div className="p-4">
             <EmptyState icon="fa-user-friends" text="Só você nesta obra. Gere um convite para chamar alguém." />
             {membros.length === 1 ? (
-              <p className="text-center text-sm text-gray-600 -mt-4 mb-2">{membros[0].nome} · {membros[0].papel}</p>
+              <p className="text-center text-sm text-gray-600 -mt-4 mb-2">{membros[0].nome} · {roleLabel(membros[0].papel)}</p>
             ) : null}
           </div>
         ) : (
@@ -115,12 +118,12 @@ export default function EquipePage() {
                         value={membro.papel}
                         onChange={(e) => changePapel(membro.usuario_id, e.target.value)}
                       >
-                        <option value="editor">editor</option>
-                        <option value="membro">membro</option>
-                        <option value="leitura">leitura</option>
+                        {ROLE_INVITE_OPTIONS.map((item) => (
+                          <option key={item} value={item}>{roleLabel(item)}</option>
+                        ))}
                       </select>
                     ) : (
-                      <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{membro.papel}</span>
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{roleLabel(membro.papel)}</span>
                     )}
                     {owner && membro.papel !== 'owner' ? (
                       <button type="button" className="text-red-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-50 shrink-0" onClick={() => remove(membro.usuario_id)}>
@@ -151,12 +154,12 @@ export default function EquipePage() {
                             value={membro.papel}
                             onChange={(e) => changePapel(membro.usuario_id, e.target.value)}
                           >
-                            <option value="editor">editor</option>
-                            <option value="membro">membro</option>
-                            <option value="leitura">leitura</option>
+                            {ROLE_INVITE_OPTIONS.map((item) => (
+                              <option key={item} value={item}>{roleLabel(item)}</option>
+                            ))}
                           </select>
                         ) : (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{membro.papel}</span>
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{roleLabel(membro.papel)}</span>
                         )}
                       </td>
                       <td className="py-3 px-4 text-right">

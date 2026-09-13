@@ -4,6 +4,7 @@ import { api } from '../api'
 import { useAuth } from '../auth'
 import { Button, Card, EmptyState, Field, Modal, inputClass } from '../components/ui'
 import { useToast } from '../components/Toast'
+import { roleLabel } from '../constants'
 
 export default function ObrasPage() {
   const { user, logout } = useAuth()
@@ -101,7 +102,7 @@ export default function ObrasPage() {
               <Card key={obra.id} className="p-5">
                 <h3 className="text-lg font-bold text-gray-800 mb-1">{obra.nome}</h3>
                 <p className="text-sm text-gray-500 mb-3">{obra.descricao || 'Sem descrição'}</p>
-                <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full mb-4">{obra.papel}</span>
+                <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full mb-4">{roleLabel(obra.papel)}</span>
                 <Button className="w-full" onClick={() => enterObra(obra)}>Entrar</Button>
               </Card>
             ))}

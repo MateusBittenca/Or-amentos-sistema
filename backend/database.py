@@ -6,6 +6,10 @@ from config import DB_CONFIG, ENV, INTERNAL_ERROR, UPLOADS_DIR, logger
 
 connection_pool = None
 
+DISPLAY_NAME_SQL = "COALESCE(NULLIF(TRIM(u.nome_exibicao), ''), u.nome)"
+UTF8_TABLES = ("usuarios", "obras", "obra_membros", "atividades", "pagamentos", "convites")
+MOJIBAKE_MARKERS = ("Ã", "Â", "â€")
+
 
 def init_connection_pool():
     """Inicializar o pool de conexões"""
@@ -29,7 +33,12 @@ def get_db_connection():
         init_connection_pool()
 
     try:
-        return connection_pool.get_connection()
+        connection = connection_pool.get_connection()
+        try:
+            connection.set_charset_collation("utf8mb4", "utf8mb4_unicode_ci")
+        except Exception:
+            pass
+        return connection
     except Error as e:
         logger.error(f"Erro ao obter conexão do pool: {e}")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR)
@@ -79,6 +88,72 @@ def _table_exists(cursor, table):
         (table,),
     )
     return cursor.fetchone()[0] > 0
+
+
+def _repair_mojibake(value):
+    if not value or not isinstance(value, str):
+        return value
+    if not any(marker in value for marker in MOJIBAKE_MARKERS):
+        return value
+    try:
+        return value.encode("latin1").decode("utf-8")
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        return value
+
+
+def _table_charset(cursor, table):
+    cursor.execute(
+        """
+        SELECT CCSA.character_set_name
+        FROM information_schema.TABLES T
+        JOIN information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
+          ON CCSA.collation_name = T.TABLE_COLLATION
+        WHERE T.TABLE_SCHEMA = DATABASE() AND T.TABLE_NAME = %s
+        """,
+        (table,),
+    )
+    row = cursor.fetchone()
+    return row[0] if row else None
+
+
+def _ensure_utf8mb4_tables(cursor):
+    for table in UTF8_TABLES:
+        if not _table_exists(cursor, table):
+            continue
+        if _table_charset(cursor, table) == "utf8mb4":
+            continue
+        cursor.execute(
+            f"ALTER TABLE `{table}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        )
+
+
+def _repair_mojibake_columns(cursor):
+    targets = (
+        ("atividades", "idAtividades", ("nome", "setor")),
+        ("obras", "id", ("nome", "descricao")),
+    )
+    for table, pk, columns in targets:
+        if not _table_exists(cursor, table):
+            continue
+        col_sql = ", ".join((pk,) + columns)
+        cursor.execute(f"SELECT {col_sql} FROM `{table}`")
+        rows = cursor.fetchall()
+        for row in rows:
+            pk_val = row[0]
+            updates = []
+            values = []
+            for index, column in enumerate(columns):
+                original = row[index + 1]
+                repaired = _repair_mojibake(original)
+                if repaired != original:
+                    updates.append(f"`{column}` = %s")
+                    values.append(repaired)
+            if updates:
+                values.append(pk_val)
+                cursor.execute(
+                    f"UPDATE `{table}` SET {', '.join(updates)} WHERE `{pk}` = %s",
+                    values,
+                )
 
 
 def initialize_database():
@@ -159,6 +234,12 @@ def initialize_database():
 
         if not _column_exists(cursor, "pagamentos", "comprovante_url"):
             cursor.execute("ALTER TABLE pagamentos ADD COLUMN comprovante_url VARCHAR(500) DEFAULT NULL")
+
+        if not _column_exists(cursor, "usuarios", "nome_exibicao"):
+            cursor.execute("ALTER TABLE usuarios ADD COLUMN nome_exibicao VARCHAR(255) DEFAULT NULL")
+
+        _ensure_utf8mb4_tables(cursor)
+        _repair_mojibake_columns(cursor)
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS convites (

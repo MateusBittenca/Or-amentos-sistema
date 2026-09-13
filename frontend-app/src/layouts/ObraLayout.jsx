@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
 import { useAuth } from '../auth'
+import { roleLabel } from '../constants'
 
 const links = [
   { to: '', label: 'Resumo', icon: 'fa-home', end: true },
@@ -54,7 +55,7 @@ export default function ObraLayout() {
               <i className="fas fa-hard-hat mr-2" />Gestão de Gastos
             </h1>
             {obra ? (
-              <p className="text-xs text-blue-200 truncate">{obra.nome} · {obra.papel}</p>
+              <p className="text-xs text-blue-200 truncate">{obra.nome} · {roleLabel(obra.papel)}</p>
             ) : null}
           </div>
           <div className="hidden sm:flex items-center gap-1 flex-wrap">

@@ -34,6 +34,26 @@ export const SECTORS = [
   'Iluminação',
 ]
 
+export const ROLE_LABELS = {
+  owner: 'Dono',
+  editor: 'Editor',
+  membro: 'Membro',
+  leitura: 'Somente leitura',
+}
+
+export const ROLE_HINTS = {
+  owner: 'Acesso total',
+  editor: 'Pode cadastrar e editar atividades',
+  membro: 'Pode registrar os próprios pagamentos',
+  leitura: 'Só visualiza',
+}
+
+export const ROLE_INVITE_OPTIONS = ['editor', 'membro', 'leitura']
+
+export function roleLabel(papel) {
+  return ROLE_LABELS[papel] || papel
+}
+
 export function canEditObra(papel) {
   return papel === 'owner' || papel === 'editor'
 }
@@ -55,7 +75,15 @@ export function activityValue(activity) {
   return Number(activity.value ?? activity.total_value ?? 0)
 }
 
+export function paymentStatus(activity) {
+  if (!activity) return 'pending'
+  const paid = paidTotal(activity)
+  const value = activityValue(activity)
+  if (activity.status === 'paid' || (value > 0 && paid >= value)) return 'paid'
+  if (paid > 0 && paid < value) return 'partial'
+  return 'pending'
+}
+
 export function isPaid(activity) {
-  if (activity.status === 'paid') return true
-  return paidTotal(activity) >= activityValue(activity) && activityValue(activity) > 0
+  return paymentStatus(activity) === 'paid'
 }

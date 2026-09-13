@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { canEditObra, canPayObra, isPaid, paidTotal, activityValue } from '../constants'
+import { canEditObra, canPayObra, isPaid, paidTotal, activityValue, paymentStatus } from '../constants'
 import { formatCurrency } from '../format'
 import { Button, Card, EmptyState, StatusPill } from '../components/ui'
 import { useToast } from '../components/Toast'
@@ -44,9 +44,9 @@ export default function AtividadesPage() {
 
   const filtered = useMemo(() => {
     return activities.filter((activity) => {
-      const paid = isPaid(activity)
-      if (tab === 'pending' && paid) return false
-      if (tab === 'paid' && !paid) return false
+      const status = paymentStatus(activity)
+      if (tab === 'pending' && status === 'paid') return false
+      if (tab === 'paid' && status !== 'paid') return false
       if (!query.trim()) return true
       const hay = `${activity.activity} ${activity.sector}`.toLowerCase()
       return hay.includes(query.toLowerCase())
@@ -152,7 +152,7 @@ export default function AtividadesPage() {
                         {activity.date ? ` · ${activity.date}` : ''}
                       </p>
                     </div>
-                    <StatusPill paid={isPaid(activity)} />
+                    <StatusPill activity={activity} />
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
                     <div>
@@ -189,7 +189,7 @@ export default function AtividadesPage() {
                       <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(activityValue(activity))}</td>
                       <td className="py-3 px-4 text-right tabular-nums whitespace-nowrap">{formatCurrency(paidTotal(activity))}</td>
                       <td className="py-3 px-4 text-gray-600 whitespace-nowrap">{activity.date || '-'}</td>
-                      <td className="py-3 px-4"><StatusPill paid={isPaid(activity)} /></td>
+                      <td className="py-3 px-4"><StatusPill activity={activity} /></td>
                       <td className="py-3 px-4">{activityActions(activity, false)}</td>
                     </tr>
                   ))}

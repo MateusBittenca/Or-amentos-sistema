@@ -42,6 +42,8 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", "obras123"),
     "database": os.getenv("DB_NAME", "obras"),
     "charset": "utf8mb4",
+    "collation": "utf8mb4_unicode_ci",
+    "use_unicode": True,
     "autocommit": True,
     "ssl_disabled": ssl_disabled,
     "consume_results": True,

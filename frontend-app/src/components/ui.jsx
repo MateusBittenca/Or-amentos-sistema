@@ -1,3 +1,15 @@
+import { useEffect, useId, useRef } from 'react'
+import { paymentStatus } from '../constants'
+
+const FOCUSABLE = [
+  'a[href]',
+  'button:not([disabled])',
+  'textarea:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ')
+
 export function Button({
   children,
   variant = 'primary',
@@ -40,11 +52,17 @@ export function EmptyState({ icon = 'fa-hard-hat', title, text }) {
   )
 }
 
-export function StatusPill({ paid }) {
-  return paid ? (
-    <span className="px-3 py-1 text-xs rounded-full font-medium bg-green-100 text-green-800">Pago</span>
-  ) : (
-    <span className="px-3 py-1 text-xs rounded-full font-medium bg-yellow-100 text-yellow-800">Pendente</span>
+const STATUS_STYLES = {
+  paid: { label: 'Pago', className: 'bg-green-100 text-green-800' },
+  partial: { label: 'Parcial', className: 'bg-amber-50 text-amber-800' },
+  pending: { label: 'Pendente', className: 'bg-yellow-100 text-yellow-800' },
+}
+
+export function StatusPill({ paid, activity, status }) {
+  const resolved = status || (activity ? paymentStatus(activity) : (paid ? 'paid' : 'pending'))
+  const style = STATUS_STYLES[resolved] || STATUS_STYLES.pending
+  return (
+    <span className={`px-3 py-1 text-xs rounded-full font-medium ${style.className}`}>{style.label}</span>
   )
 }
 
@@ -66,16 +84,82 @@ export function Kpi({ label, value, hint, icon }) {
 }
 
 export function Modal({ open, title, onClose, children, footer }) {
+  const titleId = useId()
+  const panelRef = useRef(null)
+  const lastFocusRef = useRef(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
+  useEffect(() => {
+    if (!open) return undefined
+    lastFocusRef.current = document.activeElement
+
+    function focusables() {
+      const panel = panelRef.current
+      if (!panel) return []
+      return [...panel.querySelectorAll(FOCUSABLE)].filter((el) => !el.hasAttribute('disabled'))
+    }
+
+    const frame = requestAnimationFrame(() => {
+      const items = focusables()
+      ;(items[0] || panelRef.current)?.focus()
+    })
+
+    function onKey(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onCloseRef.current()
+        return
+      }
+      if (event.key !== 'Tab') return
+      const items = focusables()
+      if (!items.length) {
+        event.preventDefault()
+        panelRef.current?.focus()
+        return
+      }
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKey)
+    return () => {
+      cancelAnimationFrame(frame)
+      document.removeEventListener('keydown', onKey)
+      const previous = lastFocusRef.current
+      if (previous && typeof previous.focus === 'function' && document.contains(previous)) {
+        previous.focus()
+      }
+    }
+  }, [open])
+
   if (!open) return null
   return (
     <div className="fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center p-4" onClick={onClose}>
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          <button type="button" className="text-gray-500 hover:text-gray-700" onClick={onClose}>
+          <h3 id={titleId} className="text-lg font-semibold text-gray-800">{title}</h3>
+          <button
+            type="button"
+            className="text-gray-500 hover:text-gray-700 w-11 h-11 inline-flex items-center justify-center rounded-lg"
+            aria-label="Fechar"
+            onClick={onClose}
+          >
             <i className="fas fa-times" />
           </button>
         </div>
