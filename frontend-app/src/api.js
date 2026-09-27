@@ -1,6 +1,9 @@
 import { apiError } from './format'
 
-const JSON_HEADERS = { Accept: 'application/json' }
+const JSON_HEADERS = {
+  Accept: 'application/json',
+  'ngrok-skip-browser-warning': '1',
+}
 
 function token() {
   return localStorage.getItem('access_token')

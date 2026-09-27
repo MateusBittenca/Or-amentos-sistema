@@ -8,10 +8,13 @@ function htmlBypass(req) {
   }
 }
 
+const ngrokHosts = ['.ngrok-free.app', '.ngrok-free.dev', '.ngrok.app', '.ngrok.io', '.ngrok.dev']
+
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    allowedHosts: ngrokHosts,
     proxy: {
       '/token': { target: 'http://127.0.0.1:8000' },
       '/register': { target: 'http://127.0.0.1:8000' },
@@ -33,5 +36,8 @@ export default defineConfig({
       '/obras': { target: 'http://127.0.0.1:8000', bypass: htmlBypass },
       '/convite': { target: 'http://127.0.0.1:8000', bypass: htmlBypass },
     },
+  },
+  preview: {
+    allowedHosts: ngrokHosts,
   },
 })
