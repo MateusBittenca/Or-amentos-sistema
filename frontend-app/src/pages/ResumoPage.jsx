@@ -23,6 +23,7 @@ export default function ResumoPage() {
   const [pago, setPago] = useState(0)
   const [restante, setRestante] = useState(0)
   const [saldos, setSaldos] = useState([])
+  const [transferencias, setTransferencias] = useState([])
   const [activities, setActivities] = useState([])
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
@@ -37,6 +38,7 @@ export default function ResumoPage() {
       setPago(Number(data.total_pago || 0))
       setRestante(Number(data.restante || 0))
       setSaldos(Array.isArray(data.saldos) ? data.saldos : [])
+      setTransferencias(Array.isArray(data.transferencias) ? data.transferencias : [])
       setActivities(Array.isArray(data.atividades) ? data.atividades : [])
     } catch (err) {
       setError(err.message || 'Erro ao carregar resumo')
@@ -74,29 +76,47 @@ export default function ResumoPage() {
         <h3 className="text-lg font-semibold text-blue-800 mb-3">
           <i className="fas fa-balance-scale mr-2" />Quem deve quanto
         </h3>
-        <p className="text-xs text-gray-500 mb-3">Cota igual do total da obra entre os membros.</p>
+        <p className="text-xs text-gray-500 mb-3">A divisão é só do que já foi pago, pela participação de cada atividade.</p>
         {!loaded ? (
           <p className="text-sm text-gray-500">Carregando...</p>
         ) : saldos.length === 0 ? (
           <EmptyState icon="fa-wallet" text="Nenhum membro nesta obra" />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {saldos.map((item) => {
-              const badge = saldoLabel(item.saldo)
-              return (
-                <div key={item.usuario_id} className="rounded-lg border border-gray-100 px-3 py-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-gray-800 truncate">{item.nome}</span>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.className}`}>{badge.text}</span>
+          <>
+            {transferencias.length === 0 ? (
+              <p className="text-sm text-green-800 bg-green-50 rounded-lg px-3 py-2 mb-3">
+                Ninguém deve nada pelo que já foi gasto.
+              </p>
+            ) : (
+              <ul className="mb-3 space-y-2">
+                {transferencias.map((item) => (
+                  <li
+                    key={`${item.de_usuario_id}-${item.para_usuario_id}`}
+                    className="text-sm font-medium text-blue-900 bg-blue-50 rounded-lg px-3 py-2"
+                  >
+                    {item.de_nome} transfere {formatCurrency(item.valor)} para {item.para_nome}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {saldos.map((item) => {
+                const badge = saldoLabel(item.saldo)
+                return (
+                  <div key={item.usuario_id} className="rounded-lg border border-gray-100 px-3 py-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium text-gray-800 truncate">{item.nome}</span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.className}`}>{badge.text}</span>
+                    </div>
+                    <div className="mt-2 flex justify-between text-xs text-gray-500">
+                      <span>Pago {formatCurrency(item.pago)}</span>
+                      <span>Parte {formatCurrency(item.parte)}</span>
+                    </div>
                   </div>
-                  <div className="mt-2 flex justify-between text-xs text-gray-500">
-                    <span>Pago {formatCurrency(item.pago)}</span>
-                    <span>Cota {formatCurrency(item.cota)}</span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          </>
         )}
       </Card>
 

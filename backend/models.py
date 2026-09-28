@@ -10,6 +10,12 @@ class PaymentItem(BaseModel):
     comprovante_url: Optional[str] = None
 
 
+class ParticipacaoAtividade(BaseModel):
+    usuario_id: int
+    nome: str
+    percentual: float
+
+
 class Activity(BaseModel):
     id: int
     activity: str
@@ -19,6 +25,7 @@ class Activity(BaseModel):
     total_pago: float = 0
     valor_restante: float = 0
     pagamentos: List[PaymentItem] = []
+    participacao: List[ParticipacaoAtividade] = []
     status: Optional[str] = None
 
 
@@ -123,6 +130,24 @@ class MembroOut(BaseModel):
     usuario_id: int
     nome: str
     papel: str
+    participacao: Optional[float] = None
+
+
+class ParticipacaoItem(BaseModel):
+    usuario_id: int
+    percentual: float
+
+
+class ParticipacaoObraUpdate(BaseModel):
+    participantes: List[ParticipacaoItem]
+
+
+class Transferencia(BaseModel):
+    de_usuario_id: int
+    de_nome: str
+    para_usuario_id: int
+    para_nome: str
+    valor: float
 
 
 class ValorMembro(BaseModel):
@@ -135,7 +160,7 @@ class SaldoMembro(BaseModel):
     usuario_id: int
     nome: str
     pago: float
-    cota: float
+    parte: float
     saldo: float
 
 
@@ -145,4 +170,5 @@ class ResumoObra(BaseModel):
     restante: float
     membros: List[ValorMembro]
     saldos: List[SaldoMembro]
+    transferencias: List[Transferencia] = []
     atividades: List[Activity]

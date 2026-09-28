@@ -7,7 +7,7 @@ from config import DB_CONFIG, ENV, INTERNAL_ERROR, UPLOADS_DIR, logger
 connection_pool = None
 
 DISPLAY_NAME_SQL = "COALESCE(NULLIF(TRIM(u.nome_exibicao), ''), u.nome)"
-UTF8_TABLES = ("usuarios", "obras", "obra_membros", "atividades", "pagamentos", "convites")
+UTF8_TABLES = ("usuarios", "obras", "obra_membros", "atividades", "pagamentos", "convites", "atividade_participacoes")
 MOJIBAKE_MARKERS = ("Ã", "Â", "â€")
 
 
@@ -156,6 +156,73 @@ def _repair_mojibake_columns(cursor):
                 )
 
 
+def _backfill_participacoes(cursor):
+    """Congela participação igual nas obras e atividades que ainda não têm rateio."""
+    if not _table_exists(cursor, "atividade_participacoes"):
+        return
+    if not _column_exists(cursor, "obra_membros", "participacao"):
+        return
+    cursor.execute("SELECT id FROM obras")
+    obra_ids = [row[0] for row in cursor.fetchall()]
+    for obra_id in obra_ids:
+        cursor.execute(
+            """
+            SELECT usuario_id, papel, participacao
+            FROM obra_membros
+            WHERE obra_id = %s
+            ORDER BY usuario_id
+            """,
+            (obra_id,),
+        )
+        members = cursor.fetchall()
+        participating = [member for member in members if member[1] != "leitura"]
+        if participating and all(member[2] is None for member in participating):
+            count = len(participating)
+            base, rem = divmod(10000, count)
+            for index, member in enumerate(participating):
+                percentual = (base + (1 if index < rem else 0)) / 100.0
+                cursor.execute(
+                    "UPDATE obra_membros SET participacao = %s WHERE obra_id = %s AND usuario_id = %s",
+                    (percentual, obra_id, member[0]),
+                )
+        cursor.execute(
+            """
+            SELECT a.idAtividades
+            FROM atividades a
+            WHERE a.obra_id = %s
+              AND NOT EXISTS (
+                  SELECT 1 FROM atividade_participacoes ap
+                  WHERE ap.atividade_id = a.idAtividades
+              )
+            """,
+            (obra_id,),
+        )
+        activity_ids = [row[0] for row in cursor.fetchall()]
+        if not activity_ids:
+            continue
+        cursor.execute(
+            """
+            SELECT usuario_id, participacao
+            FROM obra_membros
+            WHERE obra_id = %s AND papel <> 'leitura' AND participacao IS NOT NULL
+            ORDER BY usuario_id
+            """,
+            (obra_id,),
+        )
+        shares = cursor.fetchall()
+        if not shares:
+            continue
+        for atividade_id in activity_ids:
+            for usuario_id, percentual in shares:
+                cursor.execute(
+                    """
+                    INSERT INTO atividade_participacoes (atividade_id, usuario_id, percentual)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (atividade_id, usuario_id, percentual),
+                )
+
+
 def initialize_database():
     """Criar tabelas, migrar schema legado e garantir seed."""
     try:
@@ -237,6 +304,21 @@ def initialize_database():
 
         if not _column_exists(cursor, "usuarios", "nome_exibicao"):
             cursor.execute("ALTER TABLE usuarios ADD COLUMN nome_exibicao VARCHAR(255) DEFAULT NULL")
+
+        if not _column_exists(cursor, "obra_membros", "participacao"):
+            cursor.execute("ALTER TABLE obra_membros ADD COLUMN participacao DECIMAL(5, 2) DEFAULT NULL")
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS atividade_participacoes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                atividade_id INT NOT NULL,
+                usuario_id INT NOT NULL,
+                percentual DECIMAL(5, 2) NOT NULL,
+                UNIQUE KEY unique_atividade_usuario (atividade_id, usuario_id),
+                FOREIGN KEY (atividade_id) REFERENCES atividades(idAtividades) ON DELETE CASCADE,
+                FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+            )
+        """)
 
         _ensure_utf8mb4_tables(cursor)
         _repair_mojibake_columns(cursor)
@@ -363,6 +445,8 @@ def initialize_database():
                 THEN 'paid' ELSE 'pending'
             END
         """)
+
+        _backfill_participacoes(cursor)
 
         connection.commit()
         cursor.close()

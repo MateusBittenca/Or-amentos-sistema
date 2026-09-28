@@ -13,6 +13,7 @@ from config import logger, CORS_ORIGINS, INTERNAL_ERROR
 from models import (
     Activity, PendingActivity, PaidActivity, ExtractedData,
     UserPublic, RegisterRequest, ObraCreate, ObraOut, ConviteCreate, MembroUpdate, MembroOut, ValorMembro, ResumoObra,
+    ParticipacaoObraUpdate,
 )
 from models import PasswordResetRequest, PasswordResetResponse, PasswordUpdateRequest, PasswordUpdateResponse
 from database import db_cursor, initialize_database
@@ -159,6 +160,11 @@ def create_invite(obra_id: int, payload: ConviteCreate, current_user: UserPublic
     return obras_manager.criar_convite(obra_id, current_user.id, payload.papel, payload.email)
 
 
+@app.patch("/obras/{obra_id}/participacao")
+def update_participacao(obra_id: int, payload: ParticipacaoObraUpdate, current_user: UserPublic = Depends(get_current_user)):
+    return obras_manager.definir_participacao(obra_id, current_user.id, payload.participantes)
+
+
 @app.patch("/obras/{obra_id}/membros/{membro_id}")
 def update_membro(obra_id: int, membro_id: int, payload: MembroUpdate, current_user: UserPublic = Depends(get_current_user)):
     return obras_manager.atualizar_papel(obra_id, current_user.id, membro_id, payload.papel)
@@ -205,13 +211,14 @@ def add_activity(
     valor: str = Form(...),
     setor: str = Form(...),
     data: str = Form(...),
+    participacao: Optional[str] = Form(None),
     ctx: dict = Depends(require_obra_member("editor")),
 ):
     try:
         valor_float = float(valor.replace(',', '.'))
     except ValueError:
         raise HTTPException(status_code=400, detail="O valor deve ser um número")
-    return manager.adicionar_atividade(data, valor_float, setor, atividade, ctx["obra_id"])
+    return manager.adicionar_atividade(data, valor_float, setor, atividade, ctx["obra_id"], participacao)
 
 
 @app.delete("/delete-activity/{id}")
@@ -226,6 +233,7 @@ def edit_activity(
     setor: str = Form(None),
     valor: str = Form(None),
     data: str = Form(None),
+    participacao: Optional[str] = Form(None),
     ctx: dict = Depends(require_obra_member("editor")),
 ):
     valor_float = None
@@ -241,6 +249,7 @@ def edit_activity(
         setor=setor if setor else None,
         valor=valor_float,
         data=data if data else None,
+        participacao=participacao,
     )
 
 

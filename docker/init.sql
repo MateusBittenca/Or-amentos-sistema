@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS obra_membros (
     obra_id INT NOT NULL,
     usuario_id INT NOT NULL,
     papel VARCHAR(20) NOT NULL DEFAULT 'membro',
+    participacao DECIMAL(5, 2) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY unique_obra_usuario (obra_id, usuario_id),
     FOREIGN KEY (obra_id) REFERENCES obras(id) ON DELETE CASCADE,
@@ -47,6 +48,16 @@ CREATE TABLE IF NOT EXISTS pagamentos (
     data VARCHAR(20) DEFAULT NULL,
     comprovante_url VARCHAR(500) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (atividade_id) REFERENCES atividades(idAtividades) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE IF NOT EXISTS atividade_participacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    atividade_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    percentual DECIMAL(5, 2) NOT NULL,
+    UNIQUE KEY unique_atividade_usuario (atividade_id, usuario_id),
     FOREIGN KEY (atividade_id) REFERENCES atividades(idAtividades) ON DELETE CASCADE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );

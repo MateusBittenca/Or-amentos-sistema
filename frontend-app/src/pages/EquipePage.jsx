@@ -5,6 +5,16 @@ import { canEditObra, isObraOwner, ROLE_HINTS, ROLE_INVITE_OPTIONS, roleLabel } 
 import { Button, Card, EmptyState, Field, inputClass } from '../components/ui'
 import { useToast } from '../components/Toast'
 
+function percentCents(value) {
+  const number = Number(String(value ?? '').replace(',', '.'))
+  if (!Number.isFinite(number)) return 0
+  return Math.round(number * 100)
+}
+
+function formatPercent(cents) {
+  return `${(cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+}
+
 export default function EquipePage() {
   const { obraId } = useParams()
   const { obra } = useOutletContext()
@@ -14,6 +24,8 @@ export default function EquipePage() {
   const [inviteUrl, setInviteUrl] = useState('')
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
+  const [percents, setPercents] = useState({})
+  const [savingShare, setSavingShare] = useState(false)
   const currentPapel = obra?.papel || localStorage.getItem('obra_papel')
   const canInvite = canEditObra(currentPapel)
   const owner = isObraOwner(currentPapel)
@@ -22,7 +34,15 @@ export default function EquipePage() {
     setError('')
     try {
       const data = await api.get(`/obras/${obraId}/membros`)
-      setMembros(Array.isArray(data) ? data : [])
+      const list = Array.isArray(data) ? data : []
+      setMembros(list)
+      const next = {}
+      list.forEach((membro) => {
+        if (membro.papel !== 'leitura' && membro.participacao != null) {
+          next[membro.usuario_id] = String(membro.participacao)
+        }
+      })
+      setPercents(next)
     } catch (err) {
       setError(err.message || 'Erro ao carregar equipe')
     } finally {
@@ -58,6 +78,30 @@ export default function EquipePage() {
     }
   }
 
+  async function salvarParticipacao() {
+    const participantes = membros
+      .filter((membro) => membro.papel !== 'leitura')
+      .map((membro) => ({
+        usuario_id: membro.usuario_id,
+        percentual: Number(String(percents[membro.usuario_id] ?? '').replace(',', '.')),
+      }))
+    const soma = participantes.reduce((total, item) => total + percentCents(item.percentual), 0)
+    if (soma !== 10000) {
+      showToast('A soma da participação deve ser 100%', 'error')
+      return
+    }
+    setSavingShare(true)
+    try {
+      await api.patchJson(`/obras/${obraId}/participacao`, { participantes })
+      showToast('Participação atualizada')
+      load()
+    } catch (err) {
+      showToast(err.message || 'Erro ao salvar participação', 'error')
+    } finally {
+      setSavingShare(false)
+    }
+  }
+
   async function remove(membroId) {
     if (!window.confirm('Remover este membro?')) return
     try {
@@ -67,6 +111,30 @@ export default function EquipePage() {
     } catch (err) {
       showToast(err.message || 'Erro ao remover', 'error')
     }
+  }
+
+  const rateio = membros.filter((membro) => membro.papel !== 'leitura')
+  const soma = rateio.reduce((total, membro) => total + percentCents(percents[membro.usuario_id]), 0)
+
+  function participacaoCell(membro) {
+    if (membro.papel === 'leitura') {
+      return <span className="text-xs text-gray-500">Não entra no rateio</span>
+    }
+    if (!owner) {
+      return <span className="text-sm text-gray-700">{membro.participacao != null ? `${membro.participacao}%` : '—'}</span>
+    }
+    return (
+      <input
+        className="input-focus w-24 px-2 py-1 border rounded-lg text-sm"
+        type="number"
+        min="0"
+        max="100"
+        step="0.01"
+        value={percents[membro.usuario_id] ?? ''}
+        onChange={(e) => setPercents((current) => ({ ...current, [membro.usuario_id]: e.target.value }))}
+        aria-label={`Participação de ${membro.nome}`}
+      />
+    )
   }
 
   return (
@@ -107,10 +175,14 @@ export default function EquipePage() {
           </div>
         ) : (
           <>
+            <p className="px-4 pt-4 text-xs text-gray-500">
+              Atividades novas usam estes percentuais. As que já existem não mudam. Leitura não entra no rateio.
+            </p>
             <div className="sm:hidden divide-y divide-gray-100">
               {membros.map((membro) => (
                 <div key={membro.usuario_id} className="px-4 py-4">
                   <p className="font-medium text-gray-800 break-all">{membro.nome}</p>
+                  <div className="mt-2">{participacaoCell(membro)}</div>
                   <div className="mt-3 flex items-center gap-2">
                     {owner && membro.papel !== 'owner' ? (
                       <select
@@ -140,6 +212,7 @@ export default function EquipePage() {
                   <tr>
                     <th className="text-left font-medium py-3 px-4">Membro</th>
                     <th className="text-left font-medium py-3 px-4">Papel</th>
+                    <th className="text-left font-medium py-3 px-4">Participação</th>
                     <th className="text-right font-medium py-3 px-4">Ações</th>
                   </tr>
                 </thead>
@@ -162,6 +235,7 @@ export default function EquipePage() {
                           <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-800">{roleLabel(membro.papel)}</span>
                         )}
                       </td>
+                      <td className="py-3 px-4">{participacaoCell(membro)}</td>
                       <td className="py-3 px-4 text-right">
                         {owner && membro.papel !== 'owner' ? (
                           <button type="button" className="text-red-600 text-sm font-medium hover:bg-red-50 px-3 py-1.5 rounded-lg" onClick={() => remove(membro.usuario_id)}>Remover</button>
@@ -172,6 +246,12 @@ export default function EquipePage() {
                 </tbody>
               </table>
             </div>
+            {owner ? (
+              <div className="px-4 py-3 border-t flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <p className={`text-sm ${soma === 10000 ? 'text-gray-600' : 'text-red-600'}`}>Soma {formatPercent(soma)}</p>
+                <Button onClick={salvarParticipacao} loading={savingShare}>Salvar participação</Button>
+              </div>
+            ) : null}
           </>
         )}
       </Card>

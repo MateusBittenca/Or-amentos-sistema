@@ -3,8 +3,32 @@ from typing import List, Dict, Any, Optional
 import secrets
 from fastapi import HTTPException
 from database import DISPLAY_NAME_SQL, db_cursor
-from models import ObraOut, MembroOut
+from models import ObraOut, MembroOut, ParticipacaoItem
 from auth.auth_user import assert_obra_access, ROLE_RANK
+from managers.comprovante import percentuais_iguais, validar_percentuais
+
+PAPEIS_RATEIO = {"owner", "editor", "membro"}
+
+
+def rebalance_participacao(cursor, obra_id: int) -> None:
+    cursor.execute(
+        """
+        SELECT usuario_id FROM obra_membros
+        WHERE obra_id = %s AND papel <> 'leitura'
+        ORDER BY usuario_id
+        """,
+        (obra_id,),
+    )
+    ids = [row["usuario_id"] for row in cursor.fetchall()]
+    cursor.execute(
+        "UPDATE obra_membros SET participacao = NULL WHERE obra_id = %s AND papel = 'leitura'",
+        (obra_id,),
+    )
+    for usuario_id, percentual in zip(ids, percentuais_iguais(len(ids))):
+        cursor.execute(
+            "UPDATE obra_membros SET participacao = %s WHERE obra_id = %s AND usuario_id = %s",
+            (percentual, obra_id, usuario_id),
+        )
 
 
 class ObrasManager:
@@ -59,8 +83,8 @@ class ObrasManager:
             )
             obra_id = cursor.lastrowid
             cursor.execute(
-                "INSERT INTO obra_membros (obra_id, usuario_id, papel) VALUES (%s, %s, %s)",
-                (obra_id, usuario_id, "owner"),
+                "INSERT INTO obra_membros (obra_id, usuario_id, papel, participacao) VALUES (%s, %s, %s, %s)",
+                (obra_id, usuario_id, "owner", 100),
             )
         return ObraOut(
             id=obra_id,
@@ -75,7 +99,7 @@ class ObrasManager:
         with db_cursor() as cursor:
             cursor.execute(
                 f"""
-                SELECT om.usuario_id, {DISPLAY_NAME_SQL} as nome, om.papel
+                SELECT om.usuario_id, {DISPLAY_NAME_SQL} as nome, om.papel, om.participacao
                 FROM obra_membros om
                 JOIN usuarios u ON u.id = om.usuario_id
                 WHERE om.obra_id = %s
@@ -85,7 +109,12 @@ class ObrasManager:
             )
             rows = cursor.fetchall()
         return [
-            MembroOut(usuario_id=row["usuario_id"], nome=row["nome"], papel=row["papel"])
+            MembroOut(
+                usuario_id=row["usuario_id"],
+                nome=row["nome"],
+                papel=row["papel"],
+                participacao=float(row["participacao"]) if row["participacao"] is not None else None,
+            )
             for row in rows
         ]
 
@@ -162,6 +191,8 @@ class ObrasManager:
                     "INSERT INTO obra_membros (obra_id, usuario_id, papel) VALUES (%s, %s, %s)",
                     (convite["obra_id"], usuario_id, convite["papel"]),
                 )
+                if convite["papel"] in PAPEIS_RATEIO:
+                    rebalance_participacao(cursor, convite["obra_id"])
             cursor.execute(
                 "UPDATE convites SET usado_em = %s WHERE id = %s",
                 (datetime.utcnow(), convite["id"]),
@@ -190,10 +221,14 @@ class ObrasManager:
                 raise HTTPException(status_code=404, detail="Membro não encontrado")
             if row["papel"] == "owner":
                 raise HTTPException(status_code=400, detail="Não é possível alterar o dono da obra")
+            entrava = row["papel"] in PAPEIS_RATEIO
+            entra = papel in PAPEIS_RATEIO
             cursor.execute(
                 "UPDATE obra_membros SET papel = %s WHERE obra_id = %s AND usuario_id = %s",
                 (papel, obra_id, membro_id),
             )
+            if entrava != entra:
+                rebalance_participacao(cursor, obra_id)
         return {"sucesso": True, "mensagem": "Papel atualizado"}
 
     def remover_membro(self, obra_id: int, owner_id: int, membro_id: int) -> Dict[str, Any]:
@@ -211,8 +246,31 @@ class ObrasManager:
                 raise HTTPException(status_code=404, detail="Membro não encontrado")
             if row["papel"] == "owner":
                 raise HTTPException(status_code=400, detail="Não é possível remover o dono da obra")
+            entrava = row["papel"] in PAPEIS_RATEIO
             cursor.execute(
                 "DELETE FROM obra_membros WHERE obra_id = %s AND usuario_id = %s",
                 (obra_id, membro_id),
             )
+            if entrava:
+                rebalance_participacao(cursor, obra_id)
         return {"sucesso": True, "mensagem": "Membro removido da obra"}
+
+    def definir_participacao(self, obra_id: int, owner_id: int, participantes: List[ParticipacaoItem]) -> Dict[str, Any]:
+        assert_obra_access(obra_id, owner_id, "owner")
+        with db_cursor() as cursor:
+            cursor.execute(
+                "SELECT usuario_id, papel FROM obra_membros WHERE obra_id = %s",
+                (obra_id,),
+            )
+            rows = cursor.fetchall()
+            atuais = {row["usuario_id"] for row in rows if row["papel"] in PAPEIS_RATEIO}
+            informados = [(item.usuario_id, item.percentual) for item in participantes]
+            if {item[0] for item in informados} != atuais:
+                raise HTTPException(status_code=400, detail="Informe o percentual de cada membro que entra no rateio")
+            normalizados = validar_percentuais(informados)
+            for usuario_id, percentual in normalizados:
+                cursor.execute(
+                    "UPDATE obra_membros SET participacao = %s WHERE obra_id = %s AND usuario_id = %s",
+                    (percentual, obra_id, usuario_id),
+                )
+        return {"sucesso": True, "mensagem": "Participação atualizada"}
